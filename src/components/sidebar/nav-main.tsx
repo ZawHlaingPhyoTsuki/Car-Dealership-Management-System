@@ -1,8 +1,7 @@
 "use client";
 
 import type { Icon } from "@tabler/icons-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
 	SidebarGroup,
 	SidebarGroupContent,
@@ -10,6 +9,7 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	useSidebar,
 } from "@/components/ui/sidebar";
 
 export function NavMain({
@@ -22,6 +22,8 @@ export function NavMain({
 	}[];
 }) {
 	const pathname = usePathname();
+	const router = useRouter();
+	const { setOpenMobile } = useSidebar();
 
 	const isActive = (url: string) => {
 		// Exact match for root dashboard
@@ -40,14 +42,16 @@ export function NavMain({
 					{items.map((item) => (
 						<SidebarMenuItem key={item.title}>
 							<SidebarMenuButton
-								asChild
 								tooltip={item.title}
 								isActive={isActive(item.url)}
+								size="lg"
+								onClick={() => {
+									setOpenMobile(false);
+									router.push(item.url);
+								}}
 							>
-								<Link href={item.url}>
-									{item.icon && <item.icon />}
-									<span>{item.title}</span>
-								</Link>
+								{item.icon && <item.icon />}
+								<span>{item.title}</span>
 							</SidebarMenuButton>
 						</SidebarMenuItem>
 					))}
