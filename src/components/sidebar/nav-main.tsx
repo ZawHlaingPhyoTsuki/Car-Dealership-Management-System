@@ -12,26 +12,26 @@ import {
 	useSidebar,
 } from "@/components/ui/sidebar";
 
-export function NavMain({
-	items,
-}: {
-	items: {
-		title: string;
-		url: string;
-		icon?: Icon;
-	}[];
-}) {
+type NavMainItem = {
+	title: string;
+	url: string;
+	icon?: Icon;
+};
+
+export function NavMain({ items }: { items: NavMainItem[] }) {
 	const pathname = usePathname();
 	const router = useRouter();
 	const { setOpenMobile } = useSidebar();
 
 	const isActive = (url: string) => {
-		// Exact match for root dashboard
 		if (url === "/dashboard") {
 			return pathname === "/dashboard";
 		}
-		// For nested routes, check if pathname starts with the url
-		return pathname.startsWith(url) && url !== "/dashboard";
+
+		return (
+			(pathname === url || pathname.startsWith(`${url}/`)) &&
+			url !== "/dashboard"
+		);
 	};
 
 	return (
@@ -40,7 +40,7 @@ export function NavMain({
 			<SidebarGroupContent className="flex flex-col gap-2">
 				<SidebarMenu>
 					{items.map((item) => (
-						<SidebarMenuItem key={item.title}>
+						<SidebarMenuItem key={item.url}>
 							<SidebarMenuButton
 								tooltip={item.title}
 								isActive={isActive(item.url)}
