@@ -31,7 +31,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 					disableTransitionOnChange
 				>
 					{children}
-					<Toaster />
+					<Toaster richColors />
 				</ThemeProvider>
 			</QueryClientProvider>
 		</ErrorBoundary>

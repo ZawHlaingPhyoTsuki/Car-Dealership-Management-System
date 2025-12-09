@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../styles/globals.css";
-import {
-	dehydrate,
-	HydrationBoundary,
-	QueryClient,
-} from "@tanstack/react-query";
 import { AppProvider } from "./provider";
 
 const geistSans = Geist({
@@ -29,19 +24,12 @@ export default function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const queryClient = new QueryClient();
-	const dehydratedState = dehydrate(queryClient);
-
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				<AppProvider>
-					<HydrationBoundary state={dehydratedState}>
-						{children}
-					</HydrationBoundary>
-				</AppProvider>
+				<AppProvider>{children}</AppProvider>
 			</body>
 		</html>
 	);

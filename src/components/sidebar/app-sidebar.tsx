@@ -11,6 +11,7 @@ import {
 	IconSettings,
 	IconUsers,
 } from "@tabler/icons-react";
+import type { User } from "better-auth";
 import type * as React from "react";
 
 import { NavMain } from "@/components/sidebar/nav-main";
@@ -28,11 +29,6 @@ import {
 import { paths } from "@/config/paths";
 
 const data = {
-	user: {
-		name: "shadcn",
-		email: "m@example.com",
-		avatar: "https://github.com/shadcn.png",
-	},
 	navMain: [
 		{
 			title: "Dashboard",
@@ -79,7 +75,11 @@ const data = {
 	],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+	user: User;
+}
+
+export function AppSidebar({ user, ...props }: AppSidebarProps) {
 	return (
 		<Sidebar collapsible="offcanvas" {...props}>
 			<SidebarHeader>
@@ -87,11 +87,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 					<SidebarMenuItem>
 						<SidebarMenuButton
 							asChild
-							className="data-[slot=sidebar-menu-button]:!p-1.5"
+							className="data-[slot=sidebar-menu-button]:p-1.5!"
 						>
 							{/* TODO: Replace with your logo and link */}
 							<div>
-								<IconInnerShadowTop className="!size-5" />
+								<IconInnerShadowTop className="size-5!" />
 								<span className="text-base font-semibold">Acme Inc.</span>
 							</div>
 						</SidebarMenuButton>
@@ -103,7 +103,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 				<NavSecondary items={data.navSecondary} className="mt-auto" />
 			</SidebarContent>
 			<SidebarFooter>
-				<NavUser user={data.user} />
+				<NavUser user={user} />
 			</SidebarFooter>
 		</Sidebar>
 	);

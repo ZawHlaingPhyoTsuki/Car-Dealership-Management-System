@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { paths } from "@/config/paths";
 import { auth } from "@/lib/auth";
 
 export default async function AuthLayout({
@@ -22,7 +23,10 @@ export default async function AuthLayout({
 		<div className="grid min-h-svh lg:grid-cols-2">
 			<div className="flex flex-col gap-4 p-6 md:p-10 md:pt-5">
 				<div className="flex justify-center gap-2 md:justify-start">
-					<Link href="/" className="flex items-center gap-2 font-medium">
+					<Link
+						href={paths.home.getHref()}
+						className="flex items-center gap-2 font-medium"
+					>
 						<div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
 							<GalleryVerticalEnd className="size-4" />
 						</div>
@@ -38,7 +42,7 @@ export default async function AuthLayout({
 					width="700"
 					height="1000"
 					src="/placeholder.png"
-					alt="Image"
+					alt=""
 					className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
 				/>
 			</div>

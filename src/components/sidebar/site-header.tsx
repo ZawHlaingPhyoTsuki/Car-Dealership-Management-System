@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { paths } from "@/config/paths";
 import { ModeSwitcher } from "./mode-switcher";
 
 export function SiteHeader() {
@@ -10,18 +11,20 @@ export function SiteHeader() {
 
 	// Function to get the header title based on the current path
 	const getHeaderTitle = () => {
-		if (pathname === "/dashboard") {
+		if (pathname === paths.dashboard.root.getHref()) {
 			return "Dashboard";
-		} else if (pathname.startsWith("/dashboard/cars")) {
+		} else if (pathname.startsWith(paths.dashboard.cars.getHref())) {
 			return "Cars Management";
-		} else if (pathname.startsWith("/dashboard/expenses")) {
+		} else if (pathname.startsWith(paths.dashboard.expenses.getHref())) {
 			return "Expenses Management";
-		} else if (pathname.startsWith("/dashboard/employees")) {
+		} else if (pathname.startsWith(paths.dashboard.employees.getHref())) {
 			return "Employees Management";
-		} else if (pathname.startsWith("/dashboard/analytics")) {
+		} else if (pathname.startsWith(paths.dashboard.analytics.getHref())) {
 			return "Analytics";
-		} else if (pathname.startsWith("/dashboard/account")) {
+		} else if (pathname.startsWith(paths.dashboard.account.getHref())) {
 			return "Account Settings";
+		} else if (pathname.startsWith(paths.dashboard.newAccount.getHref())) {
+			return "New Account";
 		} else {
 			return "Dashboard"; // Fallback title
 		}

@@ -23,7 +23,7 @@ export const paths = {
 		analytics: {
 			getHref: () => "/dashboard/analytics",
 		},
-		profile: {
+		account: {
 			getHref: () => "/dashboard/account",
 		},
 		newAccount: {

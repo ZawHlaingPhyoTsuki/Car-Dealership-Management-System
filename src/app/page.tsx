@@ -71,7 +71,7 @@ export default function Home() {
 					</a>
 				</div>
 			</main>
-			
+
 			<div className="flex flex-col gap-4">
 				{/* Testing Error Boundary */}
 				<Button

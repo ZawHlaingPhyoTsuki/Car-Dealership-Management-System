@@ -15,6 +15,16 @@ async function main() {
 	const adminEmail = env.SEED_ADMIN_EMAIL;
 	const adminPassword = env.SEED_ADMIN_PASSWORD;
 
+	// Check if admin already exists
+	const existingAdmin = await prisma.user.findUnique({
+		where: { email: adminEmail },
+	});
+
+	if (existingAdmin) {
+		console.log("✅ Admin already exists, skipping creation");
+		return;
+	}
+
 	// ==================== ADMIN ====================
 	console.log("👥 Creating admin...");
 

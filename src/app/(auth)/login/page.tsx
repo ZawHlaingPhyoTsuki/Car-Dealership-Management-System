@@ -17,6 +17,7 @@ import {
 	FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { paths } from "@/config/paths";
 import { authClient } from "@/lib/auth-client";
 
 export const loginSchema = z.object({
@@ -44,7 +45,7 @@ export default function LoginPage() {
 			await authClient.signIn.email({
 				email: values.email,
 				password: values.password,
-				callbackURL: "/dashboard",
+				callbackURL: paths.dashboard.root.getHref(),
 				rememberMe: values.rememberMe,
 				fetchOptions: {
 					onRequest: () => setLoading(true),

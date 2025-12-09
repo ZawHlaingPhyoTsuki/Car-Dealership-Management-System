@@ -1,13 +1,24 @@
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import type React from "react";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { SiteHeader } from "@/components/sidebar/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { auth } from "@/lib/auth";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const session = await auth.api.getSession({
+		headers: await headers(),
+	});
+
+	if (!session) {
+		return redirect("/login");
+	}
+
 	return (
 		<SidebarProvider
 			style={
@@ -17,7 +28,7 @@ export default function DashboardLayout({
 				} as React.CSSProperties
 			}
 		>
-			<AppSidebar variant="inset" />
+			<AppSidebar variant="inset" user={session.user} />
 			<SidebarInset>
 				<SiteHeader />
 				<div className="flex flex-1 flex-col">
