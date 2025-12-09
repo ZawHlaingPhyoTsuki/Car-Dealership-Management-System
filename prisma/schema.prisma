@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String    @id @default(uuid())
   name          String
   email         String
   emailVerified Boolean   @default(false)
@@ -17,6 +17,13 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+
+  role       String?
+  banned     Boolean?  @default(false)
+  banReason  String?
+  banExpires DateTime?
+
+  expenses Expense[]
 
   @@unique([email])
   @@map("user")
@@ -32,6 +39,8 @@ model Session {
   userAgent String?
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  impersonatedBy String?
 
   @@unique([token])
   @@index([userId])
@@ -68,4 +77,24 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Car {
+  id    String  @id @default(uuid())
+  name  String
+  price Decimal @db.Decimal(10, 2)
+  status CarStatus @default(AVAILABLE)
+}
+
+enum CarStatus {
+  AVAILABLE
+  IN_MAINTENANCE
+  SOLD
+}
+
+model Expense {
+  id String @id @default(uuid())
+
+  createdBy   User?   @relation(fields: [createdById], references: [id])
+  createdById String?
 }
