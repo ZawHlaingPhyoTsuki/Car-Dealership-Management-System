@@ -36,26 +36,11 @@ export default function DashboardPage() {
 				/>
 			</div>
 			<div className="space-y-2">
-				{Array.from({ length: 10 }).map((_, idx) => (
-					// biome-ignore lint: false positive
-					<Skeleton key={idx} className="h-12 w-full" />
-				))}
+				<Skeleton key={1} className="h-12 w-full" />
+				<Skeleton key={2} className="h-12 w-full" />
+				<Skeleton key={3} className="h-12 w-full" />
+				<Skeleton key={4} className="h-12 w-full" />
 			</div>
-
-			{/* <Button
-				variant="destructive"
-				onClick={async () => {
-					await authClient.signOut({
-						fetchOptions: {
-							onSuccess: () => {
-								router.push("/login");
-							},
-						},
-					});
-				}}
-			>
-				Logout
-			</Button> */}
 		</div>
 	);
 }

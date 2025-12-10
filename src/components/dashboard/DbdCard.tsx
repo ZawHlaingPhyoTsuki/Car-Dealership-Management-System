@@ -18,7 +18,6 @@ import {
 interface DbdCardProps {
 	icon: LucideIcon;
 	title: string;
-	// amount: number;
 	amount: string;
 	plus: boolean;
 	url: string;

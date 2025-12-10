@@ -51,27 +51,10 @@ const data = {
 		},
 		{
 			title: "Settings",
-			url: paths.dashboard.analytics.getHref(),
+			url: paths.dashboard.settings.getHref(),
 			icon: IconSettings,
 		},
 	],
-	// navSecondary: [
-	//     {
-	//         title: 'Settings',
-	//         url: '#',
-	//         icon: IconSettings,
-	//     },
-	//     {
-	//         title: 'Get Help',
-	//         url: '#',
-	//         icon: IconHelp,
-	//     },
-	//     {
-	//         title: 'Search',
-	//         url: '#',
-	//         icon: IconSearch,
-	//     },
-	// ],
 };
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
@@ -95,7 +78,6 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
 			</SidebarHeader>
 			<SidebarContent>
 				<NavMain items={data.navMain} />
-				{/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
 			</SidebarContent>
 			<SidebarFooter>
 				<NavUser user={user} />
