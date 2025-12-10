@@ -1,36 +1,117 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Car Dealership Management System
 
-## Getting Started
+This is a **Car Dealership Management System** built with [Next.js](https://nextjs.org), designed to manage dealership operations efficiently.
 
-First, run the development server:
+## 📋 Prerequisites
+
+Before you begin, ensure you have the following installed on your machine:
+
+- **[Node.js](https://nodejs.org/)** (v18 or higher recommended)
+- **[pnpm](https://pnpm.io/)** (Package manager)
+- **[Docker](https://www.docker.com/)** (For running the PostgreSQL database)
+
+## 🚀 Getting Started
+
+Follow these steps to set up the project locally.
+
+### 1. Clone the Repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+git clone <repository-url>
+cd car-dealership-management-system
+```
+
+### 2. Install Dependencies
+
+If you don't have pnpm installed, you can install it globally using npm:
+
+```bash
+npm install -g pnpm
+```
+
+## Verify Installation
+
+After installation, verify that pnpm is properly installed:
+
+```bash
+pnpm --version # You should see the version number displayed (e.g., `9.x.x`).
+```
+
+Install the project dependencies using `pnpm`:
+
+```bash
+pnpm install
+```
+
+### 3. Configure Environment Variables
+
+Create a `.env` file in the root directory by copying the example file:
+
+```bash
+cp .env.example .env
+```
+
+Open the `.env` file and update the variables if necessary. By default, the `docker-compose.yml` is configured to work with standard credentials, but ensure your `DATABASE_URL` matches the exposed port (default mapped to `5433` in this project).
+
+### 4. Start the Database
+
+Start the PostgreSQL database using Docker Compose:
+
+```bash
+docker-compose up -d
+```
+
+This will start a Postgres container named `car-management-postgres` on port `5433`.
+
+### 5. Setup the Database
+
+Run the following commands to initialize your database schema and seed it with initial data:
+
+```bash
+# Generate Prisma Client
+pnpm db:generate
+
+# Run migrations to create database tables
+pnpm db:migrate
+
+# (Optional) Seed the database with initial data
+pnpm db:seed
+```
+
+_Note: If you are prototyping and want to skip migrations, you can use `pnpm db:push` to sync the schema directly._
+
+### 6. Run the Application
+
+Start the development server:
+
+```bash
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠 Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Here are the most common scripts you'll use:
 
-## Learn More
+| Script             | Description                                        |
+| :----------------- | :------------------------------------------------- |
+| `pnpm dev`         | Starts the development server.                     |
+| `pnpm build`       | Builds the application for production.             |
+| `pnpm start`       | Starts the production server.                      |
+| `pnpm lint`        | Lints the code using Biome.                        |
+| `pnpm format`      | Formats the code using Biome.                      |
+| `pnpm db:studio`   | Opens Prisma Studio to view/edit database records. |
+| `pnpm db:generate` | Generates the Prisma Client.                       |
+| `pnpm db:migrate`  | Runs database migrations.                          |
+| `pnpm db:seed`     | Seeds the database with initial data.              |
 
-To learn more about Next.js, take a look at the following resources:
+## 🧩 Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Framework:** [Next.js 15](https://nextjs.org/)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **UI Components:** [Radix UI](https://www.radix-ui.com/)
+- **Database:** [PostgreSQL](https://www.postgresql.org/)
+- **ORM:** [Prisma](https://www.prisma.io/)
+- **Linting/Formatting:** [Biome](https://biomejs.dev/)
