@@ -28,17 +28,17 @@ export const data: {
 			icon: LayoutDashboard,
 		},
 		{
-			title: "Cars Management",
+			title: "Cars Listing",
 			url: paths.dashboard.cars.getHref(),
 			icon: Car,
 		},
 		{
-			title: "Expenses Management",
+			title: "Expenses",
 			url: paths.dashboard.expenses.getHref(),
 			icon: FileSpreadsheet,
 		},
 		{
-			title: "Employees Management",
+			title: "Employees",
 			url: paths.dashboard.employees.getHref(),
 			icon: Users,
 		},
