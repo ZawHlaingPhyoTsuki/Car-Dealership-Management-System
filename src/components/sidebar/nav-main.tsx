@@ -1,6 +1,6 @@
 "use client";
 
-import type { Icon } from "@tabler/icons-react";
+import type { LucideIcon } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import {
 	SidebarGroup,
@@ -15,7 +15,7 @@ import {
 type NavMainItem = {
 	title: string;
 	url: string;
-	icon?: Icon;
+	icon?: LucideIcon;
 };
 
 export function NavMain({ items }: { items: NavMainItem[] }) {
