@@ -5,27 +5,27 @@ import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { paths } from "@/config/paths";
 
-const NotFoundPage = () => {
+export default function NotFoundPage() {
 	return (
-		<div className="min-h-screen flex flex-col items-center justify-center px-4 bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+		<div className="min-h-screen flex flex-col items-center justify-center px-4 bg-background">
 			<div className="text-center max-w-2xl mx-auto">
 				{/* Animated number */}
 				<div className="relative mb-8">
-					<span className="text-[150px] font-bold text-gray-200 dark:text-gray-700 leading-none">
+					<span className="text-[150px] font-bold text-muted-foreground/20 leading-none">
 						404
 					</span>
 					<div className="absolute inset-0 flex items-center justify-center">
-						<span className="text-[150px] font-bold bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent leading-none">
+						<span className="text-[150px] font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent leading-none">
 							404
 						</span>
 					</div>
 				</div>
 
-				<h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+				<h1 className="text-4xl font-bold text-foreground mb-4">
 					Page Not Found
 				</h1>
 
-				<p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-md mx-auto">
+				<p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
 					Oops! The page you're looking for seems to have wandered off into the
 					digital void. Let's get you back on track.
 				</p>
@@ -52,6 +52,4 @@ const NotFoundPage = () => {
 			</div>
 		</div>
 	);
-};
-
-export default NotFoundPage;
+}
