@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { paths } from "@/config/paths";
 import { ModeSwitcher } from "./mode-switcher";
+import { navigationTitle } from "./data";
 
 export function SiteHeader() {
 	const pathname = usePathname();
@@ -12,21 +13,23 @@ export function SiteHeader() {
 	// Function to get the header title based on the current path
 	const getHeaderTitle = () => {
 		if (pathname === paths.dashboard.root.getHref()) {
-			return "Dashboard";
+			return navigationTitle.Dashboard;
 		} else if (pathname.startsWith(paths.dashboard.cars.getHref())) {
-			return "Cars Management";
+			return navigationTitle.CarsListing;
 		} else if (pathname.startsWith(paths.dashboard.expenses.getHref())) {
-			return "Expenses Management";
+			return navigationTitle.Expenses;
 		} else if (pathname.startsWith(paths.dashboard.employees.getHref())) {
-			return "Employees Management";
+			return navigationTitle.Employees;
 		} else if (pathname.startsWith(paths.dashboard.analytics.getHref())) {
-			return "Analytics";
-		} else if (pathname.startsWith(paths.dashboard.account.getHref())) {
-			return "Account Settings";
+			return navigationTitle.Analytics;
 		} else if (pathname.startsWith(paths.dashboard.newAccount.getHref())) {
-			return "New Account";
+			return navigationTitle.AccountCreation;
+		} else if (pathname.startsWith(paths.dashboard.account.getHref())) {
+			return navigationTitle.Account;
+		} else if (pathname.startsWith(paths.dashboard.help.getHref())) {
+			return navigationTitle.GetHelp;
 		} else {
-			return "Dashboard"; // Fallback title
+			return navigationTitle.Dashboard; // Fallback title
 		}
 	};
 
