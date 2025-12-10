@@ -14,9 +14,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "Car Dealership Management System",
+	title: {
+		default: "7hrs Automobile Management",
+		template: "%s | 7hrs Automobile",
+	},
 	description:
-		"A fast and efficient in-house car dealership management system built with Next.js, Prisma, PostgreSQL, and ShadCN. Manage cars, employees, expenses, and business analytics with secure role-based access for admins and staff.",
+		"An in-house car dealership management system for business owners and staff. Manage vehicles, track expenses, monitor employee data, and analyze business performance with secure role-based access control.",
 };
 
 export default function RootLayout({
