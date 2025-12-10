@@ -1,9 +1,8 @@
 "use client";
 
-import { IconInnerShadowTop } from "@tabler/icons-react";
 import type { User } from "better-auth";
+import { Van } from "lucide-react";
 import type * as React from "react";
-
 import { NavMain } from "@/components/sidebar/nav-main";
 import { NavSecondary } from "@/components/sidebar/nav-secondary";
 import { NavUser } from "@/components/sidebar/nav-user";
@@ -34,7 +33,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
 						>
 							{/* TODO: Replace with your logo and link */}
 							<div>
-								<IconInnerShadowTop className="size-5!" />
+								<Van className="size-5!" />
 								<span className="text-base font-semibold">Acme Inc.</span>
 							</div>
 						</SidebarMenuButton>

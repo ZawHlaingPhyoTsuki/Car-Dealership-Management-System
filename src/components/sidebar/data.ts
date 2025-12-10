@@ -1,17 +1,26 @@
+import type { LucideIcon } from "lucide-react";
 import {
 	Car,
 	ChartColumn,
 	CircleQuestionMark,
 	FileSpreadsheet,
 	LayoutDashboard,
-	Search,
 	Settings,
 	UserPlus,
 	Users,
 } from "lucide-react";
 import { paths } from "@/config/paths";
 
-export const data = {
+type NavItem = {
+	title: string;
+	url: string;
+	icon: LucideIcon;
+};
+
+export const data: {
+	navMain: NavItem[];
+	navSecondary: NavItem[];
+} = {
 	navMain: [
 		{
 			title: "Dashboard",
@@ -46,19 +55,14 @@ export const data = {
 	],
 	navSecondary: [
 		{
-			title: "Settings",
-			url: "#",
+			title: "Account",
+			url: paths.dashboard.account.getHref(),
 			icon: Settings,
 		},
 		{
 			title: "Get Help",
-			url: "#",
+			url: paths.dashboard.help.getHref(),
 			icon: CircleQuestionMark,
-		},
-		{
-			title: "Search",
-			url: "#",
-			icon: Search,
 		},
 	],
 };
