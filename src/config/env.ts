@@ -9,8 +9,8 @@ const EnvSchema = z.object({
 	CLOUDINARY_API_KEY: z.string(),
 	CLOUDINARY_API_SECRET: z.string(),
 
-	SEED_ADMIN_EMAIL: z.email(),
-	SEED_ADMIN_PASSWORD: z.string(),
+	SEED_ADMIN_EMAIL: z.email().optional(),
+	SEED_ADMIN_PASSWORD: z.string().optional(),
 
 	DATABASE_URL: z.string(),
 
