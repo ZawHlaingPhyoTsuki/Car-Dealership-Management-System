@@ -168,12 +168,12 @@ export default function Home() {
 
 						{/* Testing Buttons */}
 						<div className="flex flex-col sm:flex-row gap-2 justify-center">
-							<Button variant="outline" size="sm" asChild>
+							<Button variant="outline" size="lg" asChild>
 								<Link href="/non-existent-page">Test 404 Page</Link>
 							</Button>
 							<Button
 								variant="destructive"
-								size="sm"
+								size="lg"
 								onClick={() => setThrowError(true)}
 							>
 								Test Error Boundary
