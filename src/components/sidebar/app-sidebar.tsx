@@ -1,16 +1,6 @@
 "use client";
 
-import {
-	IconChartBar,
-	IconDashboard,
-	IconFolder,
-	IconHelp,
-	IconInnerShadowTop,
-	IconListDetails,
-	IconSearch,
-	IconSettings,
-	IconUsers,
-} from "@tabler/icons-react";
+import { IconInnerShadowTop } from "@tabler/icons-react";
 import type { User } from "better-auth";
 import type * as React from "react";
 
@@ -26,54 +16,7 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { paths } from "@/config/paths";
-
-const data = {
-	navMain: [
-		{
-			title: "Dashboard",
-			url: paths.dashboard.root.getHref(),
-			icon: IconDashboard,
-		},
-		{
-			title: "Cars Management",
-			url: paths.dashboard.cars.getHref(),
-			icon: IconListDetails,
-		},
-		{
-			title: "Expenses Management",
-			url: paths.dashboard.expenses.getHref(),
-			icon: IconFolder,
-		},
-		{
-			title: "Employees Management",
-			url: paths.dashboard.employees.getHref(),
-			icon: IconUsers,
-		},
-		{
-			title: "Analytics",
-			url: paths.dashboard.analytics.getHref(),
-			icon: IconChartBar,
-		},
-	],
-	navSecondary: [
-		{
-			title: "Settings",
-			url: "#",
-			icon: IconSettings,
-		},
-		{
-			title: "Get Help",
-			url: "#",
-			icon: IconHelp,
-		},
-		{
-			title: "Search",
-			url: "#",
-			icon: IconSearch,
-		},
-	],
-};
+import { data } from "./data";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 	user: User;

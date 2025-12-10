@@ -25,6 +25,7 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "@/components/ui/sidebar";
+import { paths } from "@/config/paths";
 import { authClient } from "@/lib/auth-client";
 import { getAvatarFallbackName } from "@/lib/utils";
 
@@ -89,7 +90,9 @@ export function NavUser({ user }: { user: User }) {
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<DropdownMenuGroup>
-							<DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => router.push(paths.dashboard.account.getHref())}
+							>
 								<IconUserCircle />
 								Account
 							</DropdownMenuItem>
@@ -108,7 +111,7 @@ export function NavUser({ user }: { user: User }) {
 								authClient.signOut({
 									fetchOptions: {
 										onSuccess: () => {
-											router.push("/login"); // redirect to login page
+											router.push(paths.login.getHref());
 										},
 									},
 								})
