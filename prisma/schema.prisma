@@ -23,7 +23,8 @@ model User {
   banReason  String?
   banExpires DateTime?
 
-  expenses Expense[]
+  expenses Expense[] @relation("CreatedExpenses")
+  soldCars Car[]     @relation("SoldCars")
 
   @@unique([email])
   @@map("user")
@@ -80,21 +81,114 @@ model Verification {
 }
 
 model Car {
-  id    String  @id @default(uuid())
-  name  String
-  price Decimal @db.Decimal(10, 2)
-  status CarStatus @default(AVAILABLE)
+  id            String    @id @default(uuid())
+  name          String
+  price         Decimal   @db.Decimal(10, 2)
+  purchasePrice Decimal?  @db.Decimal(10, 2) // how much you paid the previous owner/trade-in/auction
+  purchaseDate  DateTime? // when you bought/acquired it
+
+  color       String?
+  mileage     Int? // in miles/km
+  mileageUnit String    @default("miles") // or "km"
+  vin         String?   @unique
+  notes       String?
+  status      CarStatus @default(AVAILABLE)
+  addedAt     DateTime  @default(now())
+  soldAt      DateTime?
+  photos      Photo[]   @relation("CarPhotos")
+
+  // Optional buyer info (if you want to track in database, not just on paper)
+  buyerName  String?
+  buyerPhone String?
+  buyerEmail String?
+  salePrice  Decimal? @db.Decimal(10, 2)
+  saleNotes  String? // Cash/Financing, etc.
+
+  // Optional seller tracking
+  soldBy   User?   @relation("SoldCars", fields: [soldById], references: [id])
+  soldById String?
+
+  expenses Expense[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("car")
 }
 
 enum CarStatus {
   AVAILABLE
   IN_MAINTENANCE
+  RESERVED
   SOLD
 }
 
 model Expense {
-  id String @id @default(uuid())
+  id       String          @id @default(uuid())
+  amount   Decimal         @db.Decimal(10, 2)
+  reason   String
+  category ExpenseCategory @default(OTHER)
+  date     DateTime        @default(now())
 
-  createdBy   User?   @relation(fields: [createdById], references: [id])
+  // Optional: Link to car if this expense is car-specific
+  car   Car?    @relation(fields: [carId], references: [id])
+  carId String?
+
+  createdBy   User?   @relation("CreatedExpenses", fields: [createdById], references: [id])
   createdById String?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("expense")
+}
+
+enum ExpenseCategory {
+  REPAIRS
+  TRANSPORT
+  AUCTION_FEES
+  CLEANING_DETAILING
+  UTILITIES
+  RENT
+  SALARIES
+  MARKETING
+  OFFICE_SUPPLIES
+  OTHER
+}
+
+model Employee {
+  id      String  @id @default(uuid())
+  name    String
+  email   String  @unique
+  role    String
+  phone   String?
+  address String?
+  notes   String?
+
+  salary    Decimal  @db.Decimal(10, 2)
+  startDate DateTime @default(now())
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("employee")
+}
+
+model Photo {
+  id       String  @id @default(uuid())
+  url      String
+  publicId String? @unique // Cloudinary public_id for deletion
+  alt      String?
+  order    Int     @default(0) // for sorting
+
+  carId String?
+  car   Car?    @relation("CarPhotos", fields: [carId], references: [id])
+
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+
+  @@map("photo")
 }
