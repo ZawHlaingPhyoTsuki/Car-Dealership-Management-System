@@ -23,6 +23,9 @@ export const paths = {
 		analytics: {
 			getHref: () => "/dashboard/analytics",
 		},
+		settings: {
+			getHref: () => "/dashboard/settings",
+		},
 		account: {
 			getHref: () => "/dashboard/account",
 		},

@@ -5,7 +5,6 @@ import { usePathname, useRouter } from "next/navigation";
 import {
 	SidebarGroup,
 	SidebarGroupContent,
-	SidebarGroupLabel,
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
@@ -36,12 +35,12 @@ export function NavMain({ items }: { items: NavMainItem[] }) {
 
 	return (
 		<SidebarGroup>
-			<SidebarGroupLabel>Modules</SidebarGroupLabel>
-			<SidebarGroupContent className="flex flex-col gap-2">
-				<SidebarMenu>
+			<SidebarGroupContent className="flex flex-col">
+				<SidebarMenu className="">
 					{items.map((item) => (
 						<SidebarMenuItem key={item.url}>
 							<SidebarMenuButton
+								className="cursor-pointer"
 								tooltip={item.title}
 								isActive={isActive(item.url)}
 								size="lg"

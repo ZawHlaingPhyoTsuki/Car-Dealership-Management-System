@@ -1,30 +1,24 @@
 "use client";
 
 import {
+	IconCalendarDollar,
 	IconChartBar,
 	IconDashboard,
-	IconFolder,
-	IconHelp,
-	IconInnerShadowTop,
 	IconListDetails,
-	IconSearch,
 	IconSettings,
 	IconUsers,
 } from "@tabler/icons-react";
 import type { User } from "better-auth";
+import Image from "next/image";
+import Link from "next/link";
 import type * as React from "react";
-
 import { NavMain } from "@/components/sidebar/nav-main";
-import { NavSecondary } from "@/components/sidebar/nav-secondary";
 import { NavUser } from "@/components/sidebar/nav-user";
 import {
 	Sidebar,
 	SidebarContent,
 	SidebarFooter,
 	SidebarHeader,
-	SidebarMenu,
-	SidebarMenuButton,
-	SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { paths } from "@/config/paths";
 
@@ -36,17 +30,17 @@ const data = {
 			icon: IconDashboard,
 		},
 		{
-			title: "Cars Management",
+			title: "Car Listings",
 			url: paths.dashboard.cars.getHref(),
 			icon: IconListDetails,
 		},
 		{
-			title: "Expenses Management",
+			title: "Expenses",
 			url: paths.dashboard.expenses.getHref(),
-			icon: IconFolder,
+			icon: IconCalendarDollar,
 		},
 		{
-			title: "Employees Management",
+			title: "Employees",
 			url: paths.dashboard.employees.getHref(),
 			icon: IconUsers,
 		},
@@ -55,24 +49,29 @@ const data = {
 			url: paths.dashboard.analytics.getHref(),
 			icon: IconChartBar,
 		},
-	],
-	navSecondary: [
 		{
 			title: "Settings",
-			url: "#",
+			url: paths.dashboard.analytics.getHref(),
 			icon: IconSettings,
 		},
-		{
-			title: "Get Help",
-			url: "#",
-			icon: IconHelp,
-		},
-		{
-			title: "Search",
-			url: "#",
-			icon: IconSearch,
-		},
 	],
+	// navSecondary: [
+	//     {
+	//         title: 'Settings',
+	//         url: '#',
+	//         icon: IconSettings,
+	//     },
+	//     {
+	//         title: 'Get Help',
+	//         url: '#',
+	//         icon: IconHelp,
+	//     },
+	//     {
+	//         title: 'Search',
+	//         url: '#',
+	//         icon: IconSearch,
+	//     },
+	// ],
 };
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
@@ -83,24 +82,20 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
 	return (
 		<Sidebar collapsible="offcanvas" {...props}>
 			<SidebarHeader>
-				<SidebarMenu>
-					<SidebarMenuItem>
-						<SidebarMenuButton
-							asChild
-							className="data-[slot=sidebar-menu-button]:p-1.5!"
-						>
-							{/* TODO: Replace with your logo and link */}
-							<div>
-								<IconInnerShadowTop className="size-5!" />
-								<span className="text-base font-semibold">Acme Inc.</span>
-							</div>
-						</SidebarMenuButton>
-					</SidebarMenuItem>
-				</SidebarMenu>
+				<Link href={"/dashboard"} className="flex items-center gap-3">
+					<Image
+						src="/images/logo.jpg"
+						height={50}
+						width={50}
+						alt={"7hr Logo"}
+						className="rounded-full overflow-hidden"
+					/>
+					<p className="text-xl font-semibold">7hrs Automobile</p>
+				</Link>
 			</SidebarHeader>
 			<SidebarContent>
 				<NavMain items={data.navMain} />
-				<NavSecondary items={data.navSecondary} className="mt-auto" />
+				{/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
 			</SidebarContent>
 			<SidebarFooter>
 				<NavUser user={user} />
