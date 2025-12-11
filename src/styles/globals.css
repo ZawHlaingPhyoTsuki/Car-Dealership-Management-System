@@ -137,8 +137,8 @@
 	--shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
 	--tracking-normal: 0em;
 
-	--normal-green: 0.80 0.18 145; 
-    --normal-red: 0.62 0.25 25;
+	--normal-green: 0.8 0.18 145;
+	--normal-red: 0.62 0.25 25;
 }
 
 .dark {
@@ -215,11 +215,11 @@
 	}
 }
 
-@layer utilities{
-	.text-green-normal{
-		color: oklch(var(--normal-green))
+@layer utilities {
+	.text-green-normal {
+		color: oklch(var(--normal-green));
 	}
-	.text-red-normal{
-		color: oklch(var(--normal-red))
+	.text-red-normal {
+		color: oklch(var(--normal-red));
 	}
 }
