@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronRight, type LucideIcon } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import {
 	Collapsible,
@@ -20,7 +20,7 @@ import {
 	SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 
-type NavItem = {
+export type NavItem = {
 	title: string;
 	url: string;
 	icon?: LucideIcon;
@@ -29,6 +29,11 @@ type NavItem = {
 
 export function NavMain({ items }: { items: NavItem[] }) {
 	const pathname = usePathname();
+	const router = useRouter();
+
+	const handleNavigation = (url: string) => {
+		router.push(url);
+	};
 
 	return (
 		<SidebarGroup>
@@ -48,11 +53,13 @@ export function NavMain({ items }: { items: NavItem[] }) {
 					if (!hasSub) {
 						return (
 							<SidebarMenuItem key={item.title}>
-								<SidebarMenuButton asChild isActive={isActiveParent}>
-									<a href={item.url}>
-										{item.icon && <item.icon />}
-										<span>{item.title}</span>
-									</a>
+								<SidebarMenuButton
+									isActive={isActiveParent}
+									onClick={() => handleNavigation(item.url)}
+									className="w-full text-left"
+								>
+									{item.icon && <item.icon />}
+									<span>{item.title}</span>
 								</SidebarMenuButton>
 							</SidebarMenuItem>
 						);
@@ -62,7 +69,7 @@ export function NavMain({ items }: { items: NavItem[] }) {
 						<Collapsible
 							key={item.title}
 							asChild
-							defaultOpen={isAnySubActive} // auto expand only when sub active
+							defaultOpen={isAnySubActive}
 							className="group/collapsible"
 						>
 							<SidebarMenuItem>
@@ -84,10 +91,13 @@ export function NavMain({ items }: { items: NavItem[] }) {
 
 											return (
 												<SidebarMenuSubItem key={sub.title}>
-													<SidebarMenuSubButton asChild isActive={isSubActive}>
-														<a href={sub.url}>
-															<span>{sub.title}</span>
-														</a>
+													<SidebarMenuSubButton
+														asChild
+														isActive={isSubActive}
+														onClick={() => handleNavigation(sub.url)}
+														className="w-full text-left"
+													>
+														<span>{sub.title}</span>
 													</SidebarMenuSubButton>
 												</SidebarMenuSubItem>
 											);

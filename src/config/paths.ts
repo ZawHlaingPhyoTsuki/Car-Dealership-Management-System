@@ -21,7 +21,9 @@ export const paths = {
 			getHref: () => "/dashboard/employees",
 		},
 		analytics: {
-			getHref: () => "/dashboard/analytics",
+			overview: {
+				getHref: () => "/dashboard/analytics/overview",
+			},
 			availableCars: {
 				getHref: () => "/dashboard/analytics/available-cars",
 			},

@@ -1,4 +1,3 @@
-import type { LucideIcon } from "lucide-react";
 import {
 	Car,
 	ChartColumn,
@@ -10,6 +9,7 @@ import {
 	Users,
 } from "lucide-react";
 import { paths } from "@/config/paths";
+import type { NavItem } from "./nav-main";
 
 export const navigationTitle = {
 	Dashboard: "Dashboard",
@@ -20,6 +20,7 @@ export const navigationTitle = {
 
 	// Analytics pages
 	Analytics: "Analytics",
+	AnalyticsOverview: "Overview",
 	AnalyticsAvailableCars: "Available Cars",
 	AnalyticsSoldCars: "Sold Cars",
 	AnalyticsSoldCars2: "Sold Cars 2",
@@ -32,19 +33,8 @@ export const navigationTitle = {
 	GetHelp: "Get Help",
 };
 
-type NavItem = {
-	title: string;
-	url: string;
-	icon: LucideIcon;
-};
-
 export const data: {
-	navMain: (NavItem & {
-		items?: {
-			title: string;
-			url: string;
-		}[];
-	})[];
+	navMain: NavItem[];
 	navSecondary: NavItem[];
 } = {
 	navMain: [
@@ -70,31 +60,35 @@ export const data: {
 		},
 		{
 			title: navigationTitle.Analytics,
-			url: paths.dashboard.analytics.getHref(),
+			url: "",
 			icon: ChartColumn,
 			items: [
 				{
-					title: "Available Cars",
+					title: navigationTitle.AnalyticsOverview,
+					url: paths.dashboard.analytics.overview.getHref(),
+				},
+				{
+					title: navigationTitle.AnalyticsAvailableCars,
 					url: paths.dashboard.analytics.availableCars.getHref(),
 				},
 				{
-					title: "Sold Cars",
+					title: navigationTitle.AnalyticsSoldCars,
 					url: paths.dashboard.analytics.soldCars.getHref(),
 				},
 				{
-					title: "Sold Cars (2)",
+					title: navigationTitle.AnalyticsSoldCars2,
 					url: paths.dashboard.analytics.soldCars2.getHref(),
 				},
 				{
-					title: "Car Costs",
+					title: navigationTitle.AnalyticsCarCosts,
 					url: paths.dashboard.analytics.carCosts.getHref(),
 				},
 				{
-					title: "Expense Categories",
+					title: navigationTitle.AnalyticsExpenseCategories,
 					url: paths.dashboard.analytics.expenseCategories.getHref(),
 				},
 				{
-					title: "Profit Summary",
+					title: navigationTitle.AnalyticsProfitSummary,
 					url: paths.dashboard.analytics.profitSummary.getHref(),
 				},
 			],

@@ -43,8 +43,8 @@ export function SiteHeader() {
 		// MAIN PAGES (lower priority)
 		// ------------------------
 		{
-			match: paths.dashboard.analytics.getHref(),
-			title: navigationTitle.Analytics,
+			match: paths.dashboard.analytics.overview.getHref(),
+			title: navigationTitle.AnalyticsOverview,
 		},
 		{
 			match: paths.dashboard.cars.getHref(),

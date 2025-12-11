@@ -62,7 +62,7 @@ const columns: ColumnDef<Expense>[] = [
 	{
 		id: "actions",
 		header: "Actions",
-		cell: ({ row }) => (
+		cell: () => (
 			<div className="flex gap-2">
 				<Ellipsis className="w-4 h-4" />
 			</div>
