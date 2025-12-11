@@ -16,7 +16,7 @@ export function ModeSwitcher() {
 		<Button
 			variant="ghost"
 			size="icon-sm"
-			className="rounded-full overflow-hidden cursor-pointer"
+			className="rounded-full overflow-hidden"
 			onClick={toggleTheme}
 			title="Toggle theme"
 		>
