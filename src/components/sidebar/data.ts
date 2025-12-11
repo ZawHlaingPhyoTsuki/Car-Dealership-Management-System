@@ -25,7 +25,10 @@ export const navigationTitle = {
 	AnalyticsSoldCars2: "Sold Cars 2",
 	AnalyticsCarCosts: "Car Costs",
 	AnalyticsExpenseCategories: "Expense Categories",
-	AnalyticsProfitSummary: "Profit Summary",
+	AnalyticsCarProfitSummary: "Car Profit Summary",
+	AnalyticsSharersProfit: "Sharers Profit",
+	AnalyticsSharersHistory: "Sharers History",
+	AnalyticsSharersTotal: "Sharers Total",
 
 	Account: "Account",
 	GetHelp: "Get Help",
@@ -74,20 +77,16 @@ export const data: {
 					url: paths.dashboard.analytics.soldCars.getHref(),
 				},
 				{
-					title: navigationTitle.AnalyticsSoldCars2,
-					url: paths.dashboard.analytics.soldCars2.getHref(),
-				},
-				{
-					title: navigationTitle.AnalyticsCarCosts,
-					url: paths.dashboard.analytics.carCosts.getHref(),
-				},
-				{
 					title: navigationTitle.AnalyticsExpenseCategories,
 					url: paths.dashboard.analytics.expenseCategories.getHref(),
 				},
 				{
-					title: navigationTitle.AnalyticsProfitSummary,
-					url: paths.dashboard.analytics.profitSummary.getHref(),
+					title: navigationTitle.AnalyticsCarProfitSummary,
+					url: paths.dashboard.analytics.carProfitSummary.getHref(),
+				},
+				{
+					title: navigationTitle.AnalyticsSharersTotal,
+					url: paths.dashboard.analytics.sharersTotal.getHref(),
 				},
 			],
 		},
@@ -115,24 +114,16 @@ export const titleMap = [
 		title: navigationTitle.AnalyticsAvailableCars,
 	},
 	{
-		match: paths.dashboard.analytics.soldCars2.getHref(),
-		title: navigationTitle.AnalyticsSoldCars2,
-	},
-	{
 		match: paths.dashboard.analytics.soldCars.getHref(),
 		title: navigationTitle.AnalyticsSoldCars,
-	},
-	{
-		match: paths.dashboard.analytics.carCosts.getHref(),
-		title: navigationTitle.AnalyticsCarCosts,
 	},
 	{
 		match: paths.dashboard.analytics.expenseCategories.getHref(),
 		title: navigationTitle.AnalyticsExpenseCategories,
 	},
 	{
-		match: paths.dashboard.analytics.profitSummary.getHref(),
-		title: navigationTitle.AnalyticsProfitSummary,
+		match: paths.dashboard.analytics.carProfitSummary.getHref(),
+		title: navigationTitle.AnalyticsCarProfitSummary,
 	},
 
 	// ------------------------

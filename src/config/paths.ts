@@ -30,17 +30,14 @@ export const paths = {
 			soldCars: {
 				getHref: () => "/dashboard/analytics/sold-cars",
 			},
-			soldCars2: {
-				getHref: () => "/dashboard/analytics/sold-cars2",
-			},
-			carCosts: {
-				getHref: () => "/dashboard/analytics/car-costs",
-			},
 			expenseCategories: {
 				getHref: () => "/dashboard/analytics/expense-categories",
 			},
-			profitSummary: {
-				getHref: () => "/dashboard/analytics/profit-summary",
+			carProfitSummary: {
+				getHref: () => "/dashboard/analytics/car-profit-summary",
+			},
+			sharersTotal: {
+				getHref: () => "/dashboard/analytics/sharers-total",
 			},
 		},
 		account: {

@@ -89,7 +89,7 @@ model CarShare {
   carId         String
   shareholderId String
 
-  percentage Int   // e.g. 40 means 40%
+  percentage Int   // e.g. 43 means 43%
   amount     Int?  // how much money they invested
 
   car         Car         @relation(fields: [carId], references: [id])
