@@ -10,28 +10,68 @@ import { ModeSwitcher } from "./mode-switcher";
 export function SiteHeader() {
 	const pathname = usePathname();
 
-	// Function to get the header title based on the current path
-	const getHeaderTitle = () => {
-		if (pathname === paths.dashboard.root.getHref()) {
-			return navigationTitle.Dashboard;
-		} else if (pathname.startsWith(paths.dashboard.cars.getHref())) {
-			return navigationTitle.CarsListing;
-		} else if (pathname.startsWith(paths.dashboard.expenses.getHref())) {
-			return navigationTitle.Expenses;
-		} else if (pathname.startsWith(paths.dashboard.employees.getHref())) {
-			return navigationTitle.Employees;
-		} else if (pathname.startsWith(paths.dashboard.analytics.getHref())) {
-			return navigationTitle.Analytics;
-		} else if (pathname.startsWith(paths.dashboard.newAccount.getHref())) {
-			return navigationTitle.AccountCreation;
-		} else if (pathname.startsWith(paths.dashboard.account.getHref())) {
-			return navigationTitle.Account;
-		} else if (pathname.startsWith(paths.dashboard.help.getHref())) {
-			return navigationTitle.GetHelp;
-		} else {
-			return navigationTitle.Dashboard; // Fallback title
-		}
-	};
+	const titleMap = [
+		// ------------------------
+		// ANALYTICS SUB-PAGES
+		// ------------------------
+		{
+			match: paths.dashboard.analytics.availableCars.getHref(),
+			title: navigationTitle.AnalyticsAvailableCars,
+		},
+		{
+			match: paths.dashboard.analytics.soldCars2.getHref(),
+			title: navigationTitle.AnalyticsSoldCars2,
+		},
+		{
+			match: paths.dashboard.analytics.soldCars.getHref(),
+			title: navigationTitle.AnalyticsSoldCars,
+		},
+		{
+			match: paths.dashboard.analytics.carCosts.getHref(),
+			title: navigationTitle.AnalyticsCarCosts,
+		},
+		{
+			match: paths.dashboard.analytics.expenseCategories.getHref(),
+			title: navigationTitle.AnalyticsExpenseCategories,
+		},
+		{
+			match: paths.dashboard.analytics.profitSummary.getHref(),
+			title: navigationTitle.AnalyticsProfitSummary,
+		},
+
+		// ------------------------
+		// MAIN PAGES (lower priority)
+		// ------------------------
+		{
+			match: paths.dashboard.analytics.getHref(),
+			title: navigationTitle.Analytics,
+		},
+		{
+			match: paths.dashboard.cars.getHref(),
+			title: navigationTitle.CarsListing,
+		},
+		{
+			match: paths.dashboard.expenses.getHref(),
+			title: navigationTitle.Expenses,
+		},
+		{
+			match: paths.dashboard.employees.getHref(),
+			title: navigationTitle.Employees,
+		},
+		{
+			match: paths.dashboard.newAccount.getHref(),
+			title: navigationTitle.AccountCreation,
+		},
+		{
+			match: paths.dashboard.account.getHref(),
+			title: navigationTitle.Account,
+		},
+		{ match: paths.dashboard.help.getHref(), title: navigationTitle.GetHelp },
+	];
+
+	const activeTitle =
+		titleMap.find((m) => pathname.startsWith(m.match))?.title ??
+		navigationTitle.Dashboard;
 
 	return (
 		<header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
@@ -41,7 +81,7 @@ export function SiteHeader() {
 					orientation="vertical"
 					className="mx-2 data-[orientation=vertical]:h-4"
 				/>
-				<h1 className="text-base font-medium">{getHeaderTitle()}</h1>
+				<h1 className="text-base font-medium">{activeTitle}</h1>
 				<div className="ml-auto flex items-center gap-2">
 					<ModeSwitcher />
 				</div>
