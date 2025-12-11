@@ -6,7 +6,6 @@ import {
 	getCoreRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-import { Ellipsis } from "lucide-react";
 import {
 	Table,
 	TableBody,
@@ -16,58 +15,37 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 
-type Expense = {
-	date: string;
-	employee: string;
-	amount: string;
+type AvailableCar = {
 	car: string;
-	category: string;
-	notes: string;
+	buyPrice: string;
+	daysInInventory: number;
+	addedAt: string;
+	estValue: string;
 };
 
-const data: Expense[] = [
+const data: AvailableCar[] = [
 	{
-		date: "2025-02-08",
-		employee: "Aung Ko",
-		amount: "1,000 THB",
-		car: "Toyota Vigo 2014",
-		category: "CLEANING_DETAILING",
-		notes: "Car wash",
+		car: "Toyota Yaris 2017",
+		buyPrice: "280,000 THB",
+		daysInInventory: 32,
+		addedAt: "2025-01-05",
+		estValue: "300,000 THB",
 	},
 	{
-		date: "2025-02-07",
-		employee: "Min Thu",
-		amount: "850 THB",
-		car: "-",
-		category: "OFFICE_SUPPLIES",
-		notes: "Printer ink",
-	},
-	{
-		date: "2025-02-06",
-		employee: "Sai Htet",
-		amount: "1,500 THB",
-		car: "Honda City 2018",
-		category: "TRANSPORT",
-		notes: "Auction transport fee",
+		car: "Mazda 2 2015",
+		buyPrice: "260,000 THB",
+		daysInInventory: 18,
+		addedAt: "2025-01-19",
+		estValue: "290,000 THB",
 	},
 ];
 
-const columns: ColumnDef<Expense>[] = [
-	{ accessorKey: "date", header: "Date" },
-	{ accessorKey: "employee", header: "Employee" },
-	{ accessorKey: "amount", header: "Amount" },
+const columns: ColumnDef<AvailableCar>[] = [
 	{ accessorKey: "car", header: "Car" },
-	{ accessorKey: "category", header: "Category" },
-	{ accessorKey: "notes", header: "Notes" },
-	{
-		id: "actions",
-		header: "Actions",
-		cell: () => (
-			<div className="flex gap-2">
-				<Ellipsis className="w-4 h-4" />
-			</div>
-		),
-	},
+	{ accessorKey: "buyPrice", header: "Buy Price" },
+	{ accessorKey: "daysInInventory", header: "Days in Inventory" },
+	{ accessorKey: "addedAt", header: "Added Date" },
+	{ accessorKey: "estValue", header: "Estimated Value" },
 ];
 
 export default function Page() {
@@ -79,7 +57,7 @@ export default function Page() {
 
 	return (
 		<div className="p-6">
-			<h1 className="text-xl font-semibold mb-4">Recent Expenses</h1>
+			<h1 className="text-xl font-semibold mb-4">Available Cars Analytics</h1>
 
 			<Table>
 				<TableHeader>

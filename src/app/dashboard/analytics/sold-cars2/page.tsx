@@ -6,7 +6,6 @@ import {
 	getCoreRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-import { Ellipsis } from "lucide-react";
 import {
 	Table,
 	TableBody,
@@ -16,58 +15,54 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 
-type Expense = {
-	date: string;
-	employee: string;
-	amount: string;
+type SoldCar = {
 	car: string;
-	category: string;
-	notes: string;
+	buyPrice: string;
+	salePrice: string;
+	profit: string;
+	ownerProfit: string;
+	sharerProfit: string;
+	soldDate: string;
 };
 
-const data: Expense[] = [
+const data: SoldCar[] = [
 	{
-		date: "2025-02-08",
-		employee: "Aung Ko",
-		amount: "1,000 THB",
 		car: "Toyota Vigo 2014",
-		category: "CLEANING_DETAILING",
-		notes: "Car wash",
+		buyPrice: "430,000 THB",
+		salePrice: "580,000 THB",
+		profit: "150,000 THB",
+		ownerProfit: "105,000 THB",
+		sharerProfit: "45,000 THB",
+		soldDate: "2025-02-08",
 	},
 	{
-		date: "2025-02-07",
-		employee: "Min Thu",
-		amount: "850 THB",
-		car: "-",
-		category: "OFFICE_SUPPLIES",
-		notes: "Printer ink",
-	},
-	{
-		date: "2025-02-06",
-		employee: "Sai Htet",
-		amount: "1,500 THB",
 		car: "Honda City 2018",
-		category: "TRANSPORT",
-		notes: "Auction transport fee",
+		buyPrice: "350,000 THB",
+		salePrice: "420,000 THB",
+		profit: "70,000 THB",
+		ownerProfit: "49,000 THB",
+		sharerProfit: "21,000 THB",
+		soldDate: "2025-02-07",
+	},
+	{
+		car: "Nissan March 2016",
+		buyPrice: "240,000 THB",
+		salePrice: "290,000 THB",
+		profit: "50,000 THB",
+		ownerProfit: "35,000 THB",
+		sharerProfit: "15,000 THB",
+		soldDate: "2025-02-06",
 	},
 ];
 
-const columns: ColumnDef<Expense>[] = [
-	{ accessorKey: "date", header: "Date" },
-	{ accessorKey: "employee", header: "Employee" },
-	{ accessorKey: "amount", header: "Amount" },
+const columns: ColumnDef<SoldCar>[] = [
 	{ accessorKey: "car", header: "Car" },
-	{ accessorKey: "category", header: "Category" },
-	{ accessorKey: "notes", header: "Notes" },
-	{
-		id: "actions",
-		header: "Actions",
-		cell: () => (
-			<div className="flex gap-2">
-				<Ellipsis className="w-4 h-4" />
-			</div>
-		),
-	},
+	{ accessorKey: "buyPrice", header: "Buy Price" },
+	{ accessorKey: "salePrice", header: "Sale Price" },
+	{ accessorKey: "profit", header: "Profit" },
+	{ accessorKey: "ownerProfit", header: "Owner Profit" },
+	{ accessorKey: "sharerProfit", header: "Sharer Profit" },
+	{ accessorKey: "soldDate", header: "Sold Date" },
 ];
 
 export default function Page() {
@@ -79,7 +74,7 @@ export default function Page() {
 
 	return (
 		<div className="p-6">
-			<h1 className="text-xl font-semibold mb-4">Recent Expenses</h1>
+			<h1 className="text-xl font-semibold mb-4">Sold Cars Analytics</h1>
 
 			<Table>
 				<TableHeader>
