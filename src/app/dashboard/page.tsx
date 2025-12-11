@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import DashboardCards from "@/components/dashboard/dashboard-cards";
+import { DataTable } from "@/components/sidebar/data-table";
+import data from "./data.json";
 
 export const metadata: Metadata = {
 	title: "Dashboard",
@@ -8,7 +11,8 @@ export const metadata: Metadata = {
 export default function DashboardPage() {
 	return (
 		<div>
-			<h1>DashboardPage</h1>
+			<DashboardCards />
+			<DataTable data={data} />
 		</div>
 	);
 }

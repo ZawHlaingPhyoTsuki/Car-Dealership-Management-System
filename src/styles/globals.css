@@ -136,6 +136,9 @@
 		0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
 	--shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
 	--tracking-normal: 0em;
+
+	--normal-green: 0.8 0.18 145;
+	--normal-red: 0.62 0.25 25;
 }
 
 .dark {
@@ -209,5 +212,14 @@
 	body {
 		@apply bg-background text-foreground;
 		letter-spacing: var(--tracking-normal);
+	}
+}
+
+@layer utilities {
+	.text-green-normal {
+		color: oklch(var(--normal-green));
+	}
+	.text-red-normal {
+		color: oklch(var(--normal-red));
 	}
 }
