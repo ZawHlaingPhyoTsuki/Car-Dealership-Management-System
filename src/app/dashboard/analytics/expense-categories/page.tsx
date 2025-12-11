@@ -6,7 +6,7 @@ import {
 	getCoreRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-import { Ellipsis } from "lucide-react";
+
 import {
 	Table,
 	TableBody,
@@ -16,58 +16,44 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 
-type Expense = {
-	date: string;
-	employee: string;
-	amount: string;
-	car: string;
+type ExpenseCategory = {
 	category: string;
-	notes: string;
+	total: string;
+	percentage: string;
 };
 
-const data: Expense[] = [
+const data: ExpenseCategory[] = [
 	{
-		date: "2025-02-08",
-		employee: "Aung Ko",
-		amount: "1,000 THB",
-		car: "Toyota Vigo 2014",
 		category: "CLEANING_DETAILING",
-		notes: "Car wash",
+		total: "12,200 THB",
+		percentage: "14%",
 	},
 	{
-		date: "2025-02-07",
-		employee: "Min Thu",
-		amount: "850 THB",
-		car: "-",
-		category: "OFFICE_SUPPLIES",
-		notes: "Printer ink",
-	},
-	{
-		date: "2025-02-06",
-		employee: "Sai Htet",
-		amount: "1,500 THB",
-		car: "Honda City 2018",
 		category: "TRANSPORT",
-		notes: "Auction transport fee",
+		total: "25,000 THB",
+		percentage: "30%",
+	},
+	{
+		category: "REPAIRS",
+		total: "34,000 THB",
+		percentage: "41%",
+	},
+	{
+		category: "OFFICE_SUPPLIES",
+		total: "4,800 THB",
+		percentage: "6%",
+	},
+	{
+		category: "OTHER",
+		total: "7,000 THB",
+		percentage: "9%",
 	},
 ];
 
-const columns: ColumnDef<Expense>[] = [
-	{ accessorKey: "date", header: "Date" },
-	{ accessorKey: "employee", header: "Employee" },
-	{ accessorKey: "amount", header: "Amount" },
-	{ accessorKey: "car", header: "Car" },
+const columns: ColumnDef<ExpenseCategory>[] = [
 	{ accessorKey: "category", header: "Category" },
-	{ accessorKey: "notes", header: "Notes" },
-	{
-		id: "actions",
-		header: "Actions",
-		cell: ({ row }) => (
-			<div className="flex gap-2">
-				<Ellipsis className="w-4 h-4" />
-			</div>
-		),
-	},
+	{ accessorKey: "total", header: "Total Amount" },
+	{ accessorKey: "percentage", header: "Percentage" },
 ];
 
 export default function Page() {
@@ -79,7 +65,7 @@ export default function Page() {
 
 	return (
 		<div className="p-6">
-			<h1 className="text-xl font-semibold mb-4">Recent Expenses</h1>
+			<h1 className="text-xl font-bold mb-4">Expense Category Summary</h1>
 
 			<Table>
 				<TableHeader>

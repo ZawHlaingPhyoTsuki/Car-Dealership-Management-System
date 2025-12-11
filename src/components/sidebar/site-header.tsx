@@ -4,8 +4,8 @@ import { usePathname } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { paths } from "@/config/paths";
-import { ModeSwitcher } from "./mode-switcher";
 import { navigationTitle } from "./data";
+import { ModeSwitcher } from "./mode-switcher";
 
 export function SiteHeader() {
 	const pathname = usePathname();
