@@ -87,9 +87,7 @@ export default function Page() {
 					))}
 				</TableBody>
 			</Table>
-			<p className="text-gray-600 mt-4">
-				Car: The name of the car.
-			</p>
+			<p className="text-gray-600 mt-4">Car: The name of the car.</p>
 			<p className="text-gray-600 mt-4">
 				Buy Price: The price at which the car was purchased.
 			</p>

@@ -167,7 +167,7 @@ export default async function CarsPage() {
 											</span>
 											<div className="flex items-center gap-1">
 												<span className="font-bold text-lg">
-													{formatPrice(car.price.toNumber())}
+													{formatPrice(parseFloat(car.price.toString()))}
 												</span>
 											</div>
 										</div>
@@ -197,9 +197,7 @@ export default async function CarsPage() {
 											<span className="text-sm font-medium text-muted-foreground">
 												Fuel
 											</span>
-											<span className="font-medium capitalize">
-												Petrol
-											</span>
+											<span className="font-medium capitalize">Petrol</span>
 										</div>
 									</div>
 								</div>

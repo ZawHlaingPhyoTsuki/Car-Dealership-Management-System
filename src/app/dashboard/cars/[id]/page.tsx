@@ -49,12 +49,6 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
 				orderBy: { date: "desc" },
 				take: 10,
 			},
-			soldBy: {
-				select: {
-					name: true,
-					email: true,
-				},
-			},
 		},
 	});
 
@@ -109,7 +103,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
 					<div className="flex items-center gap-4 mt-2">
 						<Badge variant={status.variant}>{status.label}</Badge>
 						<span className="text-2xl font-semibold text-primary">
-							{formatCurrency(car.price.toNumber())}
+							{formatCurrency(parseFloat(car.price.toString()))}
 						</span>
 					</div>
 				</div>
@@ -190,14 +184,14 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
 								<div className="flex justify-between items-center">
 									<span className="text-muted-foreground">Sale Price</span>
 									<span className="font-semibold">
-										{formatCurrency(car.price.toNumber())}
+										{formatCurrency(parseFloat(car.price.toString()))}
 									</span>
 								</div>
 								<div className="flex justify-between items-center">
 									<span className="text-muted-foreground">Purchase Price</span>
 									<span className="font-semibold">
 										{car.purchasePrice
-											? formatCurrency(car.purchasePrice.toNumber())
+											? formatCurrency(parseFloat(car.purchasePrice.toString()))
 											: "N/A"}
 									</span>
 								</div>
@@ -207,14 +201,12 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
 										<span className="text-muted-foreground">Gross Profit</span>
 										<span
 											className={`font-semibold ${
-												car.price.minus(car.purchasePrice).toNumber() > 0
+												(car.price - car.purchasePrice) > 0
 													? "text-green-600"
 													: "text-red-600"
 											}`}
 										>
-											{formatCurrency(
-												car.price.minus(car.purchasePrice).toNumber(),
-											)}
+											{formatCurrency(car.price - car.purchasePrice)}
 										</span>
 									</div>
 								)}
@@ -246,7 +238,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
 											Final Sale Price
 										</div>
 										<div className="font-medium">
-											{formatCurrency(car.salePrice.toNumber())}
+											{formatCurrency(car.salePrice)}
 										</div>
 									</div>
 								)}
@@ -326,10 +318,6 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
 													{car.soldAt ? formatDate(car.soldAt) : "Not sold"}
 												</dd>
 											</div>
-											<div className="flex justify-between">
-												<dt className="text-muted-foreground">Sold By</dt>
-												<dd>{car.soldBy?.name || "N/A"}</dd>
-											</div>
 										</dl>
 									</div>
 
@@ -384,13 +372,13 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
 													className="flex items-center justify-between p-3 border rounded-lg"
 												>
 													<div>
-														<div className="font-medium">{expense.reason}</div>
+														<div className="font-medium">{expense.notes}</div>
 														<div className="text-sm text-muted-foreground">
 															{expense.category} • {formatDate(expense.date)}
 														</div>
 													</div>
 													<div className="font-semibold">
-														{formatCurrency(expense.amount.toNumber())}
+														{formatCurrency(expense.amount)}
 													</div>
 												</div>
 											))}

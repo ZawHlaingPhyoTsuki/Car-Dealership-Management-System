@@ -3,6 +3,7 @@
 import { CldImage, CldUploadWidget } from "next-cloudinary";
 import { useState } from "react";
 import { toast } from "sonner";
+import { clientEnv } from "@/config/client-env";
 
 interface ImageUploaderProps {
 	onUploadSuccess: (publicId: string, secureUrl: string) => void;
@@ -20,7 +21,7 @@ export default function ImageUploader({
 	return (
 		<div className="space-y-4">
 			<CldUploadWidget
-				uploadPreset="car_dealership_unsigned" // Your preset name
+				uploadPreset={clientEnv.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
 				options={{
 					sources: ["local"],
 					multiple: maxFiles > 1,

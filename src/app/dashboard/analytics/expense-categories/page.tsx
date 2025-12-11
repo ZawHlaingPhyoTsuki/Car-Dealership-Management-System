@@ -67,7 +67,8 @@ export default function Page() {
 		<div className="p-6">
 			<h1 className="text-xl font-bold mb-4">Expense Category Summary</h1>
 			<p className="text-gray-600 mb-4">
-				This table shows the total amount and percentage of each expense category.
+				This table shows the total amount and percentage of each expense
+				category.
 			</p>
 
 			<Table>
@@ -98,14 +99,13 @@ export default function Page() {
 					))}
 				</TableBody>
 			</Table>
-			<p className="text-gray-600 mt-4">
-				Category: The type of expense.
-			</p>
+			<p className="text-gray-600 mt-4">Category: The type of expense.</p>
 			<p className="text-gray-600 mt-4">
 				Total Amount: The total amount of the expense.
 			</p>
 			<p className="text-gray-600 mt-4">
-				Percentage: The percentage of the total expenses that this expense represents.
+				Percentage: The percentage of the total expenses that this expense
+				represents.
 			</p>
 		</div>
 	);
