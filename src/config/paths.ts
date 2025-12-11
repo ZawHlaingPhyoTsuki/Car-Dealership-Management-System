@@ -21,13 +21,27 @@ export const paths = {
 			getHref: () => "/dashboard/employees",
 		},
 		analytics: {
-			getHref: () => "/dashboard/analytics",
+			overview: {
+				getHref: () => "/dashboard/analytics/overview",
+			},
+			availableCars: {
+				getHref: () => "/dashboard/analytics/available-cars",
+			},
+			soldCars: {
+				getHref: () => "/dashboard/analytics/sold-cars",
+			},
+			expenseCategories: {
+				getHref: () => "/dashboard/analytics/expense-categories",
+			},
+			carProfitSummary: {
+				getHref: () => "/dashboard/analytics/car-profit-summary",
+			},
+			sharersTotal: {
+				getHref: () => "/dashboard/analytics/sharers-total",
+			},
 		},
 		account: {
 			getHref: () => "/dashboard/account",
-		},
-		newAccount: {
-			getHref: () => "/dashboard/account/new",
 		},
 		help: {
 			getHref: () => "/dashboard/help",

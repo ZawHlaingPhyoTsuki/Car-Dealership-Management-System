@@ -45,7 +45,6 @@ async function main() {
 			id: admin.user.id,
 		},
 		data: {
-			role: "admin",
 			emailVerified: true,
 		},
 	});
