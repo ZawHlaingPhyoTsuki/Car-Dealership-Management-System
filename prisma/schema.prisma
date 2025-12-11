@@ -10,7 +10,7 @@ datasource db {
 model User {
   id            String    @id @default(uuid())
   name          String
-  email         String
+  email         String    @unique
   emailVerified Boolean   @default(false)
   image         String?
   createdAt     DateTime  @default(now())
@@ -18,22 +18,13 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  role       String?
-  banned     Boolean?  @default(false)
-  banReason  String?
-  banExpires DateTime?
-
-  expenses Expense[] @relation("CreatedExpenses")
-  soldCars Car[]     @relation("SoldCars")
-
-  @@unique([email])
   @@map("user")
 }
 
 model Session {
   id        String   @id
   expiresAt DateTime
-  token     String
+  token     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   ipAddress String?
@@ -41,9 +32,6 @@ model Session {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  impersonatedBy String?
-
-  @@unique([token])
   @@index([userId])
   @@map("session")
 }
@@ -80,35 +68,68 @@ model Verification {
   @@map("verification")
 }
 
+model Shareholder {
+  id        String      @id @default(uuid())
+  name      String
+  phone     String?
+  email     String?
+  notes     String?
+
+  // Relationship
+  shares    CarShare[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("shareholder")
+}
+
+model CarShare {
+  id            String  @id @default(uuid())
+  carId         String
+  shareholderId String
+
+  percentage Int   // e.g. 43 means 43%
+  amount     Int?  // how much money they invested
+
+  car         Car         @relation(fields: [carId], references: [id])
+  shareholder Shareholder @relation(fields: [shareholderId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([carId, shareholderId]) // same shareholder cannot have duplicate share for same car
+
+  @@map("car_share")
+}
+
 model Car {
   id            String    @id @default(uuid())
   name          String
-  price         Decimal   @db.Decimal(10, 2)
-  purchasePrice Decimal?  @db.Decimal(10, 2) // how much you paid the previous owner/trade-in/auction
+  price         Int
+  purchasePrice Int? // how much you paid the previous owner/trade-in/auction
   purchaseDate  DateTime? // when you bought/acquired it
 
   color       String?
   mileage     Int? // in miles/km
-  mileageUnit String    @default("miles") // or "km"
-  vin         String?   @unique
+  mileageUnit String  @default("km")
+  vin         String? @unique
   notes       String?
-  status      CarStatus @default(AVAILABLE)
-  addedAt     DateTime  @default(now())
-  soldAt      DateTime?
-  photos      Photo[]   @relation("CarPhotos")
+
+  status  CarStatus @default(AVAILABLE)
+  addedAt DateTime  @default(now())
+  soldAt  DateTime?
 
   // Optional buyer info (if you want to track in database, not just on paper)
   buyerName  String?
   buyerPhone String?
   buyerEmail String?
-  salePrice  Decimal? @db.Decimal(10, 2)
+  salePrice  Int?
   saleNotes  String? // Cash/Financing, etc.
 
-  // Optional seller tracking
-  soldBy   User?   @relation("SoldCars", fields: [soldById], references: [id])
-  soldById String?
-
   expenses Expense[]
+  photos   Photo[]   @relation("CarPhotos")
+  shares   CarShare[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -126,17 +147,17 @@ enum CarStatus {
 
 model Expense {
   id       String          @id @default(uuid())
-  amount   Decimal         @db.Decimal(10, 2)
-  reason   String
+  amount   Int
+  notes    String
   category ExpenseCategory @default(OTHER)
   date     DateTime        @default(now())
 
   // Optional: Link to car if this expense is car-specific
-  car   Car?    @relation(fields: [carId], references: [id])
   carId String?
+  car   Car?    @relation(fields: [carId], references: [id])
 
-  createdBy   User?   @relation("CreatedExpenses", fields: [createdById], references: [id])
-  createdById String?
+  paidTo   Employee? @relation("EmployeeExpenses", fields: [paidToId], references: [id])
+  paidToId String?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -167,8 +188,10 @@ model Employee {
   address String?
   notes   String?
 
-  salary    Decimal  @db.Decimal(10, 2)
+  salary    Int
   startDate DateTime @default(now())
+
+  expenses Expense[] @relation("EmployeeExpenses")
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -180,7 +203,7 @@ model Employee {
 model Photo {
   id       String  @id @default(uuid())
   url      String
-  publicId String? @unique // Cloudinary public_id for deletion
+  publicId String? @unique
   alt      String?
   order    Int     @default(0) // for sorting
 

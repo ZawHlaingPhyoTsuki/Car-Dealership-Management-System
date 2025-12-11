@@ -13,10 +13,6 @@ CREATE TABLE "user" (
     "image" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "role" TEXT,
-    "banned" BOOLEAN DEFAULT false,
-    "banReason" TEXT,
-    "banExpires" TIMESTAMP(3),
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
@@ -31,7 +27,6 @@ CREATE TABLE "session" (
     "ipAddress" TEXT,
     "userAgent" TEXT,
     "userId" TEXT NOT NULL,
-    "impersonatedBy" TEXT,
 
     CONSTRAINT "session_pkey" PRIMARY KEY ("id")
 );
@@ -71,12 +66,12 @@ CREATE TABLE "verification" (
 CREATE TABLE "car" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "price" DECIMAL(10,2) NOT NULL,
-    "purchasePrice" DECIMAL(10,2),
+    "price" INTEGER NOT NULL,
+    "purchasePrice" INTEGER,
     "purchaseDate" TIMESTAMP(3),
     "color" TEXT,
     "mileage" INTEGER,
-    "mileageUnit" TEXT NOT NULL DEFAULT 'miles',
+    "mileageUnit" TEXT NOT NULL DEFAULT 'km',
     "vin" TEXT,
     "notes" TEXT,
     "status" "CarStatus" NOT NULL DEFAULT 'AVAILABLE',
@@ -85,9 +80,8 @@ CREATE TABLE "car" (
     "buyerName" TEXT,
     "buyerPhone" TEXT,
     "buyerEmail" TEXT,
-    "salePrice" DECIMAL(10,2),
+    "salePrice" INTEGER,
     "saleNotes" TEXT,
-    "soldById" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
@@ -98,12 +92,12 @@ CREATE TABLE "car" (
 -- CreateTable
 CREATE TABLE "expense" (
     "id" TEXT NOT NULL,
-    "amount" DECIMAL(10,2) NOT NULL,
-    "reason" TEXT NOT NULL,
+    "amount" INTEGER NOT NULL,
+    "notes" TEXT NOT NULL,
     "category" "ExpenseCategory" NOT NULL DEFAULT 'OTHER',
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "carId" TEXT,
-    "createdById" TEXT,
+    "paidToId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
@@ -120,7 +114,7 @@ CREATE TABLE "employee" (
     "phone" TEXT,
     "address" TEXT,
     "notes" TEXT,
-    "salary" DECIMAL(10,2) NOT NULL,
+    "salary" INTEGER NOT NULL,
     "startDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -147,10 +141,10 @@ CREATE TABLE "photo" (
 CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
 -- CreateIndex
-CREATE INDEX "session_userId_idx" ON "session"("userId");
+CREATE UNIQUE INDEX "session_token_key" ON "session"("token");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "session_token_key" ON "session"("token");
+CREATE INDEX "session_userId_idx" ON "session"("userId");
 
 -- CreateIndex
 CREATE INDEX "account_userId_idx" ON "account"("userId");
@@ -174,13 +168,10 @@ ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId"
 ALTER TABLE "account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "car" ADD CONSTRAINT "car_soldById_fkey" FOREIGN KEY ("soldById") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "expense" ADD CONSTRAINT "expense_carId_fkey" FOREIGN KEY ("carId") REFERENCES "car"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "expense" ADD CONSTRAINT "expense_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "expense" ADD CONSTRAINT "expense_paidToId_fkey" FOREIGN KEY ("paidToId") REFERENCES "employee"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "photo" ADD CONSTRAINT "photo_carId_fkey" FOREIGN KEY ("carId") REFERENCES "car"("id") ON DELETE SET NULL ON UPDATE CASCADE;

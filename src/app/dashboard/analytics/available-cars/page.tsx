@@ -20,7 +20,7 @@ type AvailableCar = {
 	buyPrice: string;
 	daysInInventory: number;
 	addedAt: string;
-	estValue: string;
+	sellingPrice: string;
 };
 
 const data: AvailableCar[] = [
@@ -29,14 +29,14 @@ const data: AvailableCar[] = [
 		buyPrice: "280,000 THB",
 		daysInInventory: 32,
 		addedAt: "2025-01-05",
-		estValue: "300,000 THB",
+		sellingPrice: "300,000 THB",
 	},
 	{
 		car: "Mazda 2 2015",
 		buyPrice: "260,000 THB",
 		daysInInventory: 18,
 		addedAt: "2025-01-19",
-		estValue: "290,000 THB",
+		sellingPrice: "290,000 THB",
 	},
 ];
 
@@ -45,7 +45,7 @@ const columns: ColumnDef<AvailableCar>[] = [
 	{ accessorKey: "buyPrice", header: "Buy Price" },
 	{ accessorKey: "daysInInventory", header: "Days in Inventory" },
 	{ accessorKey: "addedAt", header: "Added Date" },
-	{ accessorKey: "estValue", header: "Estimated Value" },
+	{ accessorKey: "sellingPrice", header: "Selling Price" },
 ];
 
 export default function Page() {
@@ -87,6 +87,21 @@ export default function Page() {
 					))}
 				</TableBody>
 			</Table>
+			<p className="text-gray-600 mt-4">
+				Car: The name of the car.
+			</p>
+			<p className="text-gray-600 mt-4">
+				Buy Price: The price at which the car was purchased.
+			</p>
+			<p className="text-gray-600 mt-4">
+				Days in Inventory: The number of days the car has been in the inventory.
+			</p>
+			<p className="text-gray-600 mt-4">
+				Added Date: The date the car was added to the inventory.
+			</p>
+			<p className="text-gray-600 mt-4">
+				Selling Price: The estimated selling price of the car.
+			</p>
 		</div>
 	);
 }
