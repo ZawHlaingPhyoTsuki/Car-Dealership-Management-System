@@ -14,14 +14,14 @@ export function ModeSwitcher() {
 
 	return (
 		<Button
-			variant="outline"
-			size="icon"
+			variant="ghost"
+			size="icon-sm"
 			className="rounded-full overflow-hidden cursor-pointer"
 			onClick={toggleTheme}
 			title="Toggle theme"
 		>
-			<Sun className="dark:hidden" />
-			<Moon className="hidden dark:block" />
+			<Sun className="dark:hidden size-4" />
+			<Moon className="hidden dark:block size-4" />
 		</Button>
 	);
 }
