@@ -46,9 +46,6 @@ export const paths = {
 		account: {
 			getHref: () => "/dashboard/account",
 		},
-		newAccount: {
-			getHref: () => "/dashboard/account/new",
-		},
 		help: {
 			getHref: () => "/dashboard/help",
 		},

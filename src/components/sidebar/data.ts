@@ -5,7 +5,6 @@ import {
 	FileSpreadsheet,
 	LayoutDashboard,
 	Settings,
-	UserPlus,
 	Users,
 } from "lucide-react";
 import { paths } from "@/config/paths";
@@ -28,7 +27,6 @@ export const navigationTitle = {
 	AnalyticsExpenseCategories: "Expense Categories",
 	AnalyticsProfitSummary: "Profit Summary",
 
-	AccountCreation: "Account Creation",
 	Account: "Account",
 	GetHelp: "Get Help",
 };
@@ -93,11 +91,6 @@ export const data: {
 				},
 			],
 		},
-		{
-			title: navigationTitle.AccountCreation,
-			url: paths.dashboard.newAccount.getHref(),
-			icon: UserPlus,
-		},
 	],
 	navSecondary: [
 		{
@@ -112,3 +105,58 @@ export const data: {
 		},
 	],
 };
+
+export const titleMap = [
+	// ------------------------
+	// ANALYTICS SUB-PAGES
+	// ------------------------
+	{
+		match: paths.dashboard.analytics.availableCars.getHref(),
+		title: navigationTitle.AnalyticsAvailableCars,
+	},
+	{
+		match: paths.dashboard.analytics.soldCars2.getHref(),
+		title: navigationTitle.AnalyticsSoldCars2,
+	},
+	{
+		match: paths.dashboard.analytics.soldCars.getHref(),
+		title: navigationTitle.AnalyticsSoldCars,
+	},
+	{
+		match: paths.dashboard.analytics.carCosts.getHref(),
+		title: navigationTitle.AnalyticsCarCosts,
+	},
+	{
+		match: paths.dashboard.analytics.expenseCategories.getHref(),
+		title: navigationTitle.AnalyticsExpenseCategories,
+	},
+	{
+		match: paths.dashboard.analytics.profitSummary.getHref(),
+		title: navigationTitle.AnalyticsProfitSummary,
+	},
+
+	// ------------------------
+	// MAIN PAGES (lower priority)
+	// ------------------------
+	{
+		match: paths.dashboard.analytics.overview.getHref(),
+		title: navigationTitle.AnalyticsOverview,
+	},
+	{
+		match: paths.dashboard.cars.getHref(),
+		title: navigationTitle.CarsListing,
+	},
+	{
+		match: paths.dashboard.expenses.getHref(),
+		title: navigationTitle.Expenses,
+	},
+	{
+		match: paths.dashboard.employees.getHref(),
+		title: navigationTitle.Employees,
+	},
+	{
+		match: paths.dashboard.account.getHref(),
+		title: navigationTitle.Account,
+	},
+	{ match: paths.dashboard.help.getHref(), title: navigationTitle.GetHelp },
+];
