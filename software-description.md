@@ -1,161 +1,129 @@
-# **Car Dealership Management System — Project Description**
+# Car Dealership Management System — Software Description
 
-A simple, fast, and user-friendly **in-house management software** built with **Next.js Full-Stack, ShadCN UI, Prisma, PostgreSQL (Neon)**, and hosted on **Vercel**.
-The system allows the business owner and staff to efficiently manage cars, employees, expenses, and business performance analytics.
-There is **no public signup** — only the admin can create accounts.
+A simple and efficient **in-house management system** for a small car dealership.  
+The application is used by **one admin user only**, with no staff accounts or public access.
 
----
-
-# **1. User Roles**
-
-### **Admin**
-
-* Full access to all modules
-* Can create and manage staff accounts
-* Can manage cars, employees, expenses
-* Can view analytics dashboard
-
-### **Staff**
-
-* Can manage cars
-* Can manage expenses
-* Cannot view or edit employees
-* Cannot create users
-* Can access to analytics
+Built with **Next.js Full-Stack**, **ShadCN UI**, **Prisma**, and **PostgreSQL (Neon)**.  
+Hosted on **Vercel** for easy cloud deployment and maintenance-free operation.
 
 ---
 
-# **2. Core Modules**
+## 1. User Role
 
-## **A. Car Management** *(Accessible by both Admin & Staff)*
+### **Admin (Single User Only)**
+The system has **only one user** — the Admin.
 
-### **Car Data Includes**
+Admin can:
+- Manage all cars  
+- Manage all employees  
+- Manage all expenses  
+- Access analytics dashboard  
 
-* Car ID
-* Name/Model
-* Price
-* Added Date
-* Sold Date
-* Status — **Available** or **Sold**
-* Buyer
-* Seller
-* Optional fields (color, mileage, notes, etc.)
+There are **no staff accounts**, no roles, no invitations, no user creation.
 
-### **Features**
+## 2. Core Modules
 
-* **List All Cars**
+## A. Car Management
 
-  * Sorting by price, name, add date, sold date
-  * Filtering by status (Available / Sold)
-* **Add Car**
-* **Update Car**
+### Car Data Includes:
+- Car Name / Model  
+- Purchase Price  
+- Selling Price  
+- Added Date  
+- Sold Date  
+- Status (Available / Sold)  
+- Buyer Information  
+- Optional:
+  - Color  
+  - Mileage  
+  - Notes  
+  - VIN  
+  - Photos  
 
-  * Price
-  * Status (mark as sold, update sold date)
-  * General details
-* **Delete Car**
+### Features:
+- List all cars  
+- Filter by status  
+- Sort by price, dates, name  
+- Add new car  
+- Update car details  
+- Mark car as sold  
+- Delete car  
 
----
+## B. Employee Management
 
-## **B. Employee Management** *(Admin Only)*
+Employees are **real workers of the business**, NOT system users.
 
-### **Employee Data Includes**
+### Employee Data Includes:
+- Name  
+- Salary  
+- Start Date  
+- Phone / Address (optional)  
+- Notes (optional)
 
-* Employee ID
-* Full Name
-* Salary
-* Start Working Date
-* Optional details (phone, address, role, notes)
+### Features:
+- View employees  
+- Add employee  
+- Edit employee  
+- Delete employee  
 
-### **Features**
+## C. Expense Management
 
-* List all employees
-* Add new employee
-* Update employee information
-* Delete employee
+Track all business costs.
 
----
+### Expense Data Includes:
+- Amount  
+- Description / Notes  
+- Date  
+- Category (Repair, Transport, Utilities, etc.)  
+- Linked car (optional)  
+- Linked employee (optional)
 
-## **C. Expense Management** *(Accessible by both Admin & Staff)*
+### Features:
+- View expense list  
+- Add expense  
+- Edit expense  
+- Delete expense  
+- Filter by date and category  
 
-Used for tracking daily spending such as repairs, utilities, office items, and car-related costs.
+## D. Analytics Dashboard
 
-### **Expense Data Includes**
+Shows a simple overview of business performance.
 
-* Expense ID
-* Price/Amount
-* Reason / Description
-* Date
-* Employee (optional)
-* Category (optional)
+### Includes:
+- Total Revenue (Sold cars)  
+- Total Expenses  
+- Profit = Revenue – Expenses  
+- Select: Day / Month / Year  
+- Optional mini-charts for trends  
+- Optional tables:
+  - Monthly revenue  
+  - Monthly expenses  
 
-### **Features**
+## 3. System Characteristics
 
-* Add expense record
-* Update expense
-* Delete expense
-* View all expenses (with date and category filters)
+### Authentication
+- Only **one admin login**  
+- No user roles  
+- No staff accounts  
+- No registration screen  
 
----
+### Database
+- PostgreSQL (Neon)  
+- Prisma ORM  
 
-## **D. Analytics Dashboard** *(Admin Only — Optional for staff)*
+### Tech Stack
+| Layer | Technology |
+|--------|------------|
+| Frontend / Backend | Next.js App Router |
+| UI | ShadCN UI + Tailwind |
+| ORM | Prisma |
+| DB | PostgreSQL |
+| Hosting | Vercel |
+| Validation | Zod |
+| Forms | React Hook Form |
+| State | Zustand |
+| Tools | React Query |
 
-A simple useful summary of business performance.
-
-### **Features**
-
-* **Select time range (Day / Month / Year)**
-
-* **Total Revenue from Car Sales**
-  * Sum of prices of sold cars
-
-* **Total Expenses**
-  * Sum of all recorded expenses
-
-* **Profit Overview**
-  * Revenue – Expenses
-
-* **Basic charts or tables for quick understanding**
-
----
-
-# **3. User Management**
-
-### **Admin Creates Users**
-
-* No public signup
-* Admin account will be created first
-* Admin can create:
-
-  * Staff accounts
-  * Additional admin accounts (optional)
-
-User fields:
-
-* ID
-* Name
-* Email / Username
-* Password
-* Role (Admin | Staff)
-
----
-
-# **4. Technology Stack**
-
-* **Frontend & Backend:** Next.js App Router
-* **UI Framework:** ShadCN + TailwindCSS
-* **Database ORM:** Prisma
-* **Database:** PostgreSQL (Neon.io) – cloud hosted
-* **Hosting:** Vercel (Free Plan)
-* **Authentication:** Better Auth
-* **Other Libraries:** Zustand, Zod, React Hook Form
-
----
-
-# **5. Other Info**
-
-* Fast performance (Next.js server actions & cached queries)
-* Cloud-hosted database (Neon) ensures data safety
-* Very easy for the client to use
-* Good enough for **small teams**, low traffic, and internal usage
----
+## 4. Optional Future Features
+- PDF/Excel export for Cars and Expenses  
+- Profit-sharing module for business partners  
