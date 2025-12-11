@@ -112,6 +112,7 @@ Shows a simple overview of business performance.
 - Prisma ORM  
 
 ### Tech Stack
+
 | Layer | Technology |
 |--------|------------|
 | Frontend / Backend | Next.js App Router |

@@ -22,12 +22,8 @@ export const navigationTitle = {
 	AnalyticsOverview: "Overview",
 	AnalyticsAvailableCars: "Available Cars",
 	AnalyticsSoldCars: "Sold Cars",
-	AnalyticsSoldCars2: "Sold Cars 2",
-	AnalyticsCarCosts: "Car Costs",
 	AnalyticsExpenseCategories: "Expense Categories",
 	AnalyticsCarProfitSummary: "Car Profit Summary",
-	AnalyticsSharersProfit: "Sharers Profit",
-	AnalyticsSharersHistory: "Sharers History",
 	AnalyticsSharersTotal: "Sharers Total",
 
 	Account: "Account",
@@ -124,6 +120,10 @@ export const titleMap = [
 	{
 		match: paths.dashboard.analytics.carProfitSummary.getHref(),
 		title: navigationTitle.AnalyticsCarProfitSummary,
+	},
+	{
+		match: paths.dashboard.analytics.sharersTotal.getHref(),
+		title: navigationTitle.AnalyticsSharersTotal,
 	},
 
 	// ------------------------
