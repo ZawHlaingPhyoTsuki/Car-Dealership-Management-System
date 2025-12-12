@@ -9,6 +9,7 @@ import {
 	Mail,
 	Palette,
 	Phone,
+	Users,
 } from "lucide-react";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
@@ -24,7 +25,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CarImageGallery from "@/features/cars/components/car-image-gallery";
-import prisma from "@/lib/prisma";
+import { generateDummyCars } from "@/features/cars/data";
 
 interface CarDetailPageProps {
 	params: Promise<{
@@ -34,38 +35,23 @@ interface CarDetailPageProps {
 
 export default async function CarDetailPage({ params }: CarDetailPageProps) {
 	const { id } = await params;
-
-	const car = await prisma.car.findUnique({
-		where: {
-			id,
-			deletedAt: null,
-		},
-		include: {
-			photos: {
-				orderBy: { order: "asc" },
-			},
-			expenses: {
-				where: { deletedAt: null },
-				orderBy: { date: "desc" },
-				take: 10,
-			},
-		},
-	});
+	const cars = generateDummyCars();
+	const car = cars[3];
 
 	if (!car) {
 		notFound();
 	}
 
-	// Helper functions
-	const formatCurrency = (amount: number | null) => {
+	const formatCurrency = (amount: number | null | undefined) => {
 		if (!amount) return "N/A";
 		return new Intl.NumberFormat("en-US", {
 			style: "currency",
 			currency: "USD",
+			minimumFractionDigits: 0,
 		}).format(amount);
 	};
 
-	const formatDate = (date: Date | null) => {
+	const formatDate = (date: Date | null | undefined) => {
 		if (!date) return "N/A";
 		return format(date, "PPP");
 	};
@@ -86,6 +72,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
 			AVAILABLE: { label: "Available", variant: "success" },
 			SOLD: { label: "Sold", variant: "destructive" },
 			RESERVED: { label: "Reserved", variant: "secondary" },
+			PENDING: { label: "Pending", variant: "outline" },
 			IN_MAINTENANCE: { label: "In Maintenance", variant: "outline" },
 		};
 
@@ -93,9 +80,10 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
 	};
 
 	const status = getStatusBadge(car.status);
+	const isSold = car.status === "SOLD";
 
 	return (
-		<div className="container mx-auto px-4">
+		<div className="container mx-auto px-4 py-6">
 			{/* Header with actions */}
 			<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
 				<div>
@@ -103,18 +91,18 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
 					<div className="flex items-center gap-4 mt-2">
 						<Badge variant={status.variant}>{status.label}</Badge>
 						<span className="text-2xl font-semibold text-primary">
-							{formatCurrency(parseFloat(car.price.toString()))}
+							{formatCurrency(car.price)}
 						</span>
 					</div>
 				</div>
 				<div className="flex gap-2">
-					<Button variant="outline">
-						<Car className="w-4 h-4" />
-						View History
+					<Button variant="outline" disabled={isSold}>
+						<Car className="w-4 h-4 mr-2" />
+						{isSold ? "Already Sold" : "Mark as Sold"}
 					</Button>
-					<Button>
-						<DollarSign className="w-4 h-4" />
-						Mark as Sold
+					<Button variant="outline">
+						<Users className="w-4 h-4 mr-2" />
+						Add Shareholder
 					</Button>
 				</div>
 			</div>
@@ -184,38 +172,43 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
 								<div className="flex justify-between items-center">
 									<span className="text-muted-foreground">Sale Price</span>
 									<span className="font-semibold">
-										{formatCurrency(parseFloat(car.price.toString()))}
+										{formatCurrency(car.price)}
 									</span>
 								</div>
 								<div className="flex justify-between items-center">
 									<span className="text-muted-foreground">Purchase Price</span>
 									<span className="font-semibold">
 										{car.purchasePrice
-											? formatCurrency(parseFloat(car.purchasePrice.toString()))
+											? formatCurrency(car.purchasePrice)
 											: "N/A"}
 									</span>
 								</div>
-								<Separator />
+
 								{car.purchasePrice && (
-									<div className="flex justify-between items-center">
-										<span className="text-muted-foreground">Gross Profit</span>
-										<span
-											className={`font-semibold ${
-												(car.price - car.purchasePrice) > 0
-													? "text-green-600"
-													: "text-red-600"
-											}`}
-										>
-											{formatCurrency(car.price - car.purchasePrice)}
-										</span>
-									</div>
+									<>
+										<Separator />
+										<div className="flex justify-between items-center">
+											<span className="text-muted-foreground">
+												Gross Profit
+											</span>
+											<span
+												className={`font-semibold ${
+													car.price - car.purchasePrice > 0
+														? "text-green-600"
+														: "text-red-600"
+												}`}
+											>
+												{formatCurrency(car.price - car.purchasePrice)}
+											</span>
+										</div>
+									</>
 								)}
 							</div>
 						</CardContent>
 					</Card>
 
 					{/* Sale information (if sold) */}
-					{car.status === "SOLD" && (
+					{isSold && (
 						<Card>
 							<CardHeader>
 								<CardTitle>Sale Information</CardTitle>
@@ -318,6 +311,10 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
 													{car.soldAt ? formatDate(car.soldAt) : "Not sold"}
 												</dd>
 											</div>
+											<div className="flex justify-between">
+												<dt className="text-muted-foreground">Mileage Unit</dt>
+												<dd>{car.mileageUnit}</dd>
+											</div>
 										</dl>
 									</div>
 
@@ -382,6 +379,19 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
 													</div>
 												</div>
 											))}
+											<div className="pt-4 border-t mt-4">
+												<div className="flex justify-between items-center font-semibold">
+													<span>Total Expenses</span>
+													<span>
+														{formatCurrency(
+															car.expenses.reduce(
+																(sum, exp) => sum + exp.amount,
+																0,
+															),
+														)}
+													</span>
+												</div>
+											</div>
 										</div>
 									) : (
 										<div className="text-center py-8 text-muted-foreground">

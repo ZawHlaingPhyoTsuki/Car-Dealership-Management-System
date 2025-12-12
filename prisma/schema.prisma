@@ -69,14 +69,14 @@ model Verification {
 }
 
 model Shareholder {
-  id        String      @id @default(uuid())
-  name      String
-  phone     String?
-  email     String?
-  notes     String?
+  id    String  @id @default(uuid())
+  name  String
+  phone String?
+  email String?
+  notes String?
 
   // Relationship
-  shares    CarShare[]
+  shares CarShare[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -85,12 +85,12 @@ model Shareholder {
 }
 
 model CarShare {
-  id            String  @id @default(uuid())
+  id            String @id @default(uuid())
   carId         String
   shareholderId String
 
-  percentage Int   // e.g. 43 means 43%
-  amount     Int?  // how much money they invested
+  percentage Int // e.g. 43 means 43%
+  amount     Int? // how much money they invested
 
   car         Car         @relation(fields: [carId], references: [id])
   shareholder Shareholder @relation(fields: [shareholderId], references: [id])
@@ -99,7 +99,6 @@ model CarShare {
   updatedAt DateTime @updatedAt
 
   @@unique([carId, shareholderId]) // same shareholder cannot have duplicate share for same car
-
   @@map("car_share")
 }
 
@@ -128,7 +127,7 @@ model Car {
   saleNotes  String? // Cash/Financing, etc.
 
   expenses Expense[]
-  photos   Photo[]   @relation("CarPhotos")
+  photos   Photo[]    @relation("CarPhotos")
   shares   CarShare[]
 
   createdAt DateTime  @default(now())
@@ -180,13 +179,13 @@ enum ExpenseCategory {
 }
 
 model Employee {
-  id      String  @id @default(uuid())
-  name    String
-  email   String  @unique
-  role    String
-  phone   String?
-  address String?
-  notes   String?
+  id       String  @id @default(uuid())
+  name     String
+  email    String  @unique
+  position String
+  phone    String?
+  address  String?
+  // notes    String?
 
   salary    Int
   startDate DateTime @default(now())

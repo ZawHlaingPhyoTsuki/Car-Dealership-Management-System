@@ -1,19 +1,21 @@
+// app/dashboard/cars/page.tsx
 import {
 	CarFront,
 	CheckCircle,
 	Clock,
 	Eye,
 	PlusCircle,
+	Wrench,
 	XCircle,
 } from "lucide-react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import CarImage from "@/features/cars/components/car-image";
-import prisma from "@/lib/prisma";
+import { generateDummyCars } from "@/features/cars/data";
 
 export const metadata: Metadata = {
 	title: "Cars Inventory",
@@ -21,20 +23,7 @@ export const metadata: Metadata = {
 };
 
 export default async function CarsPage() {
-	const cars = await prisma.car.findMany({
-		include: {
-			photos: {
-				orderBy: { order: "asc" },
-				take: 1,
-			},
-		},
-		where: {
-			deletedAt: null,
-		},
-		orderBy: {
-			createdAt: "desc",
-		},
-	});
+	const cars = generateDummyCars(24);
 
 	const getStatusVariant = (status: string) => {
 		switch (status) {
@@ -43,9 +32,11 @@ export default async function CarsPage() {
 			case "SOLD":
 				return "destructive";
 			case "RESERVED":
-				return "secondary";
+				return "default";
 			case "PENDING":
-				return "outline";
+				return "default";
+			case "IN_MAINTENANCE":
+				return "default";
 			default:
 				return "default";
 		}
@@ -60,6 +51,8 @@ export default async function CarsPage() {
 			case "RESERVED":
 			case "PENDING":
 				return <Clock className="h-3 w-3" />;
+			case "IN_MAINTENANCE":
+				return <Wrench className="h-3 w-3" />;
 			default:
 				return null;
 		}
@@ -74,22 +67,34 @@ export default async function CarsPage() {
 		}).format(price);
 	};
 
+	const getYearFromCarName = (name: string) => {
+		const yearMatch = name.match(/\b(20\d{2})\b/);
+		return yearMatch ? yearMatch[1] : "2025";
+	};
+
 	return (
-		<div className="container mx-auto px-4">
+		<div className="container mx-auto px-4 py-6">
 			{/* HEADER */}
 			<div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
 				<div>
 					<h1 className="text-3xl font-bold tracking-tight">Car Inventory</h1>
 					<p className="text-muted-foreground mt-2">
-						Manage your vehicle collection
+						Manage your vehicle collection ({cars.length} cars)
 					</p>
 				</div>
-				<Button asChild className="gap-2">
-					<Link href="/dashboard/cars/new">
-						<PlusCircle className="h-4 w-4" />
-						Add New Car
-					</Link>
-				</Button>
+				<div className="flex gap-2">
+					<Button variant="outline" className="gap-2" asChild>
+						<Link href="/dashboard/cars">
+							<span className="text-xs">Using Dummy Data</span>
+						</Link>
+					</Button>
+					<Button asChild className="gap-2">
+						<Link href="/dashboard/cars/new">
+							<PlusCircle className="h-4 w-4" />
+							Add New Car
+						</Link>
+					</Button>
+				</div>
 			</div>
 
 			{/* MAIN CONTENT */}
@@ -116,12 +121,12 @@ export default async function CarsPage() {
 							{/* Image Container - Fixed Height */}
 							<div className="relative h-64 w-full overflow-hidden bg-muted">
 								{car.photos[0] ? (
-									<CarImage
-										publicId={car.photos[0].publicId || car.photos[0].url}
+									<Image
+										src={car.photos[0].url}
 										alt={car.name}
 										width={400}
 										height={256}
-										className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+										className="h-full w-full object-cover transition-transform duration-300"
 									/>
 								) : (
 									<div className="h-full w-full flex flex-col items-center justify-center bg-linear-to-br from-muted to-muted/50">
@@ -139,7 +144,17 @@ export default async function CarsPage() {
 										className="gap-1 shadow-sm"
 									>
 										{getStatusIcon(car.status)}
-										{car.status}
+										{car.status.replace("_", " ")}
+									</Badge>
+								</div>
+
+								{/* Year Badge */}
+								<div className="absolute top-3 right-3">
+									<Badge
+										variant="outline"
+										className="bg-background/80 backdrop-blur-sm"
+									>
+										{getYearFromCarName(car.name)}
 									</Badge>
 								</div>
 							</div>
@@ -150,12 +165,17 @@ export default async function CarsPage() {
 										<h3 className="font-semibold text-lg line-clamp-1 mb-1">
 											{car.name}
 										</h3>
-										{/* {car.year && (
-											<p className="text-sm text-muted-foreground">
-												{car.year}
-											</p>
-										)} */}
-										<p className="text-sm text-muted-foreground">2025</p>
+										<div className="flex items-center gap-2">
+											<div className="flex items-center gap-1">
+												<div
+													className="h-3 w-3 rounded-full border"
+													style={{ backgroundColor: car.color?.toLowerCase() }}
+												/>
+												<span className="text-sm text-muted-foreground">
+													{car.color || "N/A"}
+												</span>
+											</div>
+										</div>
 									</div>
 
 									<Separator />
@@ -167,7 +187,7 @@ export default async function CarsPage() {
 											</span>
 											<div className="flex items-center gap-1">
 												<span className="font-bold text-lg">
-													{formatPrice(parseFloat(car.price.toString()))}
+													{formatPrice(car.price)}
 												</span>
 											</div>
 										</div>
@@ -175,30 +195,13 @@ export default async function CarsPage() {
 										{car.mileage && (
 											<div className="flex items-center justify-between">
 												<span className="text-sm font-medium text-muted-foreground">
-													Mileage
+													VIN
 												</span>
 												<span className="font-medium">
-													{car.mileage.toLocaleString()} mi
+													{car.vin?.slice(-6)}
 												</span>
 											</div>
 										)}
-
-										{/* {car.fuelType && (
-											<div className="flex items-center justify-between">
-												<span className="text-sm font-medium text-muted-foreground">
-													Fuel
-												</span>
-												<span className="font-medium capitalize">
-													{car.fuelType.toLowerCase()}
-												</span>
-											</div>
-										)} */}
-										<div className="flex items-center justify-between">
-											<span className="text-sm font-medium text-muted-foreground">
-												Fuel
-											</span>
-											<span className="font-medium capitalize">Petrol</span>
-										</div>
 									</div>
 								</div>
 							</CardContent>
