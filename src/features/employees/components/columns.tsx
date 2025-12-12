@@ -37,26 +37,7 @@ export const columns: ColumnDef<EmployeeTableData>[] = [
 		header: "Name",
 		cell: ({ row }) => row.original.name,
 	},
-	{
-		accessorKey: "email",
-		header: "Email",
-		cell: ({ row }) => row.original.email,
-	},
-	{
-		accessorKey: "position",
-		header: "Position",
-		cell: ({ row }) => row.original.position,
-	},
-	{
-		accessorKey: "phone",
-		header: "Phone",
-		cell: ({ row }) => row.original.phone,
-	},
-	{
-		accessorKey: "address",
-		header: "Address",
-		cell: ({ row }) => row.original.address,
-	},
+
 	{
 		accessorKey: "salary",
 		header: "Salary",
@@ -70,6 +51,22 @@ export const columns: ColumnDef<EmployeeTableData>[] = [
 		},
 	},
 	{
+		accessorKey: "position",
+		header: "Position",
+		cell: ({ row }) => row.original.position,
+	},
+	{
+		accessorKey: "phone",
+		header: "Phone",
+		cell: ({ row }) => row.original.phone,
+	},
+
+	{
+		accessorKey: "email",
+		header: "Email",
+		cell: ({ row }) => row.original.email,
+	},
+	{
 		accessorKey: "startDate",
 		header: "Start Date",
 		cell: ({ row }) => {
@@ -78,7 +75,13 @@ export const columns: ColumnDef<EmployeeTableData>[] = [
 		},
 	},
 	{
+		accessorKey: "address",
+		header: "Address",
+		cell: ({ row }) => row.original.address,
+	},
+	{
 		id: "actions",
+		header: "Actions",
 		cell: ({ row }) => {
 			const employee = row.original;
 			const [editOpen, setEditOpen] = useState(false);
