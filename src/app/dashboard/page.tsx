@@ -1,29 +1,18 @@
-"use client";
+import type { Metadata } from "next";
+import DashboardCards from "@/components/dashboard/dashboard-cards";
+import { DataTable } from "@/components/sidebar/data-table";
+import data from "./data.json";
 
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
+export const metadata: Metadata = {
+	title: "Dashboard",
+	description: "Business dashboard",
+};
 
 export default function DashboardPage() {
-	const router = useRouter();
-
 	return (
 		<div>
-			<h1>DashboardPage</h1>
-			<Button
-				variant="destructive"
-				onClick={async () => {
-					await authClient.signOut({
-						fetchOptions: {
-							onSuccess: () => {
-								router.push("/login");
-							},
-						},
-					});
-				}}
-			>
-				Logout
-			</Button>
+			<DashboardCards />
+			<DataTable data={data} />
 		</div>
 	);
 }

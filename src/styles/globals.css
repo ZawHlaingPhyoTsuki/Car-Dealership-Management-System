@@ -29,6 +29,7 @@
 	--color-ring: var(--ring);
 	--color-input: var(--input);
 	--color-border: var(--border);
+	--color-destructive-foreground: var(--destructive-foreground);
 	--color-destructive: var(--destructive);
 	--color-accent-foreground: var(--accent-foreground);
 	--color-accent: var(--accent);
@@ -70,7 +71,9 @@
 	--shadow-blur: var(--shadow-blur);
 	--shadow-opacity: var(--shadow-opacity);
 	--color-shadow-color: var(--shadow-color);
-	--color-destructive-foreground: var(--destructive-foreground);
+
+	--color-success: var(--success);
+	--color-success-foreground: var(--success-foreground);
 }
 
 :root {
@@ -90,6 +93,7 @@
 	--accent: oklch(0.97 0 0);
 	--accent-foreground: oklch(0.205 0 0);
 	--destructive: oklch(0.577 0.245 27.325);
+	--destructive-foreground: oklch(1 0 0);
 	--border: oklch(0.922 0 0);
 	--input: oklch(0.922 0 0);
 	--ring: oklch(0.708 0 0);
@@ -106,7 +110,6 @@
 	--sidebar-accent-foreground: oklch(0.205 0 0);
 	--sidebar-border: oklch(0.922 0 0);
 	--sidebar-ring: oklch(0.708 0 0);
-	--destructive-foreground: oklch(1 0 0);
 	--font-sans:
 		ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
 		"Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
@@ -136,6 +139,12 @@
 		0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
 	--shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
 	--tracking-normal: 0em;
+
+	--normal-green: 0.8 0.18 145;
+	--normal-red: 0.62 0.25 25;
+
+	--success: oklch(0.71 0.2 150); /* Green color for success */
+	--success-foreground: oklch(0.985 0 0); /* White text for contrast */
 }
 
 .dark {
@@ -154,6 +163,7 @@
 	--accent: oklch(0.371 0 0);
 	--accent-foreground: oklch(0.985 0 0);
 	--destructive: oklch(0.704 0.191 22.216);
+	--destructive-foreground: oklch(0.985 0 0);
 	--border: oklch(0.275 0 0);
 	--input: oklch(0.325 0 0);
 	--ring: oklch(0.556 0 0);
@@ -170,7 +180,6 @@
 	--sidebar-accent-foreground: oklch(0.985 0 0);
 	--sidebar-border: oklch(0.275 0 0);
 	--sidebar-ring: oklch(0.439 0 0);
-	--destructive-foreground: oklch(0.985 0 0);
 	--radius: 0.625rem;
 	--font-sans:
 		ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
@@ -200,6 +209,9 @@
 	--shadow-xl:
 		0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
 	--shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+
+	--success: oklch(0.6 0.2 150); /* Darker green for dark mode */
+	--success-foreground: oklch(0.985 0 0);
 }
 
 @layer base {
@@ -209,5 +221,14 @@
 	body {
 		@apply bg-background text-foreground;
 		letter-spacing: var(--tracking-normal);
+	}
+}
+
+@layer utilities {
+	.text-green-normal {
+		color: oklch(var(--normal-green));
+	}
+	.text-red-normal {
+		color: oklch(var(--normal-red));
 	}
 }

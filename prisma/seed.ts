@@ -1,4 +1,3 @@
-import { env } from "@/config/env";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
@@ -12,8 +11,8 @@ async function main() {
 		await prisma.user.deleteMany();
 	}
 
-	const adminEmail = env.SEED_ADMIN_EMAIL || "admin@example.com";
-	const adminPassword = env.SEED_ADMIN_PASSWORD || "admin123!";
+	const adminEmail = process.env.SEED_ADMIN_EMAIL || "admin@example.com";
+	const adminPassword = process.env.SEED_ADMIN_PASSWORD || "admin123!";
 
 	// Check if admin already exists
 	const existingAdmin = await prisma.user.findUnique({
@@ -45,7 +44,6 @@ async function main() {
 			id: admin.user.id,
 		},
 		data: {
-			role: "admin",
 			emailVerified: true,
 		},
 	});

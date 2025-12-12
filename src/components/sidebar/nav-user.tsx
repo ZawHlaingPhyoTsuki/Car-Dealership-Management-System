@@ -1,13 +1,7 @@
 "use client";
 
-import {
-	IconCreditCard,
-	IconDotsVertical,
-	IconLogout,
-	IconNotification,
-	IconUserCircle,
-} from "@tabler/icons-react";
 import type { User } from "better-auth";
+import { Bell, CircleUserRound, EllipsisVertical, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -25,6 +19,7 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "@/components/ui/sidebar";
+import { paths } from "@/config/paths";
 import { authClient } from "@/lib/auth-client";
 import { getAvatarFallbackName } from "@/lib/utils";
 
@@ -59,7 +54,7 @@ export function NavUser({ user }: { user: User }) {
 									{user.email}
 								</span>
 							</div>
-							<IconDotsVertical className="ml-auto size-4" />
+							<EllipsisVertical className="ml-auto size-4" />
 						</SidebarMenuButton>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent
@@ -89,16 +84,14 @@ export function NavUser({ user }: { user: User }) {
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<DropdownMenuGroup>
-							<DropdownMenuItem>
-								<IconUserCircle />
+							<DropdownMenuItem
+								onClick={() => router.push(paths.dashboard.account.getHref())}
+							>
+								<CircleUserRound />
 								Account
 							</DropdownMenuItem>
 							<DropdownMenuItem>
-								<IconCreditCard />
-								Billing
-							</DropdownMenuItem>
-							<DropdownMenuItem>
-								<IconNotification />
+								<Bell />
 								Notifications
 							</DropdownMenuItem>
 						</DropdownMenuGroup>
@@ -108,13 +101,13 @@ export function NavUser({ user }: { user: User }) {
 								authClient.signOut({
 									fetchOptions: {
 										onSuccess: () => {
-											router.push("/login"); // redirect to login page
+											router.replace(paths.login.getHref());
 										},
 									},
 								})
 							}
 						>
-							<IconLogout />
+							<LogOut />
 							Log out
 						</DropdownMenuItem>
 					</DropdownMenuContent>
