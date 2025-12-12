@@ -219,9 +219,7 @@ export default function SharerLifetimeSummaryPage() {
 				</CardContent>
 			</Card>
 
-			<p className="text-gray-600 mt-4">
-				Sharer: The name of the sharer.
-			</p>
+			<p className="text-gray-600 mt-4">Sharer: The name of the sharer.</p>
 			<p className="text-gray-600 mt-4">
 				Total Earned: The total amount of money earned by the sharer.
 			</p>

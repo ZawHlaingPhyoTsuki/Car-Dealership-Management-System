@@ -63,6 +63,32 @@ CREATE TABLE "verification" (
 );
 
 -- CreateTable
+CREATE TABLE "shareholder" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "phone" TEXT,
+    "email" TEXT,
+    "notes" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "shareholder_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "car_share" (
+    "id" TEXT NOT NULL,
+    "carId" TEXT NOT NULL,
+    "shareholderId" TEXT NOT NULL,
+    "percentage" INTEGER NOT NULL,
+    "amount" INTEGER,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "car_share_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "car" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -153,6 +179,9 @@ CREATE INDEX "account_userId_idx" ON "account"("userId");
 CREATE INDEX "verification_identifier_idx" ON "verification"("identifier");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "car_share_carId_shareholderId_key" ON "car_share"("carId", "shareholderId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "car_vin_key" ON "car"("vin");
 
 -- CreateIndex
@@ -166,6 +195,12 @@ ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId"
 
 -- AddForeignKey
 ALTER TABLE "account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "car_share" ADD CONSTRAINT "car_share_carId_fkey" FOREIGN KEY ("carId") REFERENCES "car"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "car_share" ADD CONSTRAINT "car_share_shareholderId_fkey" FOREIGN KEY ("shareholderId") REFERENCES "shareholder"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "expense" ADD CONSTRAINT "expense_carId_fkey" FOREIGN KEY ("carId") REFERENCES "car"("id") ON DELETE SET NULL ON UPDATE CASCADE;
