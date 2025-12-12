@@ -1,5 +1,5 @@
 import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react";
-
+import { BanknoteArrowUp, CarFront, DollarSign } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
 	Card,
@@ -10,14 +10,18 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 
-function DashboardCards() {
+export default function DashboardCards() {
 	return (
-		<div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-3">
+		<div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-3">
 			<Card className="@container/card">
 				<CardHeader>
-					<CardDescription>Sale Cars List</CardDescription>
-					<CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl text-green-normal">
-						150
+					<CardDescription className="flex items-center gap-2">
+						<CarFront className="w-4 h-4" />
+						Car Sales
+					</CardDescription>
+
+					<CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl text-green-500">
+						30
 					</CardTitle>
 					<CardAction>
 						<Badge variant="outline">
@@ -28,57 +32,57 @@ function DashboardCards() {
 				</CardHeader>
 				<CardFooter className="flex-col items-start gap-1.5 text-sm">
 					<div className="line-clamp-1 flex gap-2 font-medium">
-						Selling this month <IconTrendingUp className="size-4" />
+						Selling up this month <IconTrendingUp className="size-4" />
 					</div>
 					<div className="text-muted-foreground">
-						Visitors for the last 6 months
+						More sales than last month
 					</div>
 				</CardFooter>
 			</Card>
 			<Card className="@container/card">
 				<CardHeader>
-					<CardDescription>Profit Overview</CardDescription>
-					<CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl text-green-normal">
-						1,23456.00K
+					<CardDescription className="flex items-center gap-2">
+						<DollarSign className="w-4 h-4" /> Profit Overview
+					</CardDescription>
+					<CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl text-green-500">
+						12345.5 <span className="text-xl text-muted-foreground">lakhs</span>
 					</CardTitle>
 					<CardAction>
 						<Badge variant="outline">
-							<IconTrendingDown />
+							<IconTrendingUp />
 							+20%
 						</Badge>
 					</CardAction>
 				</CardHeader>
 				<CardFooter className="flex-col items-start gap-1.5 text-sm">
 					<div className="line-clamp-1 flex gap-2 font-medium">
-						Down 20% this period <IconTrendingDown className="size-4" />
+						Up 20% this period <IconTrendingUp className="size-4" />
 					</div>
-					<div className="text-muted-foreground">
-						Acquisition needs attention
-					</div>
+					<div className="text-muted-foreground">Did a great job</div>
 				</CardFooter>
 			</Card>
 			<Card className="@container/card">
 				<CardHeader>
-					<CardDescription>Total Expenses</CardDescription>
-					<CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl text-red-normal">
-						45,678K
+					<CardDescription className="flex items-center gap-2">
+						<BanknoteArrowUp className="w-4 h-4" /> Total Expenses
+					</CardDescription>
+					<CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl text-green-500">
+						45.5 <span className="text-xl text-muted-foreground">lakhs</span>
 					</CardTitle>
 					<CardAction>
 						<Badge variant="outline">
-							<IconTrendingUp />
-							+12.5%
+							<IconTrendingDown />
+							-12.5%
 						</Badge>
 					</CardAction>
 				</CardHeader>
 				<CardFooter className="flex-col items-start gap-1.5 text-sm">
 					<div className="line-clamp-1 flex gap-2 font-medium">
-						Strong user retention <IconTrendingUp className="size-4" />
+						Good spending <IconTrendingDown className="size-4" />
 					</div>
-					<div className="text-muted-foreground">Engagement exceed targets</div>
+					<div className="text-muted-foreground">Less than earlier month</div>
 				</CardFooter>
 			</Card>
 		</div>
 	);
 }
-
-export default DashboardCards;
