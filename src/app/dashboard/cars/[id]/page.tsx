@@ -34,6 +34,7 @@ interface CarDetailPageProps {
 }
 
 export default async function CarDetailPage({ params }: CarDetailPageProps) {
+	// biome-ignore lint/correctness/noUnusedVariables: <will fix later>
 	const { id } = await params;
 	const cars = generateDummyCars();
 	const car = cars[3];

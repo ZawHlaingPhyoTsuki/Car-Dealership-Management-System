@@ -1,22 +1,32 @@
 "use client";
 
+import { IconDotsVertical, IconEdit, IconTrash } from "@tabler/icons-react";
 import type { ColumnDef } from "@tanstack/react-table";
-import * as z from "zod";
+import { useState } from "react";
+import type { Employee } from "@/app/generated/prisma/client";
+import { Button } from "@/components/ui/button";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { DeleteEmployeeDialog } from "./delete-employee-dialog";
+import EditEmployeeDialog from "./edit-employee-dialog";
 
-export const EmployeeSchema = z.object({
-	id: z.string(),
-	name: z.string(),
-	email: z.string(),
-	position: z.string(),
-	phone: z.string(),
-	address: z.string(),
-	salary: z.number(),
-	startDate: z.date(),
-});
+export type EmployeeTableData = Pick<
+	Employee,
+	| "id"
+	| "name"
+	| "email"
+	| "position"
+	| "phone"
+	| "address"
+	| "salary"
+	| "startDate"
+>;
 
-export type Employee = z.infer<typeof EmployeeSchema>;
-
-export const columns: ColumnDef<Employee>[] = [
+export const columns: ColumnDef<EmployeeTableData>[] = [
 	{
 		id: "index",
 		header: "No.",
@@ -65,6 +75,58 @@ export const columns: ColumnDef<Employee>[] = [
 		cell: ({ row }) => {
 			const date = row.original.startDate;
 			return date ? date.toLocaleDateString("en-US") : "N/A";
+		},
+	},
+	{
+		id: "actions",
+		cell: ({ row }) => {
+			const employee = row.original;
+			const [editOpen, setEditOpen] = useState(false);
+			const [deleteOpen, setDeleteOpen] = useState(false);
+
+			return (
+				<>
+					<EditEmployeeDialog
+						employee={employee}
+						open={editOpen}
+						onOpenChange={setEditOpen}
+					/>
+					<DeleteEmployeeDialog
+						employeeId={employee.id}
+						open={deleteOpen}
+						onOpenChange={setDeleteOpen}
+					/>
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button
+								variant="ghost"
+								className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+								size="icon"
+							>
+								<IconDotsVertical />
+								<span className="sr-only">Open menu</span>
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end" className="w-32">
+							<DropdownMenuItem
+								className="flex items-center gap-2 w-full"
+								onSelect={() => setEditOpen(true)}
+							>
+								<IconEdit className="h-4 w-4" />
+								Edit
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								variant="destructive"
+								className="flex items-center gap-2 w-full"
+								onSelect={() => setDeleteOpen(true)}
+							>
+								<IconTrash className="h-4 w-4" />
+								Delete
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+				</>
+			);
 		},
 	},
 ];

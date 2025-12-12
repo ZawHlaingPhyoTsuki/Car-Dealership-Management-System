@@ -1,25 +1,36 @@
+import {
+	dehydrate,
+	HydrationBoundary,
+	QueryClient,
+} from "@tanstack/react-query";
 import type { Metadata } from "next";
-import DataTable from "@/components/ui/data-table";
-import { columns } from "@/features/employees/components/columns";
-import { generateEmployees } from "@/features/employees/data";
+import ContentWrapper from "@/components/shared/content-wrapper";
+import { getEmployees } from "@/features/employees/actions/get-employees";
+import AddEmployeeDialog from "@/features/employees/components/add-employee-dialog";
+import { EmployeeTable } from "@/features/employees/components/employee-table";
 
 export const metadata: Metadata = {
 	title: "Employees",
 	description: "Business employees dashboard",
 };
 
-const data = generateEmployees(45); // Generate 45 employees
+export default async function EmployeePage() {
+	const queryClient = new QueryClient();
 
-export default function EmployeePage() {
+	await queryClient.prefetchQuery({
+		queryKey: ["employees"],
+		queryFn: getEmployees,
+	});
+
 	return (
-		<div className="p-6">
-			<div className="mb-8">
-				<h1 className="text-3xl font-bold">Employee Management</h1>
-				<p className="text-gray-600 mt-2">
-					Manage your dealership employees and their information
-				</p>
-			</div>
-			<DataTable columns={columns} data={data} />
-		</div>
+		<ContentWrapper
+			title="Employee Management"
+			description="Manage your dealership employees and their information"
+			addButton={<AddEmployeeDialog />}
+		>
+			<HydrationBoundary state={dehydrate(queryClient)}>
+				<EmployeeTable />
+			</HydrationBoundary>
+		</ContentWrapper>
 	);
 }
