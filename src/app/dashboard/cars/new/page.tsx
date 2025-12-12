@@ -1,35 +1,43 @@
-// app/dashboard/cars/new/page.tsx
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import {
-	ArrowLeft,
+	Calendar,
 	Camera,
 	Car,
 	DollarSign,
+	FileText,
 	Fuel,
 	Gauge,
 	Info,
 	Palette,
 	Plus,
+	Tag,
 	Upload,
 	X,
-	Calendar,
-	FileText,
-	Tag,
 } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardFooter,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
 	Field,
+	FieldError,
 	FieldGroup,
 	FieldLabel,
 	FieldSet,
-	FieldError,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
 	Select,
 	SelectContent,
@@ -37,18 +45,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-	CardFooter,
-} from "@/components/ui/card";
-import Image from "next/image";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function NewCarPage() {
 	const router = useRouter();
