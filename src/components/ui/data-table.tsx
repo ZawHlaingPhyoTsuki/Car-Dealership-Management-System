@@ -19,7 +19,6 @@ import {
 	type VisibilityState,
 } from "@tanstack/react-table";
 import { useState } from "react";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -38,75 +37,15 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 
-export const EmployeeSchema = z.object({
-	id: z.string(),
-	name: z.string(),
-	email: z.string(),
-	position: z.string(),
-	phone: z.string(),
-	address: z.string(),
-	salary: z.number(),
-	startDate: z.date(),
-});
+interface DataTableProps<TData, TValue> {
+	columns: ColumnDef<TData, TValue>[];
+	data: TData[];
+}
 
-const columns: ColumnDef<z.infer<typeof EmployeeSchema>>[] = [
-	{
-		id: "index",
-		header: "No.",
-		cell: ({ row }) => row.index + 1,
-	},
-	{
-		accessorKey: "name",
-		header: "Name",
-		cell: ({ row }) => row.original.name,
-	},
-	{
-		accessorKey: "email",
-		header: "Email",
-		cell: ({ row }) => row.original.email,
-	},
-	{
-		accessorKey: "position",
-		header: "Position",
-		cell: ({ row }) => row.original.position,
-	},
-	{
-		accessorKey: "phone",
-		header: "Phone",
-		cell: ({ row }) => row.original.phone,
-	},
-	{
-		accessorKey: "address",
-		header: "Address",
-		cell: ({ row }) => row.original.address,
-	},
-	{
-		accessorKey: "salary",
-		header: "Salary",
-		cell: ({ row }) => {
-			const salary = row.original.salary;
-			return new Intl.NumberFormat("en-US", {
-				style: "currency",
-				currency: "USD",
-				minimumFractionDigits: 0,
-			}).format(salary);
-		},
-	},
-	{
-		accessorKey: "startDate",
-		header: "Start Date",
-		cell: ({ row }) => {
-			const date = row.original.startDate;
-			return date ? date.toLocaleDateString("en-US") : "N/A";
-		},
-	},
-];
-
-export default function EmployeeDataTable({
+export default function DataTable<TData, TValue>({
+	columns,
 	data,
-}: {
-	data: z.infer<typeof EmployeeSchema>[];
-}) {
+}: DataTableProps<TData, TValue>) {
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [sorting, setSorting] = useState<SortingState>([]);
@@ -124,7 +63,7 @@ export default function EmployeeDataTable({
 			columnFilters,
 			pagination,
 		},
-		getRowId: (row) => row.id,
+		// getRowId: (row) => row.id,
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
