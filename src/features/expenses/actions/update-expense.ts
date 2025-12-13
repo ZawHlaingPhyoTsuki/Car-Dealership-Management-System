@@ -1,0 +1,63 @@
+"use server";
+
+import * as z from "zod";
+import { Prisma } from "@/app/generated/prisma/client";
+import prisma from "@/lib/prisma";
+import { UpdateExpenseSchema } from "../validation";
+
+export const updateExpense = async (
+	id: string,
+	data: z.infer<typeof UpdateExpenseSchema>,
+) => {
+	try {
+		const { date, amount, paidToId, carId, category, notes } =
+			UpdateExpenseSchema.parse(data);
+		return await prisma.expense.update({
+			where: {
+				id,
+			},
+			data: {
+				date,
+				amount,
+				paidToId,
+				carId,
+				category,
+				notes: notes ?? undefined,
+			},
+			select: {
+				id: true,
+				date: true,
+				amount: true,
+				category: true,
+				notes: true,
+				paidTo: {
+					select: {
+						id: true,
+						name: true,
+					},
+				},
+				car: {
+					select: {
+						id: true,
+						name: true,
+					},
+				},
+			},
+		});
+	} catch (error) {
+		console.error("Failed to update expense:", error);
+		// Re-throw validation errors with details
+		if (error instanceof z.ZodError) {
+			throw new Error(
+				`Validation failed: ${error.issues.map((e) => e.message).join(", ")}`,
+			);
+		}
+		if (error instanceof Prisma.PrismaClientKnownRequestError) {
+			if (error.code === "P2002") {
+				throw new Error("Expense already exists");
+			}
+		}
+		// Preserve database errors (e.g., unique constraint violations)
+		throw error;
+	}
+};

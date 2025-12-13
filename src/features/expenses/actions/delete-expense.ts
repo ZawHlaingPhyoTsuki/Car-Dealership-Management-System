@@ -1,0 +1,33 @@
+"use server";
+
+import prisma from "@/lib/prisma";
+
+export const deleteExpense = async (id: string) => {
+	return await prisma.expense.update({
+		where: {
+			id,
+		},
+		data: {
+			deletedAt: new Date(),
+		},
+		select: {
+			id: true,
+			date: true,
+			amount: true,
+			category: true,
+			notes: true,
+			paidTo: {
+				select: {
+					id: true,
+					name: true,
+				},
+			},
+			car: {
+				select: {
+					id: true,
+					name: true,
+				},
+			},
+		},
+	});
+};
