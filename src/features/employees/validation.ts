@@ -1,9 +1,12 @@
 import * as z from "zod";
 
 export const CreateEmployeeSchema = z.object({
-	name: z.string().min(3, "Name must be at least 3 characters long."),
+	name: z.string().trim().min(3, "Name must be at least 3 characters long."),
 	email: z.email("Invalid email address."),
-	position: z.string().min(3, "Position must be at least 3 characters long."),
+	position: z
+		.string()
+		.trim()
+		.min(3, "Position must be at least 3 characters long."),
 	phone: z
 		.string()
 		.min(10, "Phone number must be at least 10 characters long.")
@@ -12,7 +15,7 @@ export const CreateEmployeeSchema = z.object({
 		.string()
 		.min(3, "Address must be at least 3 characters long.")
 		.optional(),
-	salary: z.number().min(1, "Salary must be at least 1."),
+	salary: z.coerce.number().min(1, "Salary must be at least 1."),
 });
 
 export type CreateEmployeeValues = z.infer<typeof CreateEmployeeSchema>;

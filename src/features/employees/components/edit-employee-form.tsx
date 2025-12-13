@@ -49,8 +49,8 @@ export default function EditEmployeeForm({
 			id: employee.id,
 			data: {
 				...data,
-				phone: data.phone ?? null,
-				address: data.address ?? null,
+				phone: data.phone ?? undefined,
+				address: data.address ?? undefined,
 			},
 		});
 		onClose();
@@ -116,21 +116,6 @@ export default function EditEmployeeForm({
 						)}
 					/>
 
-					{/* Phone */}
-					<Controller
-						name="phone"
-						control={form.control}
-						render={({ field, fieldState }) => (
-							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="phone">Phone Number</FieldLabel>
-								<Input id="phone" placeholder="+1 (555) 123-4567" {...field} />
-								{fieldState.error && (
-									<FieldError>{fieldState.error.message}</FieldError>
-								)}
-							</Field>
-						)}
-					/>
-
 					{/* Salary */}
 					<Controller
 						name="salary"
@@ -158,6 +143,21 @@ export default function EditEmployeeForm({
 										<span className="text-gray-500">Ks</span>
 									</InputGroupAddon>
 								</InputGroup>
+								{fieldState.error && (
+									<FieldError>{fieldState.error.message}</FieldError>
+								)}
+							</Field>
+						)}
+					/>
+
+					{/* Phone */}
+					<Controller
+						name="phone"
+						control={form.control}
+						render={({ field, fieldState }) => (
+							<Field data-invalid={fieldState.invalid}>
+								<FieldLabel htmlFor="phone">Phone Number</FieldLabel>
+								<Input id="phone" placeholder="+1 (555) 123-4567" {...field} />
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>
 								)}

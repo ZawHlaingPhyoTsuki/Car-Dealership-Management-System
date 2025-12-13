@@ -10,18 +10,22 @@ export const updateEmployee = async (
 ) => {
 	try {
 		const { name, email, position, phone, address, salary } =
-			UpdateEmployeeSchema.parse(data);
+			UpdateEmployeeSchema.parse({
+				...data,
+				phone: data.phone ?? undefined,
+				address: data.address ?? undefined,
+			});
 		return await prisma.employee.update({
 			where: {
 				id,
 			},
 			data: {
-				...(name !== undefined ? { name } : {}),
-				...(email !== undefined ? { email } : {}),
-				...(position !== undefined ? { position } : {}),
-				...(phone !== undefined ? { phone } : {}),
-				...(address !== undefined ? { address } : {}),
-				...(salary !== undefined ? { salary } : {}),
+				name,
+				email,
+				position,
+				phone: phone ?? null,
+				address: address ?? null,
+				salary,
 			},
 			select: {
 				id: true,

@@ -87,52 +87,57 @@ export const columns: ColumnDef<EmployeeTableData>[] = [
 		header: "Actions",
 		cell: ({ row }) => {
 			const employee = row.original;
-			const [editOpen, setEditOpen] = useState(false);
-			const [deleteOpen, setDeleteOpen] = useState(false);
 
-			return (
-				<>
-					<EditEmployeeDialog
-						employee={employee}
-						open={editOpen}
-						onOpenChange={setEditOpen}
-					/>
-					<DeleteEmployeeDialog
-						employeeId={employee.id}
-						open={deleteOpen}
-						onOpenChange={setDeleteOpen}
-					/>
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button
-								variant="ghost"
-								className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-								size="icon"
-							>
-								<IconDotsVertical />
-								<span className="sr-only">Open menu</span>
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end" className="w-32">
-							<DropdownMenuItem
-								className="flex items-center gap-2 w-full"
-								onSelect={() => setEditOpen(true)}
-							>
-								<IconEdit className="h-4 w-4" />
-								Edit
-							</DropdownMenuItem>
-							<DropdownMenuItem
-								variant="destructive"
-								className="flex items-center gap-2 w-full"
-								onSelect={() => setDeleteOpen(true)}
-							>
-								<IconTrash className="h-4 w-4" />
-								Delete
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
-				</>
-			);
+			return <EmployeeActionsCell employee={employee} />;
 		},
 	},
 ];
+
+function EmployeeActionsCell({ employee }: { employee: EmployeeTableData }) {
+	const [editOpen, setEditOpen] = useState(false);
+	const [deleteOpen, setDeleteOpen] = useState(false);
+
+	return (
+		<>
+			<EditEmployeeDialog
+				employee={employee}
+				open={editOpen}
+				onOpenChange={setEditOpen}
+			/>
+			<DeleteEmployeeDialog
+				employeeId={employee.id}
+				open={deleteOpen}
+				onOpenChange={setDeleteOpen}
+			/>
+			<DropdownMenu>
+				<DropdownMenuTrigger asChild>
+					<Button
+						variant="ghost"
+						className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+						size="icon"
+					>
+						<IconDotsVertical />
+						<span className="sr-only">Open menu</span>
+					</Button>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent align="end" className="w-32">
+					<DropdownMenuItem
+						className="flex items-center gap-2 w-full"
+						onSelect={() => setEditOpen(true)}
+					>
+						<IconEdit className="h-4 w-4" />
+						Edit
+					</DropdownMenuItem>
+					<DropdownMenuItem
+						variant="destructive"
+						className="flex items-center gap-2 w-full"
+						onSelect={() => setDeleteOpen(true)}
+					>
+						<IconTrash className="h-4 w-4" />
+						Delete
+					</DropdownMenuItem>
+				</DropdownMenuContent>
+			</DropdownMenu>
+		</>
+	);
+}

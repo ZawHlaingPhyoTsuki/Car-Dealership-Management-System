@@ -36,6 +36,15 @@ function generateUniqueVINs(count: number): string[] {
 async function main() {
 	console.log("🌱 Starting database seeding...");
 
+	if (
+		process.env.NODE_ENV === "production" &&
+		process.env.ALLOW_PROD_SEED !== "true"
+	) {
+		throw new Error(
+			"Refusing to run seed in production without ALLOW_PROD_SEED=true",
+		);
+	}
+
 	// Clear existing seed data in non-production
 	if (process.env.NODE_ENV !== "production") {
 		console.log("🧹 Clearing existing seed data...");
@@ -205,7 +214,7 @@ async function main() {
 
 		return {
 			id: faker.string.uuid(),
-			name: `${carMakes[i % carMakes.length]} ${carModels[i % carModels.length]} ${faker.number.int({ min: 2015, max: 2024 })}`,
+			name: `${carMakes[i % carMakes.length]} ${carModels[i % carModels.length]} ${faker.number.int({ min: 2015, max: 2025 })}`,
 			price: faker.number.int({ min: 5000, max: 80000 }),
 			purchasePrice: faker.number.int({ min: 3000, max: 60000 }),
 			purchaseDate: purchaseDate,
