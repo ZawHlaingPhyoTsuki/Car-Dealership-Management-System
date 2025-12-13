@@ -18,9 +18,9 @@ export async function getCars() {
 						url: true,
 						alt: true,
 						order: true,
-					}
+					},
 				},
-			}
+			},
 		});
 		return cars;
 	} catch (error) {

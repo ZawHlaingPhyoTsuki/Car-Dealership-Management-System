@@ -17,7 +17,11 @@ import { Label } from "@/components/ui/label";
 import type { Car } from "@/features/cars/actions/get-cars";
 import DeleteCarDialog from "@/features/cars/components/delete-car-dialog";
 import EditCarDialog from "@/features/cars/components/edit-car-dialog";
-import { companyProfitAndPercentageCalculator, formatInLakhsCrores, shareholderProfitAndPercentageCalculator } from "@/lib/utils";
+import {
+	companyProfitAndPercentageCalculator,
+	formatInLakhsCrores,
+	shareholderProfitAndPercentageCalculator,
+} from "@/lib/utils";
 
 export const columns: ColumnDef<Car>[] = [
 	{
@@ -81,7 +85,8 @@ export const columns: ColumnDef<Car>[] = [
 		cell: ({ row }) => {
 			const price = row.original.price;
 			const percentage = row.original.shareholderPercentage || 0;
-			const { companyProfit, companyPercentage } = companyProfitAndPercentageCalculator(price, percentage);
+			const { companyProfit, companyPercentage } =
+				companyProfitAndPercentageCalculator(price, percentage);
 			return (
 				<Label className="text-emerald-500">
 					<span className="text-lg text-green-500">{companyPercentage}%</span> (
@@ -96,11 +101,14 @@ export const columns: ColumnDef<Car>[] = [
 		cell: ({ row }) => {
 			const price = row.original.price;
 			const percentage = row.original.shareholderPercentage || 0;
-			const { shareholderProfit, shareholderPercentage } = shareholderProfitAndPercentageCalculator(price, percentage);
+			const { shareholderProfit, shareholderPercentage } =
+				shareholderProfitAndPercentageCalculator(price, percentage);
 			return (
 				<Label className="text-amber-600">
-					<span className="text-lg text-amber-500">{shareholderPercentage}%</span> (
-					{formatInLakhsCrores(shareholderProfit)})
+					<span className="text-lg text-amber-500">
+						{shareholderPercentage}%
+					</span>{" "}
+					({formatInLakhsCrores(shareholderProfit)})
 				</Label>
 			);
 		},
@@ -113,7 +121,11 @@ export const columns: ColumnDef<Car>[] = [
 				row.getValue("investmentAmount"),
 			);
 			if (!investmentAmount) return "-";
-			return <div className="text-blue-600">{formatInLakhsCrores(investmentAmount)}</div>;
+			return (
+				<div className="text-blue-600">
+					{formatInLakhsCrores(investmentAmount)}
+				</div>
+			);
 		},
 	},
 	{

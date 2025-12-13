@@ -12,10 +12,10 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { formatInLakhsCrores } from "@/lib/utils";
 import type { Car } from "../actions/get-cars";
 import DeleteCarDialog from "./delete-car-dialog";
 import EditCarDialog from "./edit-car-dialog";
-import { formatInLakhsCrores } from "@/lib/utils";
 
 export const columns: ColumnDef<Car>[] = [
 	{
