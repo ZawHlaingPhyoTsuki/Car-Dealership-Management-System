@@ -1,0 +1,20 @@
+"use server";
+
+import type * as z from "zod";
+import prisma from "@/lib/prisma";
+import { CreateCarSchema } from "../validation";
+
+export const createCar = async (data: z.infer<typeof CreateCarSchema>) => {
+	try {
+		const validatedData = CreateCarSchema.parse(data);
+
+		const car = await prisma.car.create({
+			data: validatedData,
+		});
+
+		return car;
+	} catch (error) {
+		console.error("Failed to create car:", error);
+		throw error;
+	}
+};

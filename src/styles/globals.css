@@ -69,6 +69,8 @@
 	--shadow-blur: var(--shadow-blur);
 	--shadow-opacity: var(--shadow-opacity);
 	--color-shadow-color: var(--shadow-color);
+	--color-warning: var(--warning);
+	--color-warning-foreground: var(--warning-foreground);
 
 	--color-success: var(--success);
 	--color-success-foreground: var(--success-foreground);
@@ -144,6 +146,8 @@
 
 	--success: oklch(0.71 0.2 150); /* Green color for success */
 	--success-foreground: oklch(0.985 0 0); /* White text for contrast */
+	--warning: oklch(76.388% 0.14672 72.03); /* Orange color for warning */
+	--warning-foreground: oklch(0.985 0 0); /* White text for contrast */
 }
 
 .dark {
@@ -209,6 +213,8 @@
 
 	--success: oklch(0.6 0.2 150); /* Darker green for dark mode */
 	--success-foreground: oklch(0.985 0 0);
+	--warning: oklch(54.966% 0.13494 55.699); /* Darker orange for dark mode */
+	--warning-foreground: oklch(0.985 0 0);
 }
 
 @layer base {

@@ -75,8 +75,7 @@ model Shareholder {
   email String?
   notes String?
 
-  // Relationship
-  shares CarShare[]
+  cars Car[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -84,51 +83,25 @@ model Shareholder {
   @@map("shareholder")
 }
 
-model CarShare {
-  id            String @id @default(uuid())
-  carId         String
-  shareholderId String
-
-  percentage Int // e.g. 43 means 43%
-  amount     Int? // how much money they invested
-
-  car         Car         @relation(fields: [carId], references: [id])
-  shareholder Shareholder @relation(fields: [shareholderId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([carId, shareholderId]) // same shareholder cannot have duplicate share for same car
-  @@map("car_share")
-}
-
 model Car {
   id            String    @id @default(uuid())
   name          String
   price         Int
-  purchasePrice Int? // how much you paid the previous owner/trade-in/auction
-  purchaseDate  DateTime? // when you bought/acquired it
+  color         String?
+  licenseNumber String?   @unique
+  notes         String?
+  status        CarStatus @default(AVAILABLE)
 
-  color       String?
-  mileage     Int? // in miles/km
-  mileageUnit String  @default("km")
-  vin         String? @unique
-  notes       String?
+  paidMethod PaidMethod?
+  soldAt     DateTime?
+  paidAmount Int?
 
-  status  CarStatus @default(AVAILABLE)
-  addedAt DateTime  @default(now())
-  soldAt  DateTime?
-
-  // Optional buyer info (if you want to track in database, not just on paper)
-  buyerName  String?
-  buyerPhone String?
-  buyerEmail String?
-  salePrice  Int?
-  saleNotes  String? // Cash/Financing, etc.
-
-  expenses Expense[]
-  photos   Photo[]    @relation("CarPhotos")
-  shares   CarShare[]
+  expenses              Expense[]
+  photos                Photo[]      @relation("CarPhotos")
+  shareholderId         String?
+  shareholder           Shareholder? @relation(fields: [shareholderId], references: [id])
+  shareholderPercentage Int?
+  investmentAmount      Int?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -142,6 +115,11 @@ enum CarStatus {
   IN_MAINTENANCE
   RESERVED
   SOLD
+}
+
+enum PaidMethod {
+  CASH
+  SCAN
 }
 
 model Expense {

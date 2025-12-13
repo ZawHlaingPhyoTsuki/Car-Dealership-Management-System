@@ -217,9 +217,6 @@ export const generateDummyCars = (count: number = 20): DummyCar[] => {
 			buyerName: isSold ? faker.person.fullName() : null,
 			buyerPhone: isSold ? faker.phone.number() : null,
 			buyerEmail: isSold ? faker.internet.email() : null,
-			salePrice: isSold
-				? price - faker.number.int({ min: 1000, max: 5000 })
-				: null,
 			saleNotes: isSold ? faker.lorem.sentence() : null,
 			photos: [
 				{

@@ -3,6 +3,7 @@ import {
 	ChartColumn,
 	CircleQuestionMark,
 	FileSpreadsheet,
+	HandCoins,
 	LayoutDashboard,
 	Settings,
 	Users,
@@ -14,6 +15,7 @@ export const navigationTitle = {
 	Dashboard: "Dashboard",
 
 	CarsListing: "Cars Listing",
+	CarSharersManagement: "Car Sharers Management",
 	Expenses: "Expenses",
 	Employees: "Employees",
 
@@ -44,6 +46,11 @@ export const data: {
 			title: navigationTitle.CarsListing,
 			url: paths.dashboard.cars.getHref(),
 			icon: Car,
+		},
+		{
+			title: navigationTitle.CarSharersManagement,
+			url: paths.dashboard.carSharers.getHref(),
+			icon: HandCoins,
 		},
 		{
 			title: navigationTitle.Expenses,
@@ -136,6 +143,10 @@ export const titleMap = [
 	{
 		match: paths.dashboard.cars.getHref(),
 		title: navigationTitle.CarsListing,
+	},
+	{
+		match: paths.dashboard.carSharers.getHref(),
+		title: navigationTitle.CarSharersManagement,
 	},
 	{
 		match: paths.dashboard.expenses.getHref(),
