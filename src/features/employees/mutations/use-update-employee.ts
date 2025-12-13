@@ -23,8 +23,10 @@ export const useUpdateEmployee = () => {
 			});
 			toast.success("Employee updated successfully");
 		},
-		onError: () => {
-			toast.error("Failed to update employee");
+		onError: (error) => {
+			toast.error(
+				error instanceof Error ? error.message : "Failed to update employee",
+			);
 		},
 	});
 };

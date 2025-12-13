@@ -1,5 +1,6 @@
 "use server";
 
+import * as z from "zod";
 import type { Prisma } from "@/app/generated/prisma/client";
 import prisma from "@/lib/prisma";
 import { CreateEmployeeSchema } from "../validation";
@@ -12,6 +13,11 @@ export const createEmployee = async (data: Prisma.EmployeeCreateInput) => {
 		});
 	} catch (error) {
 		console.error("Failed to create employee:", error);
-		throw new Error("Failed to create employee");
+		// Re-throw validation errors with details
+		if (error instanceof z.ZodError) {
+			throw error;
+		}
+		// Preserve database errors (e.g., unique constraint violations)
+		throw error;
 	}
 };
