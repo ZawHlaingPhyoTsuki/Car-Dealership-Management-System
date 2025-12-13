@@ -14,15 +14,18 @@ export default function ContentWrapper({
 	addButton,
 }: ContentWrapperProps) {
 	return (
-		<div className="px-6 ">
-			<div className="flex items-center justify-between mb-8">
+		<div className="px-6 flex h-full flex-col">
+			<div className="mb-8 flex items-center justify-between">
 				<div>
 					<h1 className="text-3xl font-bold">{title}</h1>
-					<p className="text-gray-600 mt-2">{description}</p>
+					{description ? (
+						<p className="mt-2 text-gray-600">{description}</p>
+					) : null}
 				</div>
 				{addButton}
 			</div>
-			{children}
+
+			<div className="flex-1">{children}</div>
 		</div>
 	);
 }

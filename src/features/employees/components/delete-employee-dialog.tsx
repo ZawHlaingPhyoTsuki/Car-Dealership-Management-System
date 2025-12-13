@@ -1,3 +1,5 @@
+"use client";
+
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -29,16 +31,23 @@ export function DeleteEmployeeDialog({
 				<AlertDialogHeader>
 					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
 					<AlertDialogDescription>
-						This action cannot be undone. This will permanently delete your
-						account and remove your data from our servers.
+						This action cannot be undone. This will permanently delete this
+						employee record.
 					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
 					<AlertDialogCancel>Cancel</AlertDialogCancel>
 					<AlertDialogAction
-						onClick={() => deleteEmployeeMutation.mutateAsync(employeeId)}
+						className="bg-destructive text-white hover:bg-destructive/90"
+						disabled={deleteEmployeeMutation.isPending}
+						onClick={async (e) => {
+							// Prevent auto-close until the mutation succeeds (Radix default behavior).
+							e.preventDefault();
+							await deleteEmployeeMutation.mutateAsync(employeeId);
+							onOpenChange(false);
+						}}
 					>
-						Continue
+						{deleteEmployeeMutation.isPending ? "Deleting..." : "Delete"}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>

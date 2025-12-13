@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
 	Field,
@@ -19,21 +18,8 @@ import {
 } from "@/components/ui/input-group";
 import { Textarea } from "@/components/ui/textarea";
 import { useUpdateEmployee } from "../mutations/use-update-employee";
+import { UpdateEmployeeSchema, type UpdateEmployeeValues } from "../validation";
 import type { EmployeeTableData } from "./columns";
-
-export const UpdateEmployeeSchema = z.object({
-	name: z.string().min(3, "Name must be at least 3 characters."),
-	email: z.email("Invalid email address."),
-	position: z.string().min(3, "Position is required."),
-	salary: z.number().min(1, "Salary must be at least 1."),
-	phone: z.string().min(10, "Phone must be at least 10 characters.").optional(),
-	address: z
-		.string()
-		.min(3, "Address must be at least 3 characters.")
-		.optional(),
-});
-
-type UpdateEmployeeValues = z.infer<typeof UpdateEmployeeSchema>;
 
 interface EditEmployeeFormProps {
 	onClose: () => void;
@@ -58,10 +44,14 @@ export default function EditEmployeeForm({
 		},
 	});
 
-	const onSubmit = (data: UpdateEmployeeValues) => {
-		updateEmployeeMutation.mutateAsync({
+	const onSubmit = async (data: UpdateEmployeeValues) => {
+		await updateEmployeeMutation.mutateAsync({
 			id: employee.id,
-			data,
+			data: {
+				...data,
+				phone: data.phone ?? null,
+				address: data.address ?? null,
+			},
 		});
 		onClose();
 	};
@@ -153,16 +143,16 @@ export default function EditEmployeeForm({
 										id="salary"
 										type="number"
 										step="1"
-										min="0"
+										min="1"
 										placeholder="50000"
 										required
 										{...field}
 										onChange={(e) => {
 											const value = e.target.value;
-											const num = value === "" ? null : Number(value);
-											field.onChange(num);
+											const num = value === "" ? undefined : Number(value);
+											field.onChange(Number.isFinite(num) ? num : undefined);
 										}}
-										value={field.value || ""}
+										value={field.value ?? ""}
 									/>
 									<InputGroupAddon>
 										<span className="text-gray-500">Ks</span>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import type { Prisma } from "@/app/generated/prisma/client";
 import { updateEmployee } from "../actions/update-employee";
 import { getEmployeesQueryOptions } from "../queries/get-employees";
@@ -20,10 +21,10 @@ export const useUpdateEmployee = () => {
 			queryClient.invalidateQueries({
 				queryKey: getEmployeesQueryOptions.queryKey,
 			});
+			toast.success("Employee updated successfully");
 		},
 		onError: () => {
-			console.error("Failed to update employee");
-			// You can show toast here
+			toast.error("Failed to update employee");
 		},
 	});
 };

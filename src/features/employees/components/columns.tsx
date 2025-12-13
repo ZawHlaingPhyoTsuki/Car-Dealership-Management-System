@@ -4,6 +4,7 @@ import { IconDotsVertical, IconEdit, IconTrash } from "@tabler/icons-react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
 import type { Employee } from "@/app/generated/prisma/client";
+import { DataTableColumnHeader } from "@/components/shared/data-table-column-header";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -11,6 +12,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { salaryFormatter } from "@/lib/utils";
 import { DeleteEmployeeDialog } from "./delete-employee-dialog";
 import EditEmployeeDialog from "./edit-employee-dialog";
 
@@ -28,7 +30,7 @@ export type EmployeeTableData = Pick<
 
 export const columns: ColumnDef<EmployeeTableData>[] = [
 	{
-		id: "index",
+		id: "no.",
 		header: "No.",
 		cell: ({ row }) => row.index + 1,
 	},
@@ -40,14 +42,12 @@ export const columns: ColumnDef<EmployeeTableData>[] = [
 
 	{
 		accessorKey: "salary",
-		header: "Salary",
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Salary" />
+		),
 		cell: ({ row }) => {
 			const salary = row.original.salary;
-			return new Intl.NumberFormat("en-US", {
-				style: "currency",
-				currency: "USD",
-				minimumFractionDigits: 0,
-			}).format(salary);
+			return salaryFormatter.format(salary);
 		},
 	},
 	{
@@ -60,7 +60,6 @@ export const columns: ColumnDef<EmployeeTableData>[] = [
 		header: "Phone",
 		cell: ({ row }) => row.original.phone,
 	},
-
 	{
 		accessorKey: "email",
 		header: "Email",
@@ -68,10 +67,14 @@ export const columns: ColumnDef<EmployeeTableData>[] = [
 	},
 	{
 		accessorKey: "startDate",
-		header: "Start Date",
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Start Date" />
+		),
 		cell: ({ row }) => {
 			const date = row.original.startDate;
-			return date ? date.toLocaleDateString("en-US") : "N/A";
+			if (!date) return "N/A";
+			const d = typeof date === "string" ? new Date(date) : date;
+			return Number.isNaN(d.getTime()) ? "N/A" : d.toLocaleDateString("en-US");
 		},
 	},
 	{

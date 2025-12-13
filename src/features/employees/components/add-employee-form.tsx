@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
 	Field,
@@ -19,23 +18,7 @@ import {
 } from "@/components/ui/input-group";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateEmployee } from "../mutations/use-create-employee";
-
-export const CreateEmployeeSchema = z.object({
-	name: z.string().min(3, "Name must be at least 3 characters long."),
-	email: z.email("Invalid email address."),
-	position: z.string().min(3, "Position must be at least 3 characters long."),
-	phone: z
-		.string()
-		.min(10, "Phone number must be at least 10 characters long.")
-		.optional(),
-	address: z
-		.string()
-		.min(3, "Address must be at least 3 characters long.")
-		.optional(),
-	salary: z.number().min(1, "Salary must be at least 1."),
-});
-
-type CreateEmployeeValues = z.infer<typeof CreateEmployeeSchema>;
+import { CreateEmployeeSchema, type CreateEmployeeValues } from "../validation";
 
 interface AddEmployeeFormProps {
 	onClose: () => void;
@@ -52,7 +35,7 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 			position: "",
 			phone: undefined,
 			address: undefined,
-			salary: 0,
+			salary: undefined,
 		},
 	});
 
@@ -142,16 +125,15 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 										id="salary"
 										type="number"
 										step="1"
-										min="0"
+										min="1"
 										placeholder="50000"
 										required
 										{...field}
 										onChange={(e) => {
 											const value = e.target.value;
-											const num = value === "" ? null : Number(value);
-											field.onChange(num);
+											field.onChange(value === "" ? undefined : Number(value));
 										}}
-										value={field.value || ""}
+										value={field.value ?? ""}
 									/>
 									<InputGroupAddon>
 										<span className="text-gray-500">Ks</span>

@@ -1,6 +1,10 @@
 // seed.ts
 import { faker } from "@faker-js/faker";
-import { CarStatus, ExpenseCategory } from "@/app/generated/prisma/client";
+import {
+	type CarShare,
+	CarStatus,
+	ExpenseCategory,
+} from "@/app/generated/prisma/client";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
@@ -312,8 +316,7 @@ async function main() {
 
 	// ==================== CAR SHARES ====================
 	console.log("🤝 Creating car shares...");
-	// biome-ignore lint/suspicious/noExplicitAny: <any>
-	const carSharesData: any[] = [];
+	const carSharesData: CarShare[] = [];
 	const uniqueCombos = new Set<string>();
 
 	// Create shares for cars (2-5 shareholders per car)
