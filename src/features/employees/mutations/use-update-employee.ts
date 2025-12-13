@@ -2,9 +2,10 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { Prisma } from "@/app/generated/prisma/client";
+import type z from "zod";
 import { updateEmployee } from "../actions/update-employee";
 import { getEmployeesQueryOptions } from "../queries/get-employees";
+import type { UpdateEmployeeSchema } from "../validation";
 
 export const useUpdateEmployee = () => {
 	const queryClient = useQueryClient();
@@ -15,7 +16,7 @@ export const useUpdateEmployee = () => {
 			data,
 		}: {
 			id: string;
-			data: Prisma.EmployeeUpdateInput;
+			data: z.infer<typeof UpdateEmployeeSchema>;
 		}) => updateEmployee(id, data),
 		onSuccess: () => {
 			queryClient.invalidateQueries({

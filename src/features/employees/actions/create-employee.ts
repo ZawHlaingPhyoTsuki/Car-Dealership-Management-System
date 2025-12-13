@@ -1,11 +1,10 @@
 "use server";
 
 import * as z from "zod";
-import type { Prisma } from "@/app/generated/prisma/client";
 import prisma from "@/lib/prisma";
 import { CreateEmployeeSchema } from "../validation";
 
-export const createEmployee = async (data: Prisma.EmployeeCreateInput) => {
+export const createEmployee = async (data: z.infer<typeof CreateEmployeeSchema>) => {
 	try {
 		const validatedData = CreateEmployeeSchema.parse(data);
 		return await prisma.employee.create({

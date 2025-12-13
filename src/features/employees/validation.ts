@@ -15,7 +15,7 @@ export const CreateEmployeeSchema = z.object({
 		.string()
 		.min(3, "Address must be at least 3 characters long.")
 		.optional(),
-	salary: z.coerce.number().min(1, "Salary must be at least 1."),
+	salary: z.number().min(1, "Salary must be at least 1."),
 });
 
 export type CreateEmployeeValues = z.infer<typeof CreateEmployeeSchema>;

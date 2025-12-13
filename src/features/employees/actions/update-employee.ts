@@ -7,14 +7,14 @@ import { UpdateEmployeeSchema } from "../validation";
 
 export const updateEmployee = async (
 	id: string,
-	data: Prisma.EmployeeUpdateInput,
+	data: z.infer<typeof UpdateEmployeeSchema>,
 ) => {
 	try {
 		const { name, email, position, phone, address, salary } =
 			UpdateEmployeeSchema.parse({
 				...data,
-				phone: data.phone ?? undefined,
-				address: data.address ?? undefined,
+				// phone: data.phone ?? undefined,
+				// address: data.address ?? undefined,
 			});
 		return await prisma.employee.update({
 			where: {
