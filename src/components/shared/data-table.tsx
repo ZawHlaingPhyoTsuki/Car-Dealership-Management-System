@@ -1,26 +1,30 @@
 "use client";
 
 import {
+	IconChevronDown,
 	IconChevronLeft,
 	IconChevronRight,
 	IconChevronsLeft,
 	IconChevronsRight,
+	IconLayoutColumns,
 } from "@tabler/icons-react";
 import {
 	type ColumnDef,
-	type ColumnFiltersState,
 	flexRender,
 	getCoreRowModel,
 	getFilteredRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
-	type SortingState,
 	useReactTable,
-	type VisibilityState,
 } from "@tanstack/react-table";
-import { useState } from "react";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
+import {
+	DropdownMenu,
+	DropdownMenuCheckboxItem,
+	DropdownMenuContent,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
 	Select,
@@ -37,102 +41,41 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { useDataTable } from "@/hooks/use-data-table";
 
-export const EmployeeSchema = z.object({
-	id: z.string(),
-	name: z.string(),
-	email: z.string(),
-	position: z.string(),
-	phone: z.string(),
-	address: z.string(),
-	salary: z.number(),
-	startDate: z.date(),
-});
+interface DataTableProps<TData, TValue> {
+	columns: ColumnDef<TData, TValue>[];
+	data: TData[];
+}
 
-const columns: ColumnDef<z.infer<typeof EmployeeSchema>>[] = [
-	{
-		id: "index",
-		header: "No.",
-		cell: ({ row }) => row.index + 1,
-	},
-	{
-		accessorKey: "name",
-		header: "Name",
-		cell: ({ row }) => row.original.name,
-	},
-	{
-		accessorKey: "email",
-		header: "Email",
-		cell: ({ row }) => row.original.email,
-	},
-	{
-		accessorKey: "position",
-		header: "Position",
-		cell: ({ row }) => row.original.position,
-	},
-	{
-		accessorKey: "phone",
-		header: "Phone",
-		cell: ({ row }) => row.original.phone,
-	},
-	{
-		accessorKey: "address",
-		header: "Address",
-		cell: ({ row }) => row.original.address,
-	},
-	{
-		accessorKey: "salary",
-		header: "Salary",
-		cell: ({ row }) => {
-			const salary = row.original.salary;
-			return new Intl.NumberFormat("en-US", {
-				style: "currency",
-				currency: "USD",
-				minimumFractionDigits: 0,
-			}).format(salary);
-		},
-	},
-	{
-		accessorKey: "startDate",
-		header: "Start Date",
-		cell: ({ row }) => {
-			const date = row.original.startDate;
-			return date ? date.toLocaleDateString("en-US") : "N/A";
-		},
-	},
-];
-
-export default function EmployeeDataTable({
+export default function DataTable<TData, TValue>({
+	columns,
 	data,
-}: {
-	data: z.infer<typeof EmployeeSchema>[];
-}) {
-	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-	const [sorting, setSorting] = useState<SortingState>([]);
-	const [pagination, setPagination] = useState({
-		pageIndex: 0,
-		pageSize: 10,
+}: DataTableProps<TData, TValue>) {
+	const tableState = useDataTable<TData, TValue>({
+		data,
+		columns,
+		initialPageSize: 10,
 	});
 
 	const table = useReactTable({
 		data,
 		columns,
 		state: {
-			sorting,
-			columnVisibility,
-			columnFilters,
-			pagination,
+			sorting: tableState.sorting,
+			columnVisibility: tableState.columnVisibility,
+			columnFilters: tableState.columnFilters,
+			pagination: tableState.pagination,
 		},
-		getRowId: (row) => row.id,
+		// getRowId: (row) => row.id,
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
-		onSortingChange: setSorting,
-		onColumnVisibilityChange: setColumnVisibility,
-		onColumnFiltersChange: setColumnFilters,
-		onPaginationChange: setPagination,
+		onSortingChange: tableState.setSorting,
+		onColumnVisibilityChange: tableState.setColumnVisibility,
+		onColumnFiltersChange: tableState.setColumnFilters,
+		onPaginationChange: tableState.setPagination,
 	});
 
 	// Calculate showing text correctly
@@ -144,9 +87,49 @@ export default function EmployeeDataTable({
 
 	return (
 		<div className="w-full flex-col justify-start gap-6 mt-6">
+			<div className="flex items-center py-4">
+				<Input
+					placeholder="Filter name..."
+					value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+					onChange={(event) =>
+						table.getColumn("name")?.setFilterValue(event.target.value)
+					}
+					className="max-w-sm"
+				/>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button variant="outline" className="ml-auto">
+							<IconLayoutColumns />
+							<span className="hidden lg:inline">Customize Columns</span>
+							<span className="lg:hidden">Columns</span>
+							<IconChevronDown />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="end">
+						{table
+							.getAllColumns()
+							.filter((column) => column.getCanHide())
+							.map((column) => {
+								return (
+									<DropdownMenuCheckboxItem
+										key={column.id}
+										className="capitalize"
+										checked={column.getIsVisible()}
+										onCheckedChange={(value) =>
+											column.toggleVisibility(!!value)
+										}
+									>
+										{column.id}
+									</DropdownMenuCheckboxItem>
+								);
+							})}
+					</DropdownMenuContent>
+				</DropdownMenu>
+			</div>
+
 			<div className="overflow-hidden rounded-lg border">
 				<Table>
-					<TableHeader>
+					<TableHeader className="bg-muted sticky top-0 z-10">
 						{table.getHeaderGroups().map((headerGroup) => (
 							<TableRow key={headerGroup.id}>
 								{headerGroup.headers.map((header) => {
@@ -194,12 +177,16 @@ export default function EmployeeDataTable({
 					</TableBody>
 				</Table>
 			</div>
+			{/* <DataTablePagination table={table} /> */}
 			<div className="flex items-center justify-between mt-4">
-				{/* Fixed showing text - shows rows, not columns */}
+				{/* Left */}
 				<div className="text-sm text-gray-500">
 					Showing {startRow} to {endRow} of {totalRows} entries
 				</div>
+
+				{/* Right */}
 				<div className="flex w-full items-center gap-8 lg:w-fit">
+					{/* Rows per page */}
 					<div className="hidden items-center gap-2 lg:flex">
 						<Label htmlFor="rows-per-page" className="text-sm font-medium">
 							Rows per page
@@ -224,12 +211,15 @@ export default function EmployeeDataTable({
 							</SelectContent>
 						</Select>
 					</div>
+
+					{/* Page number */}
 					<div className="flex w-fit items-center justify-center text-sm font-medium">
 						Page {table.getState().pagination.pageIndex + 1} of{" "}
 						{table.getPageCount()}
 					</div>
+
+					{/* Page navigation */}
 					<div className="ml-auto flex items-center gap-2 lg:ml-0">
-						{/* Fixed: Using table.getCanPreviousPage() correctly */}
 						<Button
 							variant="outline"
 							className="hidden h-8 w-8 p-0 lg:flex"
@@ -259,7 +249,6 @@ export default function EmployeeDataTable({
 							<span className="sr-only">Go to next page</span>
 							<IconChevronRight />
 						</Button>
-						{/* Fixed: Disabled state for last page button */}
 						<Button
 							variant="outline"
 							className="hidden size-8 lg:flex"
