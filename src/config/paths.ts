@@ -24,17 +24,11 @@ export const paths = {
 			getHref: () => "/dashboard/employees",
 		},
 		analytics: {
-			overview: {
-				getHref: () => "/dashboard/analytics/overview",
-			},
 			availableCars: {
 				getHref: () => "/dashboard/analytics/available-cars",
 			},
 			soldCars: {
 				getHref: () => "/dashboard/analytics/sold-cars",
-			},
-			expenseCategories: {
-				getHref: () => "/dashboard/analytics/expense-categories",
 			},
 			carProfitSummary: {
 				getHref: () => "/dashboard/analytics/car-profit-summary",

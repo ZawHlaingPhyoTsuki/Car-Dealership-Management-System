@@ -252,7 +252,10 @@ export default function EditCarSharerForm({
 										// disabled={price === undefined}
 										onChange={(e) => {
 											field.onChange(
-												parseAmountInput(e.target.value, price !== undefined ? price : undefined)
+												parseAmountInput(
+													e.target.value,
+													price !== undefined ? price : undefined,
+												),
 											);
 										}}
 										value={field.value ?? ""}
