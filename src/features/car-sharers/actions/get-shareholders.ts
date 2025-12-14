@@ -22,6 +22,6 @@ export const getShareholders = async () => {
 		return shareholders;
 	} catch (error) {
 		console.error("Failed to get shareholders:", error);
-		throw error;
+		throw new Error("Failed to get shareholders");
 	}
 };

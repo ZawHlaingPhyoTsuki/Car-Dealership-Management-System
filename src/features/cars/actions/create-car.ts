@@ -17,6 +17,6 @@ export const createCar = async (data: z.infer<typeof CreateCarSchema>) => {
 		return car;
 	} catch (error) {
 		console.error("Failed to create car:", error);
-		throw error;
+		throw new Error("Failed to create car");
 	}
 };

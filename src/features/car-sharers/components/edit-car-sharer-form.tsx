@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -41,8 +40,8 @@ import {
 	parsePercentageInput,
 	shareholderProfitAndPercentageCalculator,
 } from "@/lib/utils";
-import { getShareholders } from "../actions/get-shareholders";
 import { useUpdateCarSharer } from "../mutations/use-update-car-sharer";
+import { useGetShareholders } from "../queries/use-car-sharer";
 import {
 	UpdateCarSharerSchema,
 	type UpdateCarSharerValues,
@@ -67,7 +66,7 @@ export default function EditCarSharerForm({
 			shareholderPercentage: car.shareholderPercentage ?? undefined,
 			investmentAmount: car.investmentAmount ?? undefined,
 			shareholderId: car.shareholder?.id ?? undefined,
-		} as UpdateCarSharerValues,
+		},
 	});
 
 	const price = form.watch("price");
@@ -75,10 +74,7 @@ export default function EditCarSharerForm({
 	const shareholderId = form.watch("shareholderId");
 
 	const [open, setOpen] = useState(false);
-	const { data: shareholders, isLoading } = useQuery({
-		queryKey: ["shareholders"],
-		queryFn: getShareholders,
-	});
+	const { data: shareholders, isLoading, isError, error } = useGetShareholders();
 
 	const selectedShareholder = shareholders?.find(
 		(sh) => sh.id === shareholderId,
@@ -250,7 +246,7 @@ export default function EditCarSharerForm({
 										id="investmentAmount"
 										type="number"
 										min="0"
-										max={price?.toString() ?? "0"}
+										{...(price !== undefined && { max: price.toString() })}
 										step="1"
 										{...field}
 										onChange={(e) => {
@@ -324,7 +320,11 @@ export default function EditCarSharerForm({
 											<CommandInput placeholder="Search shareholder..." />
 											<CommandList>
 												<CommandEmpty>
-													{isLoading ? "Loading..." : "No shareholder found."}
+													{isLoading
+														? "Loading..."
+														: isError
+															? "Failed to load shareholders"
+															: "No shareholder found."}
 												</CommandEmpty>
 												<CommandGroup>
 													<CommandItem
@@ -366,9 +366,9 @@ export default function EditCarSharerForm({
 															/>
 															<div className="flex flex-col">
 																<span>{shareholder.name}</span>
-																{shareholder.phone && (
+																{shareholder.email && (
 																	<span className="text-xs text-muted-foreground">
-																		{shareholder.phone}
+																		{shareholder.email}
 																	</span>
 																)}
 															</div>

@@ -6,7 +6,7 @@ import {
 import ContentWrapper from "@/components/shared/content-wrapper";
 import AddCarDialog from "@/features/cars/components/add-car-dialog";
 import CarTable from "@/features/cars/components/car-table";
-import { getCarsQueryOptions } from "@/features/cars/queries/use-get-cars";
+import { getCarsQueryOptions } from "@/features/cars/queries/use-cars";
 
 export default async function Page() {
 	const queryClient = new QueryClient();

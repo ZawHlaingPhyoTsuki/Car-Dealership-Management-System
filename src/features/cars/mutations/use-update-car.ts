@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { updateCar } from "../actions/update-car";
-import { getCarsQueryOptions } from "../queries/use-get-cars";
+import { getCarsQueryOptions } from "../queries/use-cars";
 import type { UpdateCarValues } from "../validation";
 
 export const useUpdateCar = () => {

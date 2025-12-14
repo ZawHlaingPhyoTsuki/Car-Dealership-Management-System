@@ -24,6 +24,6 @@ export const updateCar = async (data: z.infer<typeof UpdateCarSchema>) => {
 		return car;
 	} catch (error) {
 		console.error("Failed to update car:", error);
-		throw error;
+		throw new Error("Failed to update car");
 	}
 };

@@ -1,7 +1,7 @@
 "use client";
 
 import DataTable from "@/components/shared/data-table";
-import { useGetCars } from "../queries/use-get-cars";
+import { useGetCars } from "../queries/use-cars";
 import { columns } from "./columns";
 
 export default function CarTable() {

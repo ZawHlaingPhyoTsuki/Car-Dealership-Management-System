@@ -3,7 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { deleteEmployee } from "../actions/delete-employee";
-import { getEmployeesQueryOptions } from "../queries/get-employees";
+import { getEmployeesQueryOptions } from "../queries/use-employees";
 
 export const useDeleteEmployee = () => {
 	const queryClient = useQueryClient();
