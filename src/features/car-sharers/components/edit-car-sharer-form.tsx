@@ -22,7 +22,6 @@ import {
 	FieldSeparator,
 	FieldSet,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
 import {
 	InputGroup,
 	InputGroupAddon,
@@ -67,21 +66,23 @@ export default function EditCarSharerForm({
 			price: car.price,
 			shareholderPercentage: car.shareholderPercentage ?? undefined,
 			investmentAmount: car.investmentAmount ?? undefined,
-			shareholderName: car.shareholder?.name ?? undefined,
-			shareholderEmail: car.shareholder?.email ?? undefined,
-			shareholderPhone: car.shareholder?.phone ?? undefined,
 			shareholderId: car.shareholder?.id ?? undefined,
 		} as UpdateCarSharerValues,
 	});
 
 	const price = form.watch("price");
 	const shareholderPercentage = form.watch("shareholderPercentage");
+	const shareholderId = form.watch("shareholderId");
 
 	const [open, setOpen] = useState(false);
 	const { data: shareholders, isLoading } = useQuery({
 		queryKey: ["shareholders"],
 		queryFn: getShareholders,
 	});
+
+	const selectedShareholder = shareholders?.find(
+		(sh) => sh.id === shareholderId,
+	);
 
 	const onSubmit = async (values: UpdateCarSharerValues) => {
 		await updateCarSharerMutation.mutateAsync(values);
@@ -317,165 +318,88 @@ export default function EditCarSharerForm({
 					/>
 				</FieldGroup>
 				<FieldSeparator />
-				<FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-4">
-					{/* Sharerholder Name */}
+				<FieldGroup>
+					{/* Shareholder Selection */}
 					<Controller
-						name="shareholderName"
+						name="shareholderId"
 						control={form.control}
-						render={({ field }) => {
-							return (
-								<Field className="flex flex-col gap-2">
-									<FieldLabel htmlFor="shareholderName">
-										Shareholder Name
-									</FieldLabel>
-									<Popover open={open} onOpenChange={setOpen}>
-										<PopoverTrigger asChild>
-											<Button
-												variant="outline"
-												role="combobox"
-												aria-expanded={open}
-												className="justify-between font-normal"
-											>
-												{field.value || "Select or type name..."}
-												<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-											</Button>
-										</PopoverTrigger>
-										<PopoverContent
-											className="w-[300px] p-0"
-											align="start"
-											asChild
+						render={({ field }) => (
+							<Field className="flex flex-col gap-2">
+								<FieldLabel htmlFor="shareholderId">Shareholder</FieldLabel>
+								<Popover open={open} onOpenChange={setOpen}>
+									<PopoverTrigger asChild>
+										<Button
+											variant="outline"
+											role="combobox"
+											aria-expanded={open}
+											className="justify-between font-normal"
 										>
-											<Command>
-												<CommandInput
-													placeholder="Search shareholder..."
-													onValueChange={(search) => {
-														// Always update the name field
-														field.onChange(search);
-
-														// Only clear the ID if the search doesn't match any existing shareholder
-														const existingShareholder = shareholders?.find(
-															(s) =>
-																s.name.toLowerCase() === search.toLowerCase(),
-														);
-
-														if (existingShareholder) {
-															// Keep the ID if name matches an existing shareholder
-															form.setValue(
-																"shareholderId",
-																existingShareholder.id,
-															);
-															form.setValue(
-																"shareholderEmail",
-																existingShareholder.email ?? "",
-															);
-															form.setValue(
-																"shareholderPhone",
-																existingShareholder.phone ?? "",
-															);
-														} else {
-															// Clear the ID only if it's a truly new name
-															form.setValue("shareholderId", null);
-														}
-													}}
-												/>
-												<CommandList>
-													<CommandEmpty>
-														{isLoading ? "Loading..." : "No shareholder found."}
-													</CommandEmpty>
-													<CommandGroup>
-														{shareholders?.map((shareholder) => (
-															<CommandItem
-																key={shareholder.id}
-																value={shareholder.name}
-																onSelect={() => {
-																	// Set all fields from selected shareholder
-																	field.onChange(shareholder.name);
-																	form.setValue(
-																		"shareholderId",
-																		shareholder.id,
-																	);
-																	form.setValue(
-																		"shareholderEmail",
-																		shareholder.email ?? "",
-																	);
-																	form.setValue(
-																		"shareholderPhone",
-																		shareholder.phone ?? "",
-																	);
-																	setOpen(false);
-																}}
-															>
-																<Check
-																	className={cn(
-																		"mr-2 h-4 w-4",
-																		field.value === shareholder.name
-																			? "opacity-100"
-																			: "opacity-0",
-																	)}
-																/>
-																<div className="flex flex-col">
-																	<span>{shareholder.name}</span>
-																	{shareholder.phone && (
-																		<span className="text-xs text-muted-foreground">
-																			{shareholder.phone}
-																		</span>
-																	)}
-																</div>
-															</CommandItem>
-														))}
-													</CommandGroup>
-												</CommandList>
-											</Command>
-										</PopoverContent>
-									</Popover>
-									<div className="text-[0.8rem] text-muted-foreground">
-										Type a new name to create, or select from list.
-									</div>
-								</Field>
-							);
-						}}
-					/>
-
-					{/* Sharerholder Email */}
-					<Controller
-						name="shareholderEmail"
-						control={form.control}
-						render={({ field, fieldState }) => (
-							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="shareholderEmail">
-									Shareholder Email
-								</FieldLabel>
-								<Input
-									id="shareholderEmail"
-									placeholder="john.doe@example.com"
-									{...field}
-									value={field.value ?? ""}
-								/>
-								{fieldState.error && (
-									<FieldError>{fieldState.error.message}</FieldError>
-								)}
-							</Field>
-						)}
-					/>
-
-					{/* Sharerholder Phone */}
-					<Controller
-						name="shareholderPhone"
-						control={form.control}
-						render={({ field, fieldState }) => (
-							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="shareholderPhone">
-									Shareholder Phone
-								</FieldLabel>
-								<Input
-									id="shareholderPhone"
-									placeholder="123-456-7890"
-									{...field}
-									value={field.value ?? ""}
-								/>
-								{fieldState.error && (
-									<FieldError>{fieldState.error.message}</FieldError>
-								)}
+											{selectedShareholder
+												? selectedShareholder.name
+												: "Select shareholder..."}
+											<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+										</Button>
+									</PopoverTrigger>
+									<PopoverContent className="w-[300px] p-0" align="start">
+										<Command>
+											<CommandInput placeholder="Search shareholder..." />
+											<CommandList>
+												<CommandEmpty>
+													{isLoading ? "Loading..." : "No shareholder found."}
+												</CommandEmpty>
+												<CommandGroup>
+													<CommandItem
+														value=""
+														onSelect={() => {
+															field.onChange(null);
+															setOpen(false);
+														}}
+													>
+														<Check
+															className={cn(
+																"mr-2 h-4 w-4",
+																!field.value ? "opacity-100" : "opacity-0",
+															)}
+														/>
+														<div className="flex flex-col">
+															<span>No shareholder</span>
+															<span className="text-xs text-muted-foreground">
+																Remove shareholder
+															</span>
+														</div>
+													</CommandItem>
+													{shareholders?.map((shareholder) => (
+														<CommandItem
+															key={shareholder.id}
+															value={shareholder.id}
+															onSelect={() => {
+																field.onChange(shareholder.id);
+																setOpen(false);
+															}}
+														>
+															<Check
+																className={cn(
+																	"mr-2 h-4 w-4",
+																	field.value === shareholder.id
+																		? "opacity-100"
+																		: "opacity-0",
+																)}
+															/>
+															<div className="flex flex-col">
+																<span>{shareholder.name}</span>
+																{shareholder.phone && (
+																	<span className="text-xs text-muted-foreground">
+																		{shareholder.phone}
+																	</span>
+																)}
+															</div>
+														</CommandItem>
+													))}
+												</CommandGroup>
+											</CommandList>
+										</Command>
+									</PopoverContent>
+								</Popover>
 							</Field>
 						)}
 					/>

@@ -67,11 +67,8 @@ export const columns: ColumnDef<Car>[] = [
 		header: "Price",
 		cell: ({ row }) => {
 			const price = Number.parseFloat(row.getValue("price"));
-			const formatted = new Intl.NumberFormat("en-US", {
-				style: "currency",
-				currency: "USD",
-			}).format(price);
-			return formatted;
+			if (Number.isNaN(price)) return "-";
+			return formatInLakhsCrores(price);
 		},
 	},
 	{
@@ -155,7 +152,9 @@ export const columns: ColumnDef<Car>[] = [
 							</p>
 							<div className="text-muted-foreground text-xs">
 								<span className="font-medium">Joined:</span>
-								{shareholder.createdAt.toLocaleDateString()}
+								{shareholder.createdAt
+									? new Date(shareholder.createdAt).toLocaleDateString()
+									: "N/A"}
 							</div>
 						</div>
 					</HoverCardContent>

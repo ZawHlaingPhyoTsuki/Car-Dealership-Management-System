@@ -58,6 +58,7 @@ export const columns: ColumnDef<Car>[] = [
 		header: "Price",
 		cell: ({ row }) => {
 			const price = Number.parseFloat(row.getValue("price"));
+			if (Number.isNaN(price)) return "-";
 			const formatted = formatInLakhsCrores(price);
 			return formatted;
 		},

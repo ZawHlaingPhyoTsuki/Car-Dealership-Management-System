@@ -70,9 +70,9 @@ model Verification {
 
 model Shareholder {
   id    String  @id @default(uuid())
-  name  String
+  name  String  @unique
   phone String?
-  email String?
+  email String? @unique
   notes String?
 
   cars Car[]

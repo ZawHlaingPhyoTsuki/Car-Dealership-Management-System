@@ -1,7 +1,9 @@
 "use server";
 
+import { headers } from "next/headers";
 import * as z from "zod";
 import { Prisma } from "@/app/generated/prisma/client";
+import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { UpdateEmployeeSchema } from "../validation";
 
@@ -9,6 +11,14 @@ export const updateEmployee = async (
 	id: string,
 	data: z.infer<typeof UpdateEmployeeSchema>,
 ) => {
+	const session = await auth.api.getSession({
+		headers: await headers(),
+	});
+
+	if (!session) {
+		throw new Error("Unauthorized");
+	}
+
 	try {
 		const { name, email, position, phone, address, salary } =
 			UpdateEmployeeSchema.parse({

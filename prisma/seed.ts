@@ -204,23 +204,16 @@ async function main() {
 	for (let i = 0; i < 100; i++) {
 		const isSold = faker.datatype.boolean(0.3); // 30% sold
 		const createdAt = faker.date.past({ years: 2 });
-		const soldAt = isSold
-			? faker.date.between({
-					from: createdAt,
-					to: new Date(),
-				})
-			: null;
-
-		// For sold cars, determine if full amount was paid
-		const salePrice = isSold
+		const price = isSold
 			? faker.number.int({ min: 5500, max: 85000 })
-			: null;
+			: faker.number.int({ min: 5000, max: 80000 });
+
 		const paidAmount = isSold
 			? faker.datatype.boolean(0.8) // 80% paid in full
-				? salePrice
+				? price
 				: faker.number.int({
-						min: Math.floor((salePrice || 0) * 0.5),
-						max: (salePrice || 0) - 1000,
+						min: Math.floor(price * 0.5),
+						max: price - 1000,
 					})
 			: null;
 
@@ -233,15 +226,13 @@ async function main() {
 		if (hasShareholder && shareholderIds.length > 0) {
 			shareholderId = faker.helpers.arrayElement(shareholderIds);
 			shareholderPercentage = faker.number.int({ min: 10, max: 100 });
-			// Calculate investment amount based on car price
-			const carPrice = faker.number.int({ min: 5000, max: 80000 });
-			investmentAmount = Math.round(carPrice * (shareholderPercentage / 100));
+			investmentAmount = Math.round(price * (shareholderPercentage / 100));
 		}
 
 		await prisma.car.create({
 			data: {
 				name: `${carMakes[i % carMakes.length]} ${carModels[i % carModels.length]} ${faker.number.int({ min: 2015, max: 2025 })}`,
-				price: faker.number.int({ min: 5000, max: 80000 }),
+				price,
 				color: colors[i % colors.length],
 				licenseNumber: faker.datatype.boolean(0.9) ? licenseNumbers[i] : null,
 				notes: faker.datatype.boolean(0.4) ? faker.lorem.sentence() : null,
@@ -257,7 +248,6 @@ async function main() {
 				paidMethod: isSold
 					? faker.helpers.arrayElement([PaidMethod.CASH, PaidMethod.SCAN])
 					: null,
-				soldAt,
 				paidAmount,
 				shareholderId,
 				shareholderPercentage,

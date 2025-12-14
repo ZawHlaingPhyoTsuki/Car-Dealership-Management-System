@@ -12,6 +12,8 @@ export function cn(...inputs: ClassValue[]) {
  * @example getAvatarFallbackName("John Doe") → "JD"
  */
 export function getAvatarFallbackName(name: string): string {
+	if (name.length === 0) return "??";
+	if (name.length === 1) return name.toUpperCase();
 	return name.charAt(0).toUpperCase() + name.charAt(1).toUpperCase();
 }
 
@@ -30,8 +32,8 @@ export const formatKs = (amount: number): string => {
  * @param amount - Amount in whole Kyat (integer)
  * @returns Formatted string in appropriate scale (crore, lakh, or basic Kyat)
  * @example
- * - formatInLakhsCrores(10000000) → "1.00 crore MMK"
- * - formatInLakhsCrores(100000) → "1.00 lakh MMK"
+ * - formatInLakhsCrores(10000000) → "Ks 1.00 crore"
+ * - formatInLakhsCrores(100000) → "Ks 1.00 lakh"
  * - formatInLakhsCrores(50000) → "Ks 50,000"
  */
 export const formatInLakhsCrores = (amount: number): string => {

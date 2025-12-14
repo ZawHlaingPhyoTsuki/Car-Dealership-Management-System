@@ -106,7 +106,7 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 										}
 										value={field.value ?? ""}
 									/>
-									<InputGroupAddon>$</InputGroupAddon>
+									<InputGroupAddon>Ks</InputGroupAddon>
 								</InputGroup>
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>
@@ -219,7 +219,7 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 									}
 									value={field.value ?? ""}
 								/>
-								<InputGroupAddon>$</InputGroupAddon>
+								<InputGroupAddon>Ks</InputGroupAddon>
 							</InputGroup>
 						</Field>
 					)}
