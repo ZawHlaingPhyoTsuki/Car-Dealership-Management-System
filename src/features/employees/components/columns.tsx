@@ -1,7 +1,7 @@
 "use client";
 
-import { IconDotsVertical, IconEdit, IconTrash } from "@tabler/icons-react";
 import type { ColumnDef } from "@tanstack/react-table";
+import { Edit, EllipsisVertical, Trash } from "lucide-react";
 import { useState } from "react";
 import type { Employee } from "@/app/generated/prisma/client";
 import { DataTableColumnHeader } from "@/components/shared/data-table-column-header";
@@ -12,7 +12,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { salaryFormatter } from "@/lib/utils";
+import { formatInLakhsCrores } from "@/lib/utils";
 import { DeleteEmployeeDialog } from "./delete-employee-dialog";
 import EditEmployeeDialog from "./edit-employee-dialog";
 
@@ -47,7 +47,7 @@ export const columns: ColumnDef<EmployeeTableData>[] = [
 		),
 		cell: ({ row }) => {
 			const salary = row.original.salary;
-			return salaryFormatter.format(salary);
+			return formatInLakhsCrores(salary);
 		},
 	},
 	{
@@ -116,7 +116,7 @@ function EmployeeActionsCell({ employee }: { employee: EmployeeTableData }) {
 						className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
 						size="icon"
 					>
-						<IconDotsVertical />
+						<EllipsisVertical />
 						<span className="sr-only">Open menu</span>
 					</Button>
 				</DropdownMenuTrigger>
@@ -125,7 +125,7 @@ function EmployeeActionsCell({ employee }: { employee: EmployeeTableData }) {
 						className="flex items-center gap-2 w-full"
 						onSelect={() => setEditOpen(true)}
 					>
-						<IconEdit className="h-4 w-4" />
+						<Edit className="mr-2 h-4 w-4" />
 						Edit
 					</DropdownMenuItem>
 					<DropdownMenuItem
@@ -133,7 +133,7 @@ function EmployeeActionsCell({ employee }: { employee: EmployeeTableData }) {
 						className="flex items-center gap-2 w-full"
 						onSelect={() => setDeleteOpen(true)}
 					>
-						<IconTrash className="h-4 w-4" />
+						<Trash className="h-4 w-4 mr-2 " />
 						Delete
 					</DropdownMenuItem>
 				</DropdownMenuContent>

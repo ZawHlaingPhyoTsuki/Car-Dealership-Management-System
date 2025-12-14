@@ -2,6 +2,9 @@
 CREATE TYPE "CarStatus" AS ENUM ('AVAILABLE', 'IN_MAINTENANCE', 'RESERVED', 'SOLD');
 
 -- CreateEnum
+CREATE TYPE "PaidMethod" AS ENUM ('CASH', 'SCAN');
+
+-- CreateEnum
 CREATE TYPE "ExpenseCategory" AS ENUM ('REPAIRS', 'TRANSPORT', 'AUCTION_FEES', 'CLEANING_DETAILING', 'UTILITIES', 'RENT', 'SALARIES', 'MARKETING', 'OFFICE_SUPPLIES', 'OTHER');
 
 -- CreateTable
@@ -71,21 +74,9 @@ CREATE TABLE "shareholder" (
     "notes" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMP(3),
 
     CONSTRAINT "shareholder_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "car_share" (
-    "id" TEXT NOT NULL,
-    "carId" TEXT NOT NULL,
-    "shareholderId" TEXT NOT NULL,
-    "percentage" INTEGER NOT NULL,
-    "amount" INTEGER,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "car_share_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -93,21 +84,16 @@ CREATE TABLE "car" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "price" INTEGER NOT NULL,
-    "purchasePrice" INTEGER,
-    "purchaseDate" TIMESTAMP(3),
     "color" TEXT,
-    "mileage" INTEGER,
-    "mileageUnit" TEXT NOT NULL DEFAULT 'km',
-    "vin" TEXT,
+    "licenseNumber" TEXT,
     "notes" TEXT,
     "status" "CarStatus" NOT NULL DEFAULT 'AVAILABLE',
-    "addedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "paidMethod" "PaidMethod",
     "soldAt" TIMESTAMP(3),
-    "buyerName" TEXT,
-    "buyerPhone" TEXT,
-    "buyerEmail" TEXT,
-    "salePrice" INTEGER,
-    "saleNotes" TEXT,
+    "paidAmount" INTEGER,
+    "shareholderId" TEXT,
+    "shareholderPercentage" INTEGER,
+    "investmentAmount" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
@@ -136,10 +122,9 @@ CREATE TABLE "employee" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "role" TEXT NOT NULL,
+    "position" TEXT NOT NULL,
     "phone" TEXT,
     "address" TEXT,
-    "notes" TEXT,
     "salary" INTEGER NOT NULL,
     "startDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -179,10 +164,13 @@ CREATE INDEX "account_userId_idx" ON "account"("userId");
 CREATE INDEX "verification_identifier_idx" ON "verification"("identifier");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "car_share_carId_shareholderId_key" ON "car_share"("carId", "shareholderId");
+CREATE UNIQUE INDEX "shareholder_name_key" ON "shareholder"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "car_vin_key" ON "car"("vin");
+CREATE UNIQUE INDEX "shareholder_email_key" ON "shareholder"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "car_licenseNumber_key" ON "car"("licenseNumber");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "employee_email_key" ON "employee"("email");
@@ -197,10 +185,7 @@ ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId"
 ALTER TABLE "account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "car_share" ADD CONSTRAINT "car_share_carId_fkey" FOREIGN KEY ("carId") REFERENCES "car"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "car_share" ADD CONSTRAINT "car_share_shareholderId_fkey" FOREIGN KEY ("shareholderId") REFERENCES "shareholder"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "car" ADD CONSTRAINT "car_shareholderId_fkey" FOREIGN KEY ("shareholderId") REFERENCES "shareholder"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "expense" ADD CONSTRAINT "expense_carId_fkey" FOREIGN KEY ("carId") REFERENCES "car"("id") ON DELETE SET NULL ON UPDATE CASCADE;

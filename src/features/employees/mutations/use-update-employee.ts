@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type z from "zod";
 import { updateEmployee } from "../actions/update-employee";
-import { getEmployeesQueryOptions } from "../queries/get-employees";
+import { getEmployeesQueryOptions } from "../queries/use-employees";
 import type { UpdateEmployeeSchema } from "../validation";
 
 export const useUpdateEmployee = () => {

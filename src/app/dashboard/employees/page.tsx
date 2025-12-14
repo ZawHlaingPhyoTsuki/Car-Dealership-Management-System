@@ -7,7 +7,7 @@ import type { Metadata } from "next";
 import ContentWrapper from "@/components/shared/content-wrapper";
 import AddEmployeeDialog from "@/features/employees/components/add-employee-dialog";
 import { EmployeeTable } from "@/features/employees/components/employee-table";
-import { getEmployeesQueryOptions } from "@/features/employees/queries/get-employees";
+import { getEmployeesQueryOptions } from "@/features/employees/queries/use-employees";
 
 export const metadata: Metadata = {
 	title: "Employees",

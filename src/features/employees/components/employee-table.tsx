@@ -2,7 +2,7 @@
 
 import DataTable from "@/components/shared/data-table";
 import { columns } from "@/features/employees/components/columns";
-import { useEmployees } from "@/features/employees/queries/get-employees";
+import { useEmployees } from "@/features/employees/queries/use-employees";
 
 export function EmployeeTable() {
 	const { data: employees = [], isLoading, error } = useEmployees();

@@ -14,6 +14,9 @@ export const paths = {
 		cars: {
 			getHref: () => "/dashboard/cars",
 		},
+		carSharers: {
+			getHref: () => "/dashboard/car-sharers",
+		},
 		expenses: {
 			getHref: () => "/dashboard/expenses",
 		},

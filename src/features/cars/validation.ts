@@ -1,0 +1,33 @@
+import * as z from "zod";
+import { CarStatus, PaidMethod } from "@/app/generated/prisma/enums";
+
+export const CreateCarSchema = z.object({
+	name: z.string().min(1, "Name is required"),
+	price: z.number().min(0, "Price must be at least 0"),
+	color: z
+		.string()
+		.optional()
+		.transform((e) => (e === "" ? undefined : e))
+		.optional(),
+	licenseNumber: z
+		.string()
+		.optional()
+		.transform((e) => (e === "" ? undefined : e))
+		.optional(),
+	status: z.enum(CarStatus),
+	notes: z
+		.string()
+		.optional()
+		.transform((e) => (e === "" ? undefined : e))
+		.optional(),
+	paidMethod: z.enum(PaidMethod).optional().nullable(),
+	paidAmount: z.number().optional(),
+});
+
+export type CreateCarValues = z.infer<typeof CreateCarSchema>;
+
+export const UpdateCarSchema = CreateCarSchema.partial().extend({
+	id: z.string(),
+});
+
+export type UpdateCarValues = z.infer<typeof UpdateCarSchema>;
