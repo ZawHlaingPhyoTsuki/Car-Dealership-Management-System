@@ -79,6 +79,7 @@ model Shareholder {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  deletedAt DateTime?
 
   @@map("shareholder")
 }

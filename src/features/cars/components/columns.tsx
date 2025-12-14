@@ -35,7 +35,7 @@ export const columns: ColumnDef<Car>[] = [
 							src={car.photos[0].url}
 							alt={car.name}
 							width={50}
-							height={50}
+							height={30}
 							className="rounded-md object-cover"
 						/>
 					) : (

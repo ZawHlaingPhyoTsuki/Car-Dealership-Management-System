@@ -20,6 +20,15 @@ export async function getCars() {
 						order: true,
 					},
 				},
+				shareholder: {
+					select: {
+						id: true,
+						name: true,
+						email: true,
+						phone: true,
+						createdAt: true,
+					},
+				},
 			},
 		});
 		return cars;

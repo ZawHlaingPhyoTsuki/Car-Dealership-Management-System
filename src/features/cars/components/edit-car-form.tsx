@@ -9,6 +9,7 @@ import {
 	FieldError,
 	FieldGroup,
 	FieldLabel,
+	FieldSeparator,
 	FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -73,12 +74,7 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 								<FieldLabel htmlFor="name">
 									Car Name <span className="text-red-500">*</span>
 								</FieldLabel>
-								<Input
-									id="name"
-									placeholder="Toyota Camry 2023"
-									required
-									{...field}
-								/>
+								<Input id="name" placeholder="Toyota Camry 2023" {...field} />
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>
 								)}
@@ -100,13 +96,12 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 										id="price"
 										type="number"
 										min="0"
-										step="0.01"
+										step="1"
 										placeholder="25000"
-										required
 										{...field}
 										onChange={(e) =>
 											field.onChange(
-												e.target.value ? parseFloat(e.target.value) : undefined,
+												e.target.value ? parseFloat(e.target.value) : 0,
 											)
 										}
 										value={field.value ?? ""}
@@ -193,6 +188,7 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 								placeholder="Additional details about the car..."
 								rows={3}
 								{...field}
+								aria-invalid={fieldState.invalid}
 							/>
 							{fieldState.error && (
 								<FieldError>{fieldState.error.message}</FieldError>
@@ -201,38 +197,33 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 					)}
 				/>
 
-				<div className="border-t pt-4">
-					<h3 className="font-medium mb-4">Sale Information</h3>
-					<FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-4">
-						<Controller
-							name="paidAmount"
-							control={form.control}
-							render={({ field, fieldState }) => (
-								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel htmlFor="paidAmount">Paid Amount</FieldLabel>
-									<InputGroup>
-										<InputGroupInput
-											id="paidAmount"
-											type="number"
-											min="0"
-											step="1"
-											{...field}
-											onChange={(e) =>
-												field.onChange(
-													e.target.value
-														? parseFloat(e.target.value)
-														: undefined,
-												)
-											}
-											value={field.value ?? ""}
-										/>
-										<InputGroupAddon>$</InputGroupAddon>
-									</InputGroup>
-								</Field>
-							)}
-						/>
-					</FieldGroup>
-				</div>
+				<FieldSeparator />
+
+				<Controller
+					name="paidAmount"
+					control={form.control}
+					render={({ field, fieldState }) => (
+						<Field data-invalid={fieldState.invalid}>
+							<FieldLabel htmlFor="paidAmount">Paid Amount</FieldLabel>
+							<InputGroup>
+								<InputGroupInput
+									id="paidAmount"
+									type="number"
+									min="0"
+									step="1"
+									{...field}
+									onChange={(e) =>
+										field.onChange(
+											e.target.value ? parseFloat(e.target.value) : 0,
+										)
+									}
+									value={field.value ?? ""}
+								/>
+								<InputGroupAddon>$</InputGroupAddon>
+							</InputGroup>
+						</Field>
+					)}
+				/>
 			</FieldSet>
 
 			{/* Form Actions */}

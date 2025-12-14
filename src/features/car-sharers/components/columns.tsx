@@ -4,8 +4,6 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Edit, EllipsisVertical, Trash } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import { PaidMethod } from "@/app/generated/prisma/enums";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -13,15 +11,20 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+	HoverCard,
+	HoverCardContent,
+	HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { Label } from "@/components/ui/label";
 import type { Car } from "@/features/cars/actions/get-cars";
 import DeleteCarDialog from "@/features/cars/components/delete-car-dialog";
-import EditCarDialog from "@/features/cars/components/edit-car-dialog";
 import {
 	companyProfitAndPercentageCalculator,
 	formatInLakhsCrores,
 	shareholderProfitAndPercentageCalculator,
 } from "@/lib/utils";
+import EditCarSharerDialog from "./edit-car-sharer-dialog";
 
 export const columns: ColumnDef<Car>[] = [
 	{
@@ -41,7 +44,7 @@ export const columns: ColumnDef<Car>[] = [
 							src={car.photos[0].url}
 							alt={car.name}
 							width={50}
-							height={50}
+							height={30}
 							className="rounded-md object-cover"
 						/>
 					) : (
@@ -129,20 +132,34 @@ export const columns: ColumnDef<Car>[] = [
 		},
 	},
 	{
-		accessorKey: "paidMethod",
-		header: "Paid Method",
+		accessorKey: "shareholderName",
+		header: "Sharer Name",
 		cell: ({ row }) => {
-			const paidMethod = row.getValue("paidMethod") as PaidMethod;
-			if (!paidMethod) return "-";
-			const colors: Record<PaidMethod, string> = {
-				[PaidMethod.CASH]: "bg-green-100 text-green-800",
-				[PaidMethod.SCAN]: "bg-blue-100 text-blue-800",
-			};
-
+			const shareholder = row.original.shareholder;
+			if (!shareholder) return "-";
 			return (
-				<Badge variant="outline" className={colors[paidMethod]}>
-					{paidMethod}
-				</Badge>
+				<HoverCard>
+					<HoverCardTrigger asChild>
+						<Button variant="link" className="px-0">
+							{shareholder.name}
+						</Button>
+					</HoverCardTrigger>
+					<HoverCardContent>
+						<div className="space-y-1">
+							<h4 className="text-sm font-semibold">{shareholder.name}</h4>
+							<p className="text-muted-foreground text-xs">
+								<span className="font-medium">Email:</span> {shareholder.email}
+							</p>
+							<p className="text-muted-foreground text-xs">
+								<span className="font-medium">Phone:</span> {shareholder.phone}
+							</p>
+							<div className="text-muted-foreground text-xs">
+								<span className="font-medium">Joined:</span>
+								{shareholder.createdAt.toLocaleDateString()}
+							</div>
+						</div>
+					</HoverCardContent>
+				</HoverCard>
 			);
 		},
 	},
@@ -192,7 +209,7 @@ function CarActions({ car }: { car: Car }) {
 				</DropdownMenuContent>
 			</DropdownMenu>
 
-			<EditCarDialog
+			<EditCarSharerDialog
 				car={car}
 				open={showEditDialog}
 				onOpenChange={setShowEditDialog}

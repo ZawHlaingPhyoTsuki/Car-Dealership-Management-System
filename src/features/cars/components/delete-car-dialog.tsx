@@ -50,7 +50,6 @@ export default function DeleteCarDialog({
 					<AlertDialogAction
 						onClick={handleDelete}
 						disabled={deleteCarMutation.isPending}
-						className="bg-red-600 focus:ring-red-600"
 					>
 						{deleteCarMutation.isPending ? "Deleting..." : "Delete"}
 					</AlertDialogAction>
