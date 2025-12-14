@@ -1,7 +1,6 @@
 "use server";
 
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
+import { requireAuth } from "@/lib/auth-guard";
 import prisma from "@/lib/prisma";
 
 export const deleteCar = async (id: string) => {
