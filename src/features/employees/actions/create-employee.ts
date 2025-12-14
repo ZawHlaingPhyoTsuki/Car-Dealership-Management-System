@@ -1,21 +1,14 @@
 "use server";
 
-import { headers } from "next/headers";
 import * as z from "zod";
-import { auth } from "@/lib/auth";
+import { requireAuth } from "@/lib/auth-guard";
 import prisma from "@/lib/prisma";
 import { CreateEmployeeSchema } from "../validation";
 
 export const createEmployee = async (
 	data: z.infer<typeof CreateEmployeeSchema>,
 ) => {
-	const session = await auth.api.getSession({
-		headers: await headers(),
-	});
-
-	if (!session) {
-		throw new Error("Unauthorized");
-	}
+	await requireAuth();
 
 	try {
 		const validatedData = CreateEmployeeSchema.parse(data);

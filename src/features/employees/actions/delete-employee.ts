@@ -1,17 +1,10 @@
 "use server";
 
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
+import { requireAuth } from "@/lib/auth-guard";
 import prisma from "@/lib/prisma";
 
 export const deleteEmployee = async (id: string) => {
-	const session = await auth.api.getSession({
-		headers: await headers(),
-	});
-
-	if (!session) {
-		throw new Error("Unauthorized");
-	}
+	await requireAuth();
 
 	return await prisma.employee.update({
 		where: {

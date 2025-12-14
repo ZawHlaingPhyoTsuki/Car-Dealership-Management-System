@@ -5,13 +5,7 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
 export const deleteCar = async (id: string) => {
-	const session = await auth.api.getSession({
-		headers: await headers(),
-	});
-
-	if (!session) {
-		throw new Error("Unauthorized");
-	}
+	await requireAuth();
 
 	try {
 		const car = await prisma.car.update({

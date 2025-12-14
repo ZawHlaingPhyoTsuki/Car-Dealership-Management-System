@@ -1,19 +1,12 @@
 "use server";
 
-import { headers } from "next/headers";
 import type * as z from "zod";
-import { auth } from "@/lib/auth";
+import { requireAuth } from "@/lib/auth-guard";
 import prisma from "@/lib/prisma";
 import { CreateCarSchema } from "../validation";
 
 export const createCar = async (data: z.infer<typeof CreateCarSchema>) => {
-	const session = await auth.api.getSession({
-		headers: await headers(),
-	});
-
-	if (!session) {
-		throw new Error("Unauthorized");
-	}
+	await requireAuth();
 	try {
 		const validatedData = CreateCarSchema.parse(data);
 

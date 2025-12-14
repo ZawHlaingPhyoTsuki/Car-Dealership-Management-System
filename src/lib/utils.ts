@@ -122,13 +122,13 @@ export const formatPercentage = (value: number): string => {
  * Parses percentage input string, ensuring valid range (0-100)
  *
  * @param value - Input string from percentage field
- * @returns Parsed number between 0-100, or undefined if invalid
+ * @returns Parsed number between 0-100, or 0 if invalid
  * @example
  * - parsePercentageInput("30") → 30
  * - parsePercentageInput("150") → 100
- * - parsePercentageInput("abc") → undefined
+ * - parsePercentageInput("abc") → 0
  */
-export const parsePercentageInput = (value: string): number | undefined => {
+export const parsePercentageInput = (value: string): number => {
 	const parsed = parseFloat(value);
 	if (Number.isNaN(parsed)) return 0;
 	return Math.min(Math.max(parsed, 0), 100);
@@ -139,16 +139,13 @@ export const parsePercentageInput = (value: string): number | undefined => {
  *
  * @param value - Input string from amount field
  * @param max - Optional maximum allowed value
- * @returns Parsed number rounded to 6 decimal places, or undefined if invalid
+ * @returns Parsed number rounded to 6 decimal places, or 0 if invalid
  * @example
  * - parseAmountInput("1000000") → 1000000
  * - parseAmountInput("1000000.5") → 1000000.5
- * - parseAmountInput("abc") → undefined
+ * - parseAmountInput("abc") → 0
  */
-export const parseAmountInput = (
-	value: string,
-	max?: number,
-): number | undefined => {
+export const parseAmountInput = (value: string, max?: number): number => {
 	const parsed = parseFloat(value);
 	if (Number.isNaN(parsed) || parsed < 0) return 0;
 

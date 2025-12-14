@@ -116,11 +116,9 @@ export default function EditCarSharerForm({
 								onChange={(e) => {
 									const val = parseAmountInput(e.target.value);
 									if (val === undefined) {
-										form.setValue(
-											"shareholderPercentage",
-											undefined as unknown as number,
-											{ shouldValidate: true },
-										);
+										form.setValue("shareholderPercentage", undefined, {
+											shouldValidate: true,
+										});
 										return;
 									}
 									if (!price) return;
@@ -153,20 +151,20 @@ export default function EditCarSharerForm({
 								step="1"
 								value={
 									shareholderPercentage !== undefined
-										? companyProfitAndPercentageCalculator(
-												0,
-												shareholderPercentage,
-											).companyPercentage
+										? Math.round(
+												companyProfitAndPercentageCalculator(
+													0,
+													shareholderPercentage,
+												).companyPercentage,
+											)
 										: ""
 								}
 								onChange={(e) => {
 									const val = parsePercentageInput(e.target.value);
 									if (val === undefined) {
-										form.setValue(
-											"shareholderPercentage",
-											undefined as unknown as number,
-											{ shouldValidate: true },
-										);
+										form.setValue("shareholderPercentage", undefined, {
+											shouldValidate: true,
+										});
 										return;
 									}
 									form.setValue("shareholderPercentage", 100 - val, {
@@ -201,11 +199,9 @@ export default function EditCarSharerForm({
 								onChange={(e) => {
 									const val = parseAmountInput(e.target.value);
 									if (val === undefined) {
-										form.setValue(
-											"shareholderPercentage",
-											undefined as unknown as number,
-											{ shouldValidate: true },
-										);
+										form.setValue("shareholderPercentage", undefined, {
+											shouldValidate: true,
+										});
 										return;
 									}
 									if (!price) return;
@@ -272,6 +268,7 @@ export default function EditCarSharerForm({
 										id="investmentAmount"
 										type="number"
 										min="0"
+										max={price?.toString() ?? "0"}
 										step="1"
 										{...field}
 										onChange={(e) => {

@@ -99,7 +99,7 @@ export const columns: ColumnDef<Car>[] = [
 		header: "Paid Amount",
 		cell: ({ row }) => {
 			const paidAmount = Number.parseFloat(row.getValue("paidAmount"));
-			if (!paidAmount) return "-";
+			if (paidAmount == null || Number.isNaN(paidAmount)) return "-";
 			const formatted = formatInLakhsCrores(paidAmount);
 			return formatted;
 		},
