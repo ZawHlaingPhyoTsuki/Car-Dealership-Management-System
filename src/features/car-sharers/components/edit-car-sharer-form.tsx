@@ -74,7 +74,7 @@ export default function EditCarSharerForm({
 	const shareholderId = form.watch("shareholderId");
 
 	const [open, setOpen] = useState(false);
-	const { data: shareholders, isLoading, isError, error } = useGetShareholders();
+	const { data: shareholders, isLoading, isError } = useGetShareholders();
 
 	const selectedShareholder = shareholders?.find(
 		(sh) => sh.id === shareholderId,
