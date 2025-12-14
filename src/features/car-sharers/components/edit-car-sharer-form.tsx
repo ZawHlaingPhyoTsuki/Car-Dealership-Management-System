@@ -115,12 +115,6 @@ export default function EditCarSharerForm({
 								}
 								onChange={(e) => {
 									const val = parseAmountInput(e.target.value);
-									if (val === undefined) {
-										form.setValue("shareholderPercentage", undefined, {
-											shouldValidate: true,
-										});
-										return;
-									}
 									if (!price) return;
 									// Clamp value to price
 									const clampedVal = Math.min(Math.max(val, 0), price);
@@ -161,12 +155,6 @@ export default function EditCarSharerForm({
 								}
 								onChange={(e) => {
 									const val = parsePercentageInput(e.target.value);
-									if (val === undefined) {
-										form.setValue("shareholderPercentage", undefined, {
-											shouldValidate: true,
-										});
-										return;
-									}
 									form.setValue("shareholderPercentage", 100 - val, {
 										shouldValidate: true,
 									});
@@ -198,12 +186,6 @@ export default function EditCarSharerForm({
 								}
 								onChange={(e) => {
 									const val = parseAmountInput(e.target.value);
-									if (val === undefined) {
-										form.setValue("shareholderPercentage", undefined, {
-											shouldValidate: true,
-										});
-										return;
-									}
 									if (!price) return;
 									// Clamp value to price
 									const clampedVal = Math.min(Math.max(val, 0), price);
@@ -242,7 +224,7 @@ export default function EditCarSharerForm({
 											field.onChange(val);
 										}}
 										value={
-											field.value !== undefined ? Math.round(field.value) : 0
+											field.value !== undefined ? Math.round(field.value) : ""
 										}
 									/>
 									<InputGroupAddon>%</InputGroupAddon>

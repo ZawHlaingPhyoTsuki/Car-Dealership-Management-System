@@ -15,13 +15,15 @@ export const updateCar = async (data: z.infer<typeof UpdateCarSchema>) => {
 			where: { id },
 			data: {
 				...updateData,
-				soldAt: updateData.status === "SOLD" ? new Date() : null,
+				...(updateData.status !== undefined && {
+					soldAt: updateData.status === "SOLD" ? new Date() : null,
+				}),
 			},
 		});
 
 		return car;
 	} catch (error) {
 		console.error("Failed to update car:", error);
-		throw new Error("Failed to update car");
+		throw error;
 	}
 };

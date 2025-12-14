@@ -29,6 +29,6 @@ export const updateCarSharer = async (
 		return carSharer;
 	} catch (error) {
 		console.error("Failed to update car sharer:", error);
-		throw new Error("Failed to update car sharer");
+		throw error;
 	}
 };

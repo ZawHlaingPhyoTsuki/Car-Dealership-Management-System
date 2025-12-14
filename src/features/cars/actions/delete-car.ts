@@ -17,6 +17,6 @@ export const deleteCar = async (id: string) => {
 		return car;
 	} catch (error) {
 		console.error("Failed to delete car:", error);
-		throw new Error("Failed to delete car");
+		throw error;
 	}
 };

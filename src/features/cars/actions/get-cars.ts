@@ -51,7 +51,7 @@ export async function getCars() {
 		return cars;
 	} catch (error) {
 		console.error("Failed to fetch cars:", error);
-		throw new Error("Failed to fetch cars");
+		throw error;
 	}
 }
 
