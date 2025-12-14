@@ -249,9 +249,11 @@ export default function EditCarSharerForm({
 										{...(price !== undefined && { max: price.toString() })}
 										step="1"
 										{...field}
+										// disabled={price === undefined}
 										onChange={(e) => {
-											const max = price ?? 0;
-											field.onChange(parseAmountInput(e.target.value, max));
+											field.onChange(
+												parseAmountInput(e.target.value, price !== undefined ? price : undefined)
+											);
 										}}
 										value={field.value ?? ""}
 									/>
