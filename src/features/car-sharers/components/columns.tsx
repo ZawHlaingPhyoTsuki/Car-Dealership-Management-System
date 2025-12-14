@@ -167,7 +167,7 @@ export const columns: ColumnDef<Car>[] = [
 		header: "Sold Date",
 		cell: ({ row }) => {
 			const car = row.original;
-			if (car.status === "SOLD" && car.soldAt) {
+			if (car.status === 'SOLD' && car.soldAt) {
 				return new Date(car.soldAt).toLocaleDateString();
 			}
 			return "-";

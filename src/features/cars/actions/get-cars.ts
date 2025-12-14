@@ -14,7 +14,21 @@ export async function getCars() {
 			orderBy: {
 				createdAt: "desc",
 			},
-			include: {
+			select: {
+				id: true,
+				name: true,
+				licenseNumber: true,
+				color: true,
+				status: true,
+				price: true,
+				shareholderPercentage: true,
+				investmentAmount: true,
+				soldAt: true,
+				paidMethod: true,
+				paidAmount: true,
+				notes: true,
+				createdAt: true,
+				updatedAt: true,
 				photos: {
 					select: {
 						id: true,

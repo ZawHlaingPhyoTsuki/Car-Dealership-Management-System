@@ -13,7 +13,10 @@ export const updateCar = async (data: z.infer<typeof UpdateCarSchema>) => {
 
 		const car = await prisma.car.update({
 			where: { id },
-			data: updateData,
+			data: {
+				...updateData,
+				soldAt: updateData.status === "SOLD" ? new Date() : null,
+			},
 		});
 
 		return car;

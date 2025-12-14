@@ -348,7 +348,7 @@ export default function EditCarSharerForm({
 													<CommandItem
 														value=""
 														onSelect={() => {
-															field.onChange(null);
+															field.onChange(undefined);
 															setOpen(false);
 														}}
 													>
