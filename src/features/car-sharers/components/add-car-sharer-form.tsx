@@ -127,13 +127,17 @@ export default function AddCarSharerForm({ onClose }: AddCarFormProps) {
 					type="button"
 					variant="outline"
 					onClick={() => form.reset()}
-					disabled={createCarSharerMutation.isPending || form.formState.isSubmitting}
+					disabled={
+						createCarSharerMutation.isPending || form.formState.isSubmitting
+					}
 				>
 					Clear
 				</Button>
 				<Button
 					type="submit"
-					disabled={createCarSharerMutation.isPending || form.formState.isSubmitting}
+					disabled={
+						createCarSharerMutation.isPending || form.formState.isSubmitting
+					}
 				>
 					{createCarSharerMutation.isPending ? "Saving..." : "Save Shareholder"}
 				</Button>

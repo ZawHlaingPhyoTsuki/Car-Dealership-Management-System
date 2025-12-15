@@ -238,12 +238,3 @@
 		color: oklch(var(--normal-red));
 	}
 }
-
-@layer utilities {
-	.text-green-normal {
-		color: oklch(var(--normal-green));
-	}
-	.text-red-normal {
-		color: oklch(var(--normal-red));
-	}
-}
