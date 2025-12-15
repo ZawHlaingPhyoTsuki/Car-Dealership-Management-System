@@ -20,6 +20,7 @@ export default async function Page() {
 
 	await Promise.all([
 		queryClient.prefetchQuery(getExpensesQueryOptions),
+		// or lightwight query data that contains only id and name => employees:{id,name}[]
 		queryClient.prefetchQuery(getEmployeesQueryOptions),
 	]);
 
