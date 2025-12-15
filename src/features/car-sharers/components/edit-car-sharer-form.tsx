@@ -245,10 +245,10 @@ export default function EditCarSharerForm({
 									<InputGroupInput
 										id="investmentAmount"
 										type="number"
-										min="0"
-										{...(price !== undefined && { max: price.toString() })}
 										step="1"
+										min="0"
 										{...field}
+										{...(price !== undefined && { max: price.toString() })}
 										// disabled={price === undefined}
 										onChange={(e) => {
 											field.onChange(
@@ -398,7 +398,10 @@ export default function EditCarSharerForm({
 				<Button
 					type="button"
 					variant="outline"
-					onClick={() => onClose?.()}
+					onClick={() => {
+						form.reset();
+						onClose?.();
+					}}
 					disabled={
 						updateCarSharerMutation.isPending || form.formState.isSubmitting
 					}

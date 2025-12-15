@@ -9,6 +9,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 interface DataTableColumnHeaderProps<TData, TValue>
@@ -35,7 +36,7 @@ export function DataTableColumnHeader<TData, TValue>({
 						size="sm"
 						className="data-[state=open]:bg-accent -ml-3 h-8"
 					>
-						<span>{title}</span>
+						<Label className="text-lg">{title}</Label>
 						{column.getIsSorted() === "desc" ? (
 							<ArrowDown />
 						) : column.getIsSorted() === "asc" ? (

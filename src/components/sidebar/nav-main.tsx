@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/collapsible";
 import {
 	SidebarGroup,
-	SidebarGroupLabel,
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
@@ -31,7 +30,6 @@ export function NavMain({ items }: { items: NavItem[] }) {
 
 	return (
 		<SidebarGroup>
-			<SidebarGroupLabel>Menu</SidebarGroupLabel>
 			<SidebarMenu>
 				{items.map((item) => {
 					const hasSub = item.items && item.items.length > 0;
@@ -51,6 +49,7 @@ export function NavMain({ items }: { items: NavItem[] }) {
 									asChild
 									isActive={isActiveParent}
 									className="w-full text-left"
+									size="lg"
 								>
 									<Link href={item.url}>
 										{item.icon && <item.icon />}
@@ -70,7 +69,7 @@ export function NavMain({ items }: { items: NavItem[] }) {
 						>
 							<SidebarMenuItem>
 								<CollapsibleTrigger asChild>
-									<SidebarMenuButton isActive={isActiveParent}>
+									<SidebarMenuButton isActive={isActiveParent} size="lg">
 										{item.icon && <item.icon />}
 										<span>{item.title}</span>
 										<ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
@@ -91,6 +90,7 @@ export function NavMain({ items }: { items: NavItem[] }) {
 														asChild
 														isActive={isSubActive}
 														className="w-full text-left"
+														size="md"
 													>
 														<Link href={sub.url}>
 															<span>{sub.title}</span>

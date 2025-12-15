@@ -12,31 +12,25 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Label } from "@/components/ui/label";
 import { formatInLakhsCrores } from "@/lib/utils";
 import { DeleteEmployeeDialog } from "./delete-employee-dialog";
 import EditEmployeeDialog from "./edit-employee-dialog";
 
 export type EmployeeTableData = Pick<
 	Employee,
-	| "id"
-	| "name"
-	| "email"
-	| "position"
-	| "phone"
-	| "address"
-	| "salary"
-	| "startDate"
+	"id" | "name" | "position" | "percentage" | "salary" | "startDate"
 >;
 
 export const columns: ColumnDef<EmployeeTableData>[] = [
 	{
 		id: "no.",
-		header: "No.",
+		header: () => <Label className="text-lg">No.</Label>,
 		cell: ({ row }) => row.index + 1,
 	},
 	{
 		accessorKey: "name",
-		header: "Name",
+		header: () => <Label className="text-lg">Name</Label>,
 		cell: ({ row }) => row.original.name,
 	},
 
@@ -51,20 +45,22 @@ export const columns: ColumnDef<EmployeeTableData>[] = [
 		},
 	},
 	{
+		accessorKey: "percentage",
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Percentage (%)" />
+		),
+		cell: ({ row }) => {
+			const percentage = row.original.percentage;
+			if (percentage == null) return "-";
+			return `${percentage}%`;
+		},
+	},
+	{
 		accessorKey: "position",
-		header: "Position",
+		header: () => <Label className="text-lg">Position</Label>,
 		cell: ({ row }) => row.original.position,
 	},
-	{
-		accessorKey: "phone",
-		header: "Phone",
-		cell: ({ row }) => row.original.phone,
-	},
-	{
-		accessorKey: "email",
-		header: "Email",
-		cell: ({ row }) => row.original.email,
-	},
+
 	{
 		accessorKey: "startDate",
 		header: ({ column }) => (
@@ -78,13 +74,8 @@ export const columns: ColumnDef<EmployeeTableData>[] = [
 		},
 	},
 	{
-		accessorKey: "address",
-		header: "Address",
-		cell: ({ row }) => row.original.address,
-	},
-	{
 		id: "actions",
-		header: "Actions",
+		header: () => <Label className="text-lg">Actions</Label>,
 		cell: ({ row }) => {
 			const employee = row.original;
 
