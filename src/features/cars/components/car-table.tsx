@@ -6,10 +6,10 @@ import { useGetCars } from "../queries/use-cars";
 import { columns } from "./columns";
 
 export default function CarTable() {
-	const { data: cars, isLoading, isLoadingError } = useGetCars();
+	const { data: cars, isLoading, isError } = useGetCars();
 
 	if (isLoading) return <LoadingTable label="Getting Cars..." />;
-	if (isLoadingError) return <div>Error while loading!</div>;
+	if (isError) return <div>Error while loading!</div>;
 
 	return <DataTable columns={columns} data={cars ?? []} />;
 }

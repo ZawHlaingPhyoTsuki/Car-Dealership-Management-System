@@ -6,10 +6,10 @@ import { useGetCars } from "@/features/cars/queries/use-cars";
 import { columns } from "./columns";
 
 export default function CarSharerTable() {
-	const { data: cars, isLoading, isLoadingError } = useGetCars();
+	const { data: cars, isLoading, isError } = useGetCars();
 
 	if (isLoading) return <LoadingTable label="Getting Sharers..." />;
-	if (isLoadingError) return <div>Error while loading!</div>;
+	if (isError) return <div>Error while loading!</div>;
 
-	if (isLoading) return <DataTable columns={columns} data={cars ?? []} />;
+	return <DataTable columns={columns} data={cars ?? []} />;
 }
