@@ -81,7 +81,7 @@ export default function EditExpenseForm({
 	const {
 		data: cars = [],
 		isLoading: isLoadingCars,
-		// error: errorCars,
+		error: errorCars,
 	} = useGetCars();
 
 	const employeeBtnRef: RefObject<HTMLButtonElement | null> = useRef(null);
@@ -119,7 +119,7 @@ export default function EditExpenseForm({
 	};
 
 	if (errorEmployees) return <div>Error loading employees</div>;
-	// if (errorCars) return <div>Error loading cars</div>;
+	if (errorCars) return <div>Error loading cars</div>;
 
 	return (
 		<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
