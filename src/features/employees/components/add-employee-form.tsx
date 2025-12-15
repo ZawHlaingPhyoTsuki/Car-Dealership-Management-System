@@ -16,7 +16,6 @@ import {
 	InputGroupAddon,
 	InputGroupInput,
 } from "@/components/ui/input-group";
-import { Textarea } from "@/components/ui/textarea";
 import { useCreateEmployee } from "../mutations/use-create-employee";
 import { CreateEmployeeSchema, type CreateEmployeeValues } from "../validation";
 
@@ -31,11 +30,9 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 		resolver: zodResolver(CreateEmployeeSchema),
 		defaultValues: {
 			name: "",
-			email: "",
 			position: "",
-			phone: undefined,
-			address: undefined,
-			salary: undefined,
+			salary: 0,
+			percentage: 0,
 		},
 	});
 
@@ -59,29 +56,6 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 									Full Name <span className="text-red-500">*</span>
 								</FieldLabel>
 								<Input id="name" placeholder="John Doe" required {...field} />
-								{fieldState.error && (
-									<FieldError>{fieldState.error.message}</FieldError>
-								)}
-							</Field>
-						)}
-					/>
-
-					{/* Email */}
-					<Controller
-						name="email"
-						control={form.control}
-						render={({ field, fieldState }) => (
-							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="email">
-									Email Address <span className="text-red-500">*</span>
-								</FieldLabel>
-								<Input
-									id="email"
-									type="email"
-									placeholder="john.doe@company.com"
-									required
-									{...field}
-								/>
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>
 								)}
@@ -146,14 +120,32 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 						)}
 					/>
 
-					{/* Phone */}
+					{/* Percentage */}
 					<Controller
-						name="phone"
+						name="percentage"
 						control={form.control}
 						render={({ field, fieldState }) => (
 							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="phone">Phone Number</FieldLabel>
-								<Input id="phone" placeholder="+1 (555) 123-4567" {...field} />
+								<FieldLabel htmlFor="percentage">Percentage</FieldLabel>
+								<InputGroup>
+									<InputGroupInput
+										id="percentage"
+										type="number"
+										step="1"
+										min="1"
+										placeholder="50"
+										required
+										{...field}
+										onChange={(e) => {
+											const value = e.target.value;
+											field.onChange(value === "" ? undefined : Number(value));
+										}}
+										value={field.value ?? ""}
+									/>
+									<InputGroupAddon>
+										<span className="text-gray-500">%</span>
+									</InputGroupAddon>
+								</InputGroup>
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>
 								)}
@@ -161,26 +153,6 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 						)}
 					/>
 				</FieldGroup>
-
-				{/* Address - Full width */}
-				<Controller
-					name="address"
-					control={form.control}
-					render={({ field, fieldState }) => (
-						<Field data-invalid={fieldState.invalid}>
-							<FieldLabel htmlFor="address">Address</FieldLabel>
-							<Textarea
-								id="address"
-								placeholder="123 Main St, City, State, ZIP Code"
-								rows={3}
-								{...field}
-							/>
-							{fieldState.error && (
-								<FieldError>{fieldState.error.message}</FieldError>
-							)}
-						</Field>
-					)}
-				/>
 			</FieldSet>
 
 			{/* Form Actions */}

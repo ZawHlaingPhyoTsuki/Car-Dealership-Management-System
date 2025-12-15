@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { CarStatus, PaidMethod } from "@/app/generated/prisma/enums";
+import { CarStatus } from "@/app/generated/prisma/enums";
 
 export const CreateCarSchema = z.object({
 	name: z.string().min(1, "Name is required"),
@@ -20,14 +20,12 @@ export const CreateCarSchema = z.object({
 		.optional()
 		.transform((e) => (e === "" ? undefined : e))
 		.optional(),
-	paidMethod: z.enum(PaidMethod).optional().nullable(),
-	paidAmount: z.number().optional(),
 });
 
 export type CreateCarValues = z.infer<typeof CreateCarSchema>;
 
 export const UpdateCarSchema = CreateCarSchema.partial().extend({
-	id: z.string(),
+	id: z.uuidv4(),
 });
 
 export type UpdateCarValues = z.infer<typeof UpdateCarSchema>;

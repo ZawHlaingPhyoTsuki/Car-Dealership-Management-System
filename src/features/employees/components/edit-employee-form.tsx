@@ -16,7 +16,6 @@ import {
 	InputGroupAddon,
 	InputGroupInput,
 } from "@/components/ui/input-group";
-import { Textarea } from "@/components/ui/textarea";
 import { useUpdateEmployee } from "../mutations/use-update-employee";
 import { UpdateEmployeeSchema, type UpdateEmployeeValues } from "../validation";
 import type { EmployeeTableData } from "./columns";
@@ -36,22 +35,16 @@ export default function EditEmployeeForm({
 		resolver: zodResolver(UpdateEmployeeSchema),
 		defaultValues: {
 			name: employee.name,
-			email: employee.email,
 			position: employee.position,
-			phone: employee.phone ?? undefined,
-			address: employee.address ?? undefined,
 			salary: employee.salary,
+			percentage: employee.percentage,
 		},
 	});
 
 	const onSubmit = async (data: UpdateEmployeeValues) => {
 		await updateEmployeeMutation.mutateAsync({
 			id: employee.id,
-			data: {
-				...data,
-				phone: data.phone ?? undefined,
-				address: data.address ?? undefined,
-			},
+			data,
 		});
 		onClose();
 	};
@@ -68,27 +61,6 @@ export default function EditEmployeeForm({
 							<Field data-invalid={fieldState.invalid}>
 								<FieldLabel htmlFor="name">Full Name</FieldLabel>
 								<Input id="name" placeholder="John Doe" required {...field} />
-								{fieldState.error && (
-									<FieldError>{fieldState.error.message}</FieldError>
-								)}
-							</Field>
-						)}
-					/>
-
-					{/* Email */}
-					<Controller
-						name="email"
-						control={form.control}
-						render={({ field, fieldState }) => (
-							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="email">Email Address</FieldLabel>
-								<Input
-									id="email"
-									type="email"
-									placeholder="john.doe@company.com"
-									required
-									{...field}
-								/>
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>
 								)}
@@ -150,14 +122,33 @@ export default function EditEmployeeForm({
 						)}
 					/>
 
-					{/* Phone */}
+					{/* Percentage */}
 					<Controller
-						name="phone"
+						name="percentage"
 						control={form.control}
 						render={({ field, fieldState }) => (
 							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="phone">Phone Number</FieldLabel>
-								<Input id="phone" placeholder="+1 (555) 123-4567" {...field} />
+								<FieldLabel htmlFor="percentage">Percentage</FieldLabel>
+								<InputGroup>
+									<InputGroupInput
+										id="percentage"
+										type="number"
+										step="1"
+										min="1"
+										placeholder="50"
+										required
+										{...field}
+										onChange={(e) => {
+											const value = e.target.value;
+											const num = value === "" ? undefined : Number(value);
+											field.onChange(Number.isFinite(num) ? num : undefined);
+										}}
+										value={field.value ?? ""}
+									/>
+									<InputGroupAddon>
+										<span className="text-gray-500">%</span>
+									</InputGroupAddon>
+								</InputGroup>
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>
 								)}
@@ -165,26 +156,6 @@ export default function EditEmployeeForm({
 						)}
 					/>
 				</FieldGroup>
-
-				{/* Address - Full width */}
-				<Controller
-					name="address"
-					control={form.control}
-					render={({ field, fieldState }) => (
-						<Field data-invalid={fieldState.invalid}>
-							<FieldLabel htmlFor="address">Address</FieldLabel>
-							<Textarea
-								id="address"
-								placeholder="123 Main St, City, State, ZIP Code"
-								rows={3}
-								{...field}
-							/>
-							{fieldState.error && (
-								<FieldError>{fieldState.error.message}</FieldError>
-							)}
-						</Field>
-					)}
-				/>
 			</FieldSet>
 
 			{/* Form Actions */}

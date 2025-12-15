@@ -9,7 +9,6 @@ import {
 	FieldError,
 	FieldGroup,
 	FieldLabel,
-	FieldSeparator,
 	FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -48,8 +47,6 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 			licenseNumber: car.licenseNumber ?? undefined,
 			notes: car.notes ?? undefined,
 			status: car.status as CarStatus,
-			paidMethod: car.paidMethod ?? undefined,
-			paidAmount: car.paidAmount ?? undefined,
 		},
 	});
 
@@ -193,34 +190,6 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 							{fieldState.error && (
 								<FieldError>{fieldState.error.message}</FieldError>
 							)}
-						</Field>
-					)}
-				/>
-
-				<FieldSeparator />
-
-				<Controller
-					name="paidAmount"
-					control={form.control}
-					render={({ field, fieldState }) => (
-						<Field data-invalid={fieldState.invalid}>
-							<FieldLabel htmlFor="paidAmount">Paid Amount</FieldLabel>
-							<InputGroup>
-								<InputGroupInput
-									id="paidAmount"
-									type="number"
-									min="0"
-									step="1"
-									{...field}
-									onChange={(e) =>
-										field.onChange(
-											e.target.value ? parseFloat(e.target.value) : 0,
-										)
-									}
-									value={field.value ?? ""}
-								/>
-								<InputGroupAddon>Ks</InputGroupAddon>
-							</InputGroup>
 						</Field>
 					)}
 				/>

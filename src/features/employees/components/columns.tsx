@@ -18,14 +18,7 @@ import EditEmployeeDialog from "./edit-employee-dialog";
 
 export type EmployeeTableData = Pick<
 	Employee,
-	| "id"
-	| "name"
-	| "email"
-	| "position"
-	| "phone"
-	| "address"
-	| "salary"
-	| "startDate"
+	"id" | "name" | "position" | "percentage" | "salary" | "startDate"
 >;
 
 export const columns: ColumnDef<EmployeeTableData>[] = [
@@ -51,20 +44,16 @@ export const columns: ColumnDef<EmployeeTableData>[] = [
 		},
 	},
 	{
+		accessorKey: "percentage",
+		header: "Percentage",
+		cell: ({ row }) => row.original.percentage,
+	},
+	{
 		accessorKey: "position",
 		header: "Position",
 		cell: ({ row }) => row.original.position,
 	},
-	{
-		accessorKey: "phone",
-		header: "Phone",
-		cell: ({ row }) => row.original.phone,
-	},
-	{
-		accessorKey: "email",
-		header: "Email",
-		cell: ({ row }) => row.original.email,
-	},
+
 	{
 		accessorKey: "startDate",
 		header: ({ column }) => (
@@ -76,11 +65,6 @@ export const columns: ColumnDef<EmployeeTableData>[] = [
 			const d = typeof date === "string" ? new Date(date) : date;
 			return Number.isNaN(d.getTime()) ? "N/A" : d.toLocaleDateString("en-US");
 		},
-	},
-	{
-		accessorKey: "address",
-		header: "Address",
-		cell: ({ row }) => row.original.address,
 	},
 	{
 		id: "actions",
