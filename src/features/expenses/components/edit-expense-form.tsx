@@ -176,7 +176,7 @@ export default function EditExpenseForm({
 					name="paidToId"
 					render={({ field, fieldState }) => (
 						<Field>
-							<FieldLabel>Employee *</FieldLabel>
+							<FieldLabel>Employee (Optional)</FieldLabel>
 							<FieldGroup>
 								<Popover open={isEmployeeOpen} onOpenChange={setEmployeeOpen}>
 									<PopoverTrigger asChild>
