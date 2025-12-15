@@ -8,6 +8,9 @@ export const getShareholders = async () => {
 
 	try {
 		const shareholders = await prisma.shareholder.findMany({
+			where: {
+				deletedAt: null,
+			},
 			select: {
 				id: true,
 				name: true,
