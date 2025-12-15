@@ -323,7 +323,8 @@ export default function EditCarSharerForm({
 									<PopoverContent className="w-[300px] p-0" align="start">
 										<Command>
 											<CommandInput placeholder="Search shareholder..." />
-											<CommandList>
+											<CommandList className="max-h-[300px] overflow-y-auto overscroll-contain"
+													onWheel={(e) => e.stopPropagation()}>
 												<CommandEmpty>
 													{isLoading
 														? "Loading..."
