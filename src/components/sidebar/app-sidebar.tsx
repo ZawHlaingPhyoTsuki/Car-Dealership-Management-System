@@ -32,8 +32,9 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
 						src="/images/logo.jpg"
 						width={40}
 						height={40}
-						className="rounded-full overflow-hidden"
-						alt="Logo"
+						className="rounded-full"
+						alt="7hrs Automobile Logo"
+						priority
 					/>
 					7hrs Automobile
 				</Link>
