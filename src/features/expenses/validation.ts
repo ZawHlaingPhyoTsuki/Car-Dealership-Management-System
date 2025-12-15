@@ -8,7 +8,7 @@ export const CreateExpenseSchema = z.object({
 		.min(3, "Empoyee Id must be at at least 3 characters long.")
 		.optional(),
 	category: z.enum(ExpenseCategory),
-	amount: z.number().min(1, "Amount must be greater than 1"),
+	amount: z.number().min(1, "Amount must be at least 1"),
 	carId: z
 		.string()
 		.min(3, "Car Id must be at least 3 characters long")
@@ -29,10 +29,10 @@ export const UpdateExpenseSchema = z.object({
 	date: z.date(),
 	paidToId: z
 		.string()
-		.min(3, "Empoyee Id must be at at least 3 characters long.")
+		.min(3, "Employee Id must be at at least 3 characters long.")
 		.optional(),
 	category: z.enum(ExpenseCategory),
-	amount: z.number().min(1, "Amount must be greater than 1"),
+	amount: z.number().min(1, "Amount must be at lease 1"),
 	carId: z
 		.string()
 		.min(3, "Car Id must be at least 3 characters long")

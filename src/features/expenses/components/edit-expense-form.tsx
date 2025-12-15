@@ -58,7 +58,7 @@ const expenseCategories = [
 	{ value: ExpenseCategory.REPAIRS, label: "Repair" },
 	{ value: ExpenseCategory.TRANSPORT, label: "Transport" },
 	{ value: ExpenseCategory.AUCTION_FEES, label: "Auction Fee" },
-	{ value: ExpenseCategory.CLEANING_DETAILING, label: "Clearning Detailing" },
+	{ value: ExpenseCategory.CLEANING_DETAILING, label: "Cleaning Detailing" },
 	{ value: ExpenseCategory.UTILITIES, label: "Utilities" },
 	{ value: ExpenseCategory.RENT, label: "Rent" },
 	{ value: ExpenseCategory.SALARIES, label: "Salaries" },
