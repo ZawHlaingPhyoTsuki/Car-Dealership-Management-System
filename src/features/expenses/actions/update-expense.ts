@@ -2,6 +2,7 @@
 
 import * as z from "zod";
 import { Prisma } from "@/app/generated/prisma/client";
+import { requireAuth } from "@/lib/auth-guard";
 import prisma from "@/lib/prisma";
 import { UpdateExpenseSchema } from "../validation";
 
@@ -9,6 +10,7 @@ export const updateExpense = async (
 	id: string,
 	data: z.infer<typeof UpdateExpenseSchema>,
 ) => {
+	await requireAuth();
 	try {
 		const { date, amount, paidToId, carId, category, notes } =
 			UpdateExpenseSchema.parse(data);

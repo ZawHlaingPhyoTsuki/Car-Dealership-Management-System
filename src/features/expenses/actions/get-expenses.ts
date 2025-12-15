@@ -1,8 +1,11 @@
 "use server";
 
+import { requireAuth } from "@/lib/auth-guard";
 import prisma from "@/lib/prisma";
 
 export async function getExpenses() {
+	await requireAuth();
+	
 	return await prisma.expense.findMany({
 		where: {
 			deletedAt: null,

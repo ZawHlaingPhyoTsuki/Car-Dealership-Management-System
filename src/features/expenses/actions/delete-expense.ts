@@ -1,8 +1,11 @@
 "use server";
 
+import { requireAuth } from "@/lib/auth-guard";
 import prisma from "@/lib/prisma";
 
 export const deleteExpense = async (id: string) => {
+	await requireAuth();
+	
 	return await prisma.expense.update({
 		where: {
 			id,

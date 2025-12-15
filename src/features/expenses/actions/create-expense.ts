@@ -1,12 +1,15 @@
 "use server";
 
 import * as z from "zod";
+import { requireAuth } from "@/lib/auth-guard";
 import prisma from "@/lib/prisma";
 import { CreateExpenseSchema } from "../validation";
 
 export const createExpene = async (
 	data: z.infer<typeof CreateExpenseSchema>,
 ) => {
+	await requireAuth();
+	
 	try {
 		const validatedData = CreateExpenseSchema.parse(data);
 		const { paidToId, carId, ...rest } = validatedData;
