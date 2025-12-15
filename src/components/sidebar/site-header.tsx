@@ -3,8 +3,8 @@
 import { usePathname } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { ModeSwitcher } from "../shared/mode-switcher";
 import { navigationTitle, titleMap } from "./data";
-import { ModeSwitcher } from "./mode-switcher";
 
 export function SiteHeader() {
 	const pathname = usePathname();
