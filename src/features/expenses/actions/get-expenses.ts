@@ -20,7 +20,7 @@ export async function getExpenses() {
 				select: {
 					id: true,
 					name: true,
-					phone: true,
+					position: true,
 				},
 			},
 			car: {

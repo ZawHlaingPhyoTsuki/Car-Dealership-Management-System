@@ -7,12 +7,11 @@ import prisma from "@/lib/prisma";
 import { UpdateExpenseSchema } from "../validation";
 
 export const updateExpense = async (
-	id: string,
 	data: z.infer<typeof UpdateExpenseSchema>,
 ) => {
 	await requireAuth();
 	try {
-		const { date, amount, paidToId, carId, category, notes } =
+		const { id, date, amount, paidToId, carId, category, notes } =
 			UpdateExpenseSchema.parse(data);
 		return await prisma.expense.update({
 			where: {

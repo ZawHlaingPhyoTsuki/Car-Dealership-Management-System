@@ -2,14 +2,14 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { createExpene } from "../actions/create-expense";
+import { createExpense } from "../actions/create-expense";
 import { getExpensesQueryOptions } from "../queries/get-expenses";
 
 export const useCreateExpense = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: createExpene,
+		mutationFn: createExpense,
 		onSuccess: () => {
 			queryClient.invalidateQueries({
 				queryKey: getExpensesQueryOptions.queryKey,

@@ -84,9 +84,9 @@ export const columns: ColumnDef<Expense>[] = [
 					<div className="min-w-0">
 						<div className="font-medium truncate">{employee.name}</div>
 
-						{employee.phone && (
+						{employee.position && (
 							<div className="text-sm text-gray-500 truncate">
-								{employee.phone}
+								{employee.position}
 							</div>
 						)}
 					</div>

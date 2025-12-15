@@ -8,11 +8,11 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import type { ExpenseTableData } from "./columns";
+import type { Expense } from "../actions/get-expenses";
 import EditExpenseForm from "./edit-expense-form";
 
 interface EditExpenseDialogProps {
-	expense: ExpenseTableData;
+	expense: Expense;
 	open: boolean;
 	onOpenChange: Dispatch<SetStateAction<boolean>>;
 }

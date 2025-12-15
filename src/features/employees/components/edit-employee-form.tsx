@@ -106,7 +106,7 @@ export default function EditEmployeeForm({
 										onChange={(e) => {
 											field.onChange(parseAmountInput(e.target.value));
 										}}
-										value={field.value ?? ""}
+										value={field.value}
 									/>
 									<InputGroupAddon>
 										<span className="text-gray-500">Ks</span>

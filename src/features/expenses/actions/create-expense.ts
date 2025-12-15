@@ -5,7 +5,7 @@ import { requireAuth } from "@/lib/auth-guard";
 import prisma from "@/lib/prisma";
 import { CreateExpenseSchema } from "../validation";
 
-export const createExpene = async (
+export const createExpense = async (
 	data: z.infer<typeof CreateExpenseSchema>,
 ) => {
 	await requireAuth();
