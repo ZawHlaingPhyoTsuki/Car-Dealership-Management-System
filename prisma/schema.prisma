@@ -156,7 +156,7 @@ model Employee {
 
   percentage Int
   salary     Int
-  startDate  DateTime @default(now())
+  startDate  DateTime
 
   expenses Expense[] @relation("EmployeeExpenses")
 

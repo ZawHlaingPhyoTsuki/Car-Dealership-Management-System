@@ -6,15 +6,15 @@ import prisma from "@/lib/prisma";
 import { UpdateEmployeeSchema } from "../validation";
 
 export const updateEmployee = async (
-	id: string,
 	data: z.infer<typeof UpdateEmployeeSchema>,
 ) => {
 	await requireAuth();
 
 	try {
-		const { name, position, salary, percentage } = UpdateEmployeeSchema.parse({
-			...data,
-		});
+		const { id, name, position, salary, percentage, startDate } =
+			UpdateEmployeeSchema.parse({
+				...data,
+			});
 		return await prisma.employee.update({
 			where: {
 				id,
@@ -24,6 +24,7 @@ export const updateEmployee = async (
 				position,
 				salary,
 				percentage,
+				startDate,
 			},
 			select: {
 				id: true,

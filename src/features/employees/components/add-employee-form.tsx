@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,6 +34,7 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 			position: "",
 			salary: 0,
 			percentage: 0,
+			startDate: new Date(),
 		},
 	});
 
@@ -55,7 +57,7 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 								<FieldLabel htmlFor="name">
 									Full Name <span className="text-red-500">*</span>
 								</FieldLabel>
-								<Input id="name" placeholder="John Doe" required {...field} />
+								<Input id="name" placeholder="John Doe" {...field} />
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>
 								)}
@@ -75,7 +77,6 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 								<Input
 									id="position"
 									placeholder="Software Engineer"
-									required
 									{...field}
 								/>
 								{fieldState.error && (
@@ -99,9 +100,8 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 										id="salary"
 										type="number"
 										step="1"
-										min="1"
+										min="0"
 										placeholder="50000"
-										required
 										{...field}
 										onChange={(e) => {
 											const value = e.target.value;
@@ -132,9 +132,9 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 										id="percentage"
 										type="number"
 										step="1"
-										min="1"
+										min="0"
+										max="100"
 										placeholder="50"
-										required
 										{...field}
 										onChange={(e) => {
 											const value = e.target.value;
@@ -145,6 +145,38 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 									<InputGroupAddon>
 										<span className="text-gray-500">%</span>
 									</InputGroupAddon>
+								</InputGroup>
+								{fieldState.error && (
+									<FieldError>{fieldState.error.message}</FieldError>
+								)}
+							</Field>
+						)}
+					/>
+
+					{/* Start Date */}
+					<Controller
+						name="startDate"
+						control={form.control}
+						render={({ field, fieldState }) => (
+							<Field data-invalid={fieldState.invalid}>
+								<FieldLabel htmlFor="startDate">Start Date</FieldLabel>
+								<InputGroup>
+									<InputGroupInput
+										id="startDate"
+										type="date"
+										{...field}
+										value={
+											field.value
+												? format(new Date(field.value), "yyyy-MM-dd")
+												: ""
+										}
+										onChange={(e) => {
+											const dateValue = e.target.value;
+											field.onChange(
+												dateValue ? new Date(dateValue) : undefined,
+											);
+										}}
+									/>
 								</InputGroup>
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>

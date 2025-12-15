@@ -101,14 +101,18 @@ async function main() {
 	const shareholderEmails = generateUniqueEmails(100);
 	const shareholderPhones = generateUniquePhones(100);
 
-	const shareholdersData = Array.from({ length: 100 }, (_, i) => ({
-		name: faker.person.fullName(),
-		phone: shareholderPhones[i],
-		email: shareholderEmails[i],
-		notes: faker.datatype.boolean(0.3) ? faker.lorem.sentence() : null,
-		createdAt: faker.date.past({ years: 3 }),
-		updatedAt: faker.date.recent(),
-	}));
+	const shareholdersData = Array.from(
+		{ length: 100 },
+		(_, i) =>
+			({
+				name: faker.person.fullName(),
+				phone: shareholderPhones[i],
+				email: shareholderEmails[i],
+				notes: faker.datatype.boolean(0.3) ? faker.lorem.sentence() : null,
+				createdAt: faker.date.past({ years: 3 }),
+				updatedAt: faker.date.recent(),
+			}) as Prisma.ShareholderCreateInput,
+	);
 
 	await prisma.shareholder.createMany({
 		data: shareholdersData,
@@ -234,6 +238,7 @@ async function main() {
 							CarStatus.IN_MAINTENANCE,
 							CarStatus.RESERVED,
 						]),
+				soldAt: isSold ? faker.date.past({ years: 2 }) : null,
 				shareholderId,
 				shareholderPercentage,
 				investmentAmount,

@@ -12,6 +12,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Label } from "@/components/ui/label";
 import { formatInLakhsCrores } from "@/lib/utils";
 import { DeleteEmployeeDialog } from "./delete-employee-dialog";
 import EditEmployeeDialog from "./edit-employee-dialog";
@@ -24,12 +25,12 @@ export type EmployeeTableData = Pick<
 export const columns: ColumnDef<EmployeeTableData>[] = [
 	{
 		id: "no.",
-		header: "No.",
+		header: () => <Label className="text-lg">No.</Label>,
 		cell: ({ row }) => row.index + 1,
 	},
 	{
 		accessorKey: "name",
-		header: "Name",
+		header: () => <Label className="text-lg">Name</Label>,
 		cell: ({ row }) => row.original.name,
 	},
 
@@ -45,12 +46,16 @@ export const columns: ColumnDef<EmployeeTableData>[] = [
 	},
 	{
 		accessorKey: "percentage",
-		header: "Percentage",
-		cell: ({ row }) => row.original.percentage,
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Percentage ( % )" />
+		),
+		cell: ({ row }) => {
+			return <Label>{row.original.percentage} %</Label>;
+		},
 	},
 	{
 		accessorKey: "position",
-		header: "Position",
+		header: () => <Label className="text-lg">Position</Label>,
 		cell: ({ row }) => row.original.position,
 	},
 
@@ -68,7 +73,7 @@ export const columns: ColumnDef<EmployeeTableData>[] = [
 	},
 	{
 		id: "actions",
-		header: "Actions",
+		header: () => <Label className="text-lg">Actions</Label>,
 		cell: ({ row }) => {
 			const employee = row.original;
 
