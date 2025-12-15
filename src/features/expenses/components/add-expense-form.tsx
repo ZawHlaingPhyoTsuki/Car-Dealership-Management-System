@@ -320,10 +320,7 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 						<Field>
 							<FieldLabel>Category *</FieldLabel>
 							<FieldGroup>
-								<Select
-									onValueChange={field.onChange}
-									value={field.value}
-								>
+								<Select onValueChange={field.onChange} value={field.value}>
 									<SelectTrigger className="w-full">
 										<SelectValue placeholder="Select a category" />
 									</SelectTrigger>

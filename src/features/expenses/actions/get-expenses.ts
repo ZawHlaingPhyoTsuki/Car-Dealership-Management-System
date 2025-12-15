@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 
 export async function getExpenses() {
 	await requireAuth();
-	
+
 	return await prisma.expense.findMany({
 		where: {
 			deletedAt: null,
@@ -20,15 +20,26 @@ export async function getExpenses() {
 				select: {
 					id: true,
 					name: true,
+					phone: true,
 				},
 			},
 			car: {
 				select: {
 					id: true,
 					name: true,
+					color: true,
+					photos: {
+						select: {
+							id: true,
+							url: true,
+							alt: true,
+						},
+					},
 				},
 			},
 		},
 		orderBy: { date: "desc" },
 	});
 }
+
+export type Expense = Awaited<ReturnType<typeof getExpenses>>[number];

@@ -9,7 +9,7 @@ export const createExpene = async (
 	data: z.infer<typeof CreateExpenseSchema>,
 ) => {
 	await requireAuth();
-	
+
 	try {
 		const validatedData = CreateExpenseSchema.parse(data);
 		const { paidToId, carId, ...rest } = validatedData;

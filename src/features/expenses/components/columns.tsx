@@ -2,8 +2,8 @@
 
 import { IconDotsVertical, IconEdit, IconTrash } from "@tabler/icons-react";
 import type { ColumnDef } from "@tanstack/react-table";
+import Image from "next/image";
 import { useState } from "react";
-import type { Expense } from "@/app/generated/prisma/client";
 import { DataTableColumnHeader } from "@/components/shared/data-table-column-header";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,25 +17,12 @@ import {
 	HoverCardContent,
 	HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { expenseFormatter } from "@/lib/utils";
+import { formatInLakhsCrores } from "@/lib/utils";
+import type { Expense } from "../actions/get-expenses";
 import { DeleteExpenseDialog } from "./delete-expense-dialog";
 import EditExpenseDialog from "./edit-expense-dialog";
 
-export type ExpenseTableData = Pick<
-	Expense,
-	"id" | "date" | "amount" | "category" | "notes"
-> & {
-	paidTo?: {
-		id: string;
-		name: string;
-	} | null;
-	car?: {
-		id: string;
-		name: string;
-	} | null;
-};
-
-export const columns: ColumnDef<ExpenseTableData>[] = [
+export const columns: ColumnDef<Expense>[] = [
 	{
 		id: "no.",
 		header: "No.",
@@ -59,20 +46,78 @@ export const columns: ColumnDef<ExpenseTableData>[] = [
 			<DataTableColumnHeader column={column} title="Amount" />
 		),
 		cell: ({ row }) => {
-			const amount = row.original.amount;
-			return expenseFormatter.format(amount);
+			const amount = Number.parseFloat(row.getValue("amount"));
+			if (Number.isNaN(amount)) return "_";
+			const formatted = formatInLakhsCrores(amount);
+			return formatted;
 		},
 	},
 	{
 		accessorKey: "name",
 		accessorFn: (row) => row.paidTo?.name ?? "",
 		header: "Employee",
-		cell: ({ row }) => row.original.paidTo?.name ?? "_",
+		cell: ({ row }) => {
+			const employee = row.original.paidTo;
+			if (!employee) return "_";
+			return (
+				<div className="flex items-center gap-3 min-w-0">
+					{/* {employee.photos.length > 0 ? (
+						<Image
+							src={employee.photos[0].url}
+							alt={employee.name}
+							width={50}
+							height={30}
+							className="rounded-md object-cover shrink-0"
+						/>
+					) : ( */}
+					<div className="h-[50px] w-[50px] rounded-md bg-gray-100 flex items-center justify-center shrink-0">
+						<span className="text-xs text-gray-500">No image</span>
+					</div>
+					{/* )} */}
+					<div className="min-w-0">
+						<div className="font-medium truncate">{employee.name}</div>
+
+						{employee.phone && (
+							<div className="text-sm text-gray-500 truncate">
+								{employee.phone}
+							</div>
+						)}
+					</div>
+				</div>
+			);
+		},
 	},
 	{
 		accessorKey: "car",
 		header: "Car",
-		cell: ({ row }) => row.original.car?.name ?? "_",
+		cell: ({ row }) => {
+			const car = row.original.car;
+			if (!car) return "_";
+			return (
+				<div className="flex items-center gap-3 min-w-0">
+					{car.photos.length > 0 ? (
+						<Image
+							src={car.photos[0].url}
+							alt={car.name}
+							width={50}
+							height={30}
+							className="rounded-md object-cover shrink-0"
+						/>
+					) : (
+						<div className="h-[50px] w-[50px] rounded-md bg-gray-100 flex items-center justify-center shrink-0">
+							<span className="text-xs text-gray-500">No image</span>
+						</div>
+					)}
+					<div className="min-w-0">
+						<div className="font-medium truncate">{car.name}</div>
+
+						{car.color && (
+							<div className="text-sm text-gray-500 truncate">{car.color}</div>
+						)}
+					</div>
+				</div>
+			);
+		},
 	},
 	{
 		accessorKey: "category",
@@ -113,7 +158,7 @@ export const columns: ColumnDef<ExpenseTableData>[] = [
 	},
 ];
 
-function ExpenseActionsCell({ expense }: { expense: ExpenseTableData }) {
+function ExpenseActionsCell({ expense }: { expense: Expense }) {
 	const [editOpen, setEditOpen] = useState(false);
 	const [deleteOpen, setDeleteOpen] = useState(false);
 
