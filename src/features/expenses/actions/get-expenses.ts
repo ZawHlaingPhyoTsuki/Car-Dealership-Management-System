@@ -38,7 +38,7 @@ export async function getExpenses() {
 				},
 			},
 		},
-		orderBy: { date: "desc" },
+		orderBy: { createdAt: "desc" },
 	});
 }
 

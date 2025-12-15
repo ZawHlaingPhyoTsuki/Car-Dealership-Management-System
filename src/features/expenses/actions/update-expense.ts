@@ -55,10 +55,12 @@ export const updateExpense = async (
 		}
 		if (error instanceof Prisma.PrismaClientKnownRequestError) {
 			if (error.code === "P2002") {
-				throw new Error("Expense already exists");
+				throw new Error("A unique constraint would be violated");
+			}
+			if (error.code === "P2025") {
+				throw new Error("Expense not found");
 			}
 		}
-		// Preserve database errors (e.g., unique constraint violations)
-		throw error;
+		throw new Error("Failed to update expense");
 	}
 };

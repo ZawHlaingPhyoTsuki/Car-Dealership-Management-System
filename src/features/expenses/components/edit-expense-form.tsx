@@ -96,7 +96,12 @@ export default function EditExpenseForm({
 		resolver: zodResolver(UpdateExpenseSchema),
 		defaultValues: {
 			id: expense.id,
-			date: expense.date,
+			date:
+				expense.date
+					? typeof expense.date === "string"
+						? new Date(expense.date)
+						: expense.date
+					: undefined,
 			paidToId: expense.paidTo?.id ?? null,
 			category:
 				(expenseCategories.find((cat) => cat.value === expense.category)

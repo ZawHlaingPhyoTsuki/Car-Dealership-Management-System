@@ -18,6 +18,6 @@ export async function getEmployees() {
 			percentage: true,
 			startDate: true,
 		},
-		orderBy: { startDate: "desc" },
+		orderBy: { createdAt: "desc" },
 	});
 }
