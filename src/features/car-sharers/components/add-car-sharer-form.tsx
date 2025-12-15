@@ -23,7 +23,7 @@ interface AddCarFormProps {
 }
 
 export default function AddCarSharerForm({ onClose }: AddCarFormProps) {
-	const createCarMutation = useCreateCarSharer();
+	const createCarSharerMutation = useCreateCarSharer();
 
 	const form = useForm<CreateCarSharerValues>({
 		resolver: zodResolver(CreateCarSharerSchema),
@@ -36,7 +36,7 @@ export default function AddCarSharerForm({ onClose }: AddCarFormProps) {
 	});
 
 	const onSubmit = async (values: CreateCarSharerValues) => {
-		await createCarMutation.mutateAsync(values);
+		await createCarSharerMutation.mutateAsync(values);
 		form.reset();
 		onClose?.();
 	};
@@ -55,7 +55,7 @@ export default function AddCarSharerForm({ onClose }: AddCarFormProps) {
 								className="md:col-span-2"
 							>
 								<FieldLabel htmlFor="name">
-									Sharerholder Name <span className="text-red-500">*</span>
+									Shareholder Name <span className="text-red-500">*</span>
 								</FieldLabel>
 								<Input id="name" placeholder="John Doe" {...field} />
 								{fieldState.error && (
@@ -119,8 +119,6 @@ export default function AddCarSharerForm({ onClose }: AddCarFormProps) {
 						</Field>
 					)}
 				/>
-
-				<FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-4"></FieldGroup>
 			</FieldSet>
 
 			{/* Form Actions */}
@@ -128,16 +126,23 @@ export default function AddCarSharerForm({ onClose }: AddCarFormProps) {
 				<Button
 					type="button"
 					variant="outline"
-					onClick={() => form.reset()}
-					disabled={createCarMutation.isPending || form.formState.isSubmitting}
+					onClick={() => {
+						form.reset();
+						onClose?.();
+					}}
+					disabled={
+						createCarSharerMutation.isPending || form.formState.isSubmitting
+					}
 				>
-					Clear
+					Cancel
 				</Button>
 				<Button
 					type="submit"
-					disabled={createCarMutation.isPending || form.formState.isSubmitting}
+					disabled={
+						createCarSharerMutation.isPending || form.formState.isSubmitting
+					}
 				>
-					{createCarMutation.isPending ? "Saving..." : "Save Car"}
+					{createCarSharerMutation.isPending ? "Saving..." : "Save Shareholder"}
 				</Button>
 			</div>
 		</form>

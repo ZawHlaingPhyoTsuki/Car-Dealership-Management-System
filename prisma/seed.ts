@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import {
 	CarStatus,
 	ExpenseCategory,
-	PaidMethod,
+	type Prisma,
 } from "@/app/generated/prisma/client";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -101,14 +101,18 @@ async function main() {
 	const shareholderEmails = generateUniqueEmails(100);
 	const shareholderPhones = generateUniquePhones(100);
 
-	const shareholdersData = Array.from({ length: 100 }, (_, i) => ({
-		name: faker.person.fullName(),
-		phone: shareholderPhones[i],
-		email: shareholderEmails[i],
-		notes: faker.datatype.boolean(0.3) ? faker.lorem.sentence() : null,
-		createdAt: faker.date.past({ years: 3 }),
-		updatedAt: faker.date.recent(),
-	}));
+	const shareholdersData = Array.from(
+		{ length: 100 },
+		(_, i) =>
+			({
+				name: faker.person.fullName(),
+				phone: shareholderPhones[i],
+				email: shareholderEmails[i],
+				notes: faker.datatype.boolean(0.3) ? faker.lorem.sentence() : null,
+				createdAt: faker.date.past({ years: 3 }),
+				updatedAt: faker.date.recent(),
+			}) as Prisma.ShareholderCreateInput,
+	);
 
 	await prisma.shareholder.createMany({
 		data: shareholdersData,
@@ -122,23 +126,21 @@ async function main() {
 
 	// ==================== EMPLOYEES ====================
 	console.log("👔 Creating employees...");
-	const employeeEmails = generateUniqueEmails(100);
-	const employeePhones = generateUniquePhones(100);
 
-	const employeesData = Array.from({ length: 100 }, (_, i) => ({
-		name: faker.person.fullName(),
-		email: employeeEmails[i],
-		position: faker.person.jobTitle(),
-		phone: employeePhones[i],
-		address: faker.datatype.boolean(0.8)
-			? faker.location.streetAddress()
-			: null,
-		salary: faker.number.int({ min: 20000, max: 150000 }),
-		startDate: faker.date.past({ years: 5 }),
-		createdAt: faker.date.past({ years: 5 }),
-		updatedAt: faker.date.recent(),
-		deletedAt: faker.datatype.boolean(0.1) ? faker.date.recent() : null,
-	}));
+	const employeesData = Array.from(
+		{ length: 100 },
+		(_, _i) =>
+			({
+				name: faker.person.fullName(),
+				position: faker.person.jobTitle(),
+				percentage: faker.number.int({ min: 1, max: 100 }),
+				salary: faker.number.int({ min: 20000, max: 150000 }),
+				startDate: faker.date.past({ years: 5 }),
+				createdAt: faker.date.past({ years: 5 }),
+				updatedAt: faker.date.recent(),
+				deletedAt: faker.datatype.boolean(0.1) ? faker.date.recent() : null,
+			}) as Prisma.EmployeeCreateInput,
+	);
 
 	await prisma.employee.createMany({
 		data: employeesData,
@@ -208,15 +210,6 @@ async function main() {
 			? faker.number.int({ min: 5500, max: 85000 })
 			: faker.number.int({ min: 5000, max: 80000 });
 
-		const paidAmount = isSold
-			? faker.datatype.boolean(0.8) // 80% paid in full
-				? price
-				: faker.number.int({
-						min: Math.floor(price * 0.5),
-						max: price - 1000,
-					})
-			: null;
-
 		// Determine if car has shareholder (60% of cars)
 		const hasShareholder = faker.datatype.boolean(0.6);
 		let shareholderId = null;
@@ -245,10 +238,7 @@ async function main() {
 							CarStatus.IN_MAINTENANCE,
 							CarStatus.RESERVED,
 						]),
-				paidMethod: isSold
-					? faker.helpers.arrayElement([PaidMethod.CASH, PaidMethod.SCAN])
-					: null,
-				paidAmount,
+				soldAt: isSold ? faker.date.past({ years: 2 }) : null,
 				shareholderId,
 				shareholderPercentage,
 				investmentAmount,

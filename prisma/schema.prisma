@@ -77,8 +77,8 @@ model Shareholder {
 
   cars Car[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   @@map("shareholder")
@@ -89,13 +89,10 @@ model Car {
   name          String
   price         Int
   color         String?
-  licenseNumber String?   @unique
+  licenseNumber String?
   notes         String?
   status        CarStatus @default(AVAILABLE)
-
-  paidMethod PaidMethod?
-  soldAt     DateTime?
-  paidAmount Int?
+  soldAt        DateTime?
 
   expenses              Expense[]
   photos                Photo[]      @relation("CarPhotos")
@@ -116,11 +113,6 @@ enum CarStatus {
   IN_MAINTENANCE
   RESERVED
   SOLD
-}
-
-enum PaidMethod {
-  CASH
-  SCAN
 }
 
 model Expense {
@@ -158,16 +150,13 @@ enum ExpenseCategory {
 }
 
 model Employee {
-  id       String  @id @default(uuid())
+  id       String @id @default(uuid())
   name     String
-  email    String  @unique
   position String
-  phone    String?
-  address  String?
-  // notes    String?
 
-  salary    Int
-  startDate DateTime @default(now())
+  percentage Int
+  salary     Int
+  startDate  DateTime
 
   expenses Expense[] @relation("EmployeeExpenses")
 

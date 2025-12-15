@@ -1,7 +1,6 @@
 import {
 	Car,
 	ChartColumn,
-	CircleQuestionMark,
 	FileSpreadsheet,
 	HandCoins,
 	LayoutDashboard,
@@ -27,7 +26,6 @@ export const navigationTitle = {
 	AnalyticsSharersTotal: "Sharers Total",
 
 	Account: "Account",
-	GetHelp: "Get Help",
 };
 
 export const data: {
@@ -36,29 +34,26 @@ export const data: {
 } = {
 	navMain: [
 		{
-			title: navigationTitle.Dashboard,
-			url: paths.dashboard.root.getHref(),
-			icon: LayoutDashboard,
+			title: navigationTitle.Expenses,
+			url: paths.dashboard.expenses.getHref(),
+			icon: FileSpreadsheet,
 		},
+
 		{
-			title: navigationTitle.CarsListing,
-			url: paths.dashboard.cars.getHref(),
-			icon: Car,
+			title: navigationTitle.Employees,
+			url: paths.dashboard.employees.getHref(),
+			icon: Users,
 		},
+
 		{
 			title: navigationTitle.CarSharersManagement,
 			url: paths.dashboard.carSharers.getHref(),
 			icon: HandCoins,
 		},
 		{
-			title: navigationTitle.Expenses,
-			url: paths.dashboard.expenses.getHref(),
-			icon: FileSpreadsheet,
-		},
-		{
-			title: navigationTitle.Employees,
-			url: paths.dashboard.employees.getHref(),
-			icon: Users,
+			title: navigationTitle.CarsListing,
+			url: paths.dashboard.cars.getHref(),
+			icon: Car,
 		},
 		{
 			title: navigationTitle.Analytics,
@@ -83,17 +78,17 @@ export const data: {
 				},
 			],
 		},
+		{
+			title: navigationTitle.Dashboard,
+			url: paths.dashboard.root.getHref(),
+			icon: LayoutDashboard,
+		},
 	],
 	navSecondary: [
 		{
 			title: navigationTitle.Account,
 			url: paths.dashboard.account.getHref(),
 			icon: Settings,
-		},
-		{
-			title: navigationTitle.GetHelp,
-			url: paths.dashboard.help.getHref(),
-			icon: CircleQuestionMark,
 		},
 	],
 };
@@ -142,5 +137,4 @@ export const titleMap = [
 		match: paths.dashboard.account.getHref(),
 		title: navigationTitle.Account,
 	},
-	{ match: paths.dashboard.help.getHref(), title: navigationTitle.GetHelp },
 ];

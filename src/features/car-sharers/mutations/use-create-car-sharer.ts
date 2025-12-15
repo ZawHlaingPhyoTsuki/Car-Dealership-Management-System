@@ -4,13 +4,13 @@ import { createShareholder } from "../actions/create-shareholder";
 import { getShareholdersQueryOptions } from "../queries/use-car-sharer";
 
 export const useCreateCarSharer = () => {
-	const queryclient = useQueryClient();
+	const queryClient = useQueryClient();
 
 	return useMutation({
 		mutationFn: createShareholder,
 		onSuccess: () => {
 			toast.success("Shareholder created successfully");
-			queryclient.invalidateQueries({
+			queryClient.invalidateQueries({
 				queryKey: getShareholdersQueryOptions.queryKey,
 			});
 		},
