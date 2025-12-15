@@ -17,6 +17,7 @@ import {
 	HoverCardContent,
 	HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { Label } from "@/components/ui/label";
 import { formatInLakhsCrores } from "@/lib/utils";
 import type { Expense } from "../actions/get-expenses";
 import { DeleteExpenseDialog } from "./delete-expense-dialog";
@@ -25,20 +26,8 @@ import EditExpenseDialog from "./edit-expense-dialog";
 export const columns: ColumnDef<Expense>[] = [
 	{
 		id: "no.",
-		header: "No.",
+		header: () => <Label className="text-lg">No.</Label>,
 		cell: ({ row }) => row.index + 1,
-	},
-	{
-		accessorKey: "date",
-		header: ({ column }) => (
-			<DataTableColumnHeader column={column} title="Paid At" />
-		),
-		cell: ({ row }) => {
-			const date = row.original.date;
-			if (!date) return "N/A";
-			const d = typeof date === "string" ? new Date(date) : date;
-			return Number.isNaN(d.getTime()) ? "N/A" : d.toLocaleDateString("en-US");
-		},
 	},
 	{
 		accessorKey: "amount",
@@ -53,9 +42,27 @@ export const columns: ColumnDef<Expense>[] = [
 		},
 	},
 	{
+		accessorKey: "category",
+		header: () => <Label className="text-lg">Reason</Label>,
+		cell: ({ row }) => row.original.category,
+	},
+	{
+		accessorKey: "date",
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Paid At" />
+		),
+		cell: ({ row }) => {
+			const date = row.original.date;
+			if (!date) return "N/A";
+			const d = typeof date === "string" ? new Date(date) : date;
+			return Number.isNaN(d.getTime()) ? "N/A" : d.toLocaleDateString("en-US");
+		},
+	},
+
+	{
 		accessorKey: "name",
 		accessorFn: (row) => row.paidTo?.name ?? "",
-		header: "Employee",
+		header: () => <Label className="text-lg">Employee</Label>,
 		cell: ({ row }) => {
 			const employee = row.original.paidTo;
 			if (!employee) return "_";
@@ -89,7 +96,7 @@ export const columns: ColumnDef<Expense>[] = [
 	},
 	{
 		accessorKey: "car",
-		header: "Car",
+		header: () => <Label className="text-lg">Car</Label>,
 		cell: ({ row }) => {
 			const car = row.original.car;
 			if (!car) return "_";
@@ -119,14 +126,10 @@ export const columns: ColumnDef<Expense>[] = [
 			);
 		},
 	},
-	{
-		accessorKey: "category",
-		header: "Category",
-		cell: ({ row }) => row.original.category,
-	},
+
 	{
 		accessorKey: "notes",
-		header: "Notes",
+		header: () => <Label className="text-lg">Notes</Label>,
 		cell: ({ row }) => {
 			const notes = row.original.notes ?? "";
 			if (!notes) return "_";
@@ -149,7 +152,7 @@ export const columns: ColumnDef<Expense>[] = [
 	},
 	{
 		id: "actions",
-		header: "Actions",
+		header: () => <Label className="text-lg">Actions</Label>,
 		cell: ({ row }) => {
 			const expense = row.original;
 
