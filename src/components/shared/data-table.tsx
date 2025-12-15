@@ -94,7 +94,7 @@ export default function DataTable<TData, TValue>({
 					onChange={(event) =>
 						table.getColumn("name")?.setFilterValue(event.target.value)
 					}
-					className="max-w-sm"
+					className="max-w-sm mr-4"
 				/>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
@@ -180,7 +180,7 @@ export default function DataTable<TData, TValue>({
 			{/* <DataTablePagination table={table} /> */}
 			<div className="flex items-center justify-between mt-4">
 				{/* Left */}
-				<div className="text-sm text-gray-500">
+				<div className="text-sm text-gray-500 whitespace-nowrap">
 					Showing {startRow} to {endRow} of {totalRows} entries
 				</div>
 
@@ -213,13 +213,13 @@ export default function DataTable<TData, TValue>({
 					</div>
 
 					{/* Page number */}
-					<div className="flex w-fit items-center justify-center text-sm font-medium">
+					<div className="ml-auto flex w-fit items-center justify-center text-sm font-medium">
 						Page {table.getState().pagination.pageIndex + 1} of{" "}
 						{table.getPageCount()}
 					</div>
 
 					{/* Page navigation */}
-					<div className="ml-auto flex items-center gap-2 lg:ml-0">
+					<div className="flex items-center gap-2 lg:ml-0">
 						<Button
 							variant="outline"
 							className="hidden h-8 w-8 p-0 lg:flex"

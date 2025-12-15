@@ -63,8 +63,8 @@ export default function EditCarSharerForm({
 		defaultValues: {
 			id: car.id,
 			price: car.price,
-			shareholderPercentage: car.shareholderPercentage ?? undefined,
-			investmentAmount: car.investmentAmount ?? undefined,
+			shareholderPercentage: car.shareholderPercentage ?? 0,
+			investmentAmount: car.investmentAmount ?? 0,
 			shareholderId: car.shareholder?.id ?? undefined,
 		},
 	});
@@ -355,7 +355,11 @@ export default function EditCarSharerForm({
 													{shareholders?.map((shareholder) => (
 														<CommandItem
 															key={shareholder.id}
-															value={shareholder.id}
+															value={shareholder.name}
+															// keywords={[
+															// 	shareholder.name,
+															// 	shareholder.email || "",
+															// ]}
 															onSelect={() => {
 																field.onChange(shareholder.id);
 																setOpen(false);
