@@ -20,6 +20,7 @@ import {
 import { useUpdateEmployee } from "../mutations/use-update-employee";
 import { UpdateEmployeeSchema, type UpdateEmployeeValues } from "../validation";
 import type { EmployeeTableData } from "./columns";
+import { parseAmountInput, parsePercentageInput } from "@/lib/utils";
 
 interface EditEmployeeFormProps {
 	onClose: () => void;
@@ -103,9 +104,12 @@ export default function EditEmployeeForm({
 										placeholder="50000"
 										{...field}
 										onChange={(e) => {
-											const value = e.target.value;
-											const num = value === "" ? undefined : Number(value);
-											field.onChange(Number.isFinite(num) ? num : undefined);
+											field.onChange(
+												parseAmountInput(
+													e.target.value,
+													field.value !== undefined ? field.value : undefined,
+												),
+											);
 										}}
 										value={field.value ?? ""}
 									/>
@@ -133,12 +137,12 @@ export default function EditEmployeeForm({
 										type="number"
 										step="1"
 										min="0"
+										max="100"
 										placeholder="50"
 										{...field}
 										onChange={(e) => {
-											const value = e.target.value;
-											const num = value === "" ? undefined : Number(value);
-											field.onChange(Number.isFinite(num) ? num : undefined);
+											const val = parsePercentageInput(e.target.value);
+											field.onChange(val);
 										}}
 										value={field.value ?? ""}
 									/>
@@ -173,7 +177,9 @@ export default function EditEmployeeForm({
 										onChange={(e) => {
 											const dateValue = e.target.value;
 											field.onChange(
-												dateValue ? new Date(dateValue) : undefined,
+												dateValue
+													? new Date(`${dateValue}T00:00:00`)
+													: undefined,
 											);
 										}}
 									/>
@@ -192,12 +198,15 @@ export default function EditEmployeeForm({
 				<Button
 					type="button"
 					variant="outline"
-					onClick={() => form.reset()}
+					onClick={() => {
+						onClose?.();
+						form.reset();
+					}}
 					disabled={
 						updateEmployeeMutation.isPending || form.formState.isSubmitting
 					}
 				>
-					Clear
+					Cancel
 				</Button>
 				<Button
 					type="submit"

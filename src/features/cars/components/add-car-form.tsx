@@ -199,10 +199,13 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 				<Button
 					type="button"
 					variant="outline"
-					onClick={() => form.reset()}
+					onClick={() => {
+						onClose?.();
+						form.reset();
+					}}
 					disabled={createCarMutation.isPending || form.formState.isSubmitting}
 				>
-					Clear
+					Cancel
 				</Button>
 				<Button
 					type="submit"

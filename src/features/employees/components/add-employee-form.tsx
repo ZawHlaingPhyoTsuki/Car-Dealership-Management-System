@@ -173,7 +173,9 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 										onChange={(e) => {
 											const dateValue = e.target.value;
 											field.onChange(
-												dateValue ? new Date(dateValue) : undefined,
+												dateValue
+													? new Date(`${dateValue}T00:00:00`)
+													: undefined,
 											);
 										}}
 									/>
@@ -192,12 +194,15 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 				<Button
 					type="button"
 					variant="outline"
-					onClick={() => form.reset()}
+					onClick={() => {
+						onClose?.();
+						form.reset();
+					}}
 					disabled={
 						createEmployeeMutation.isPending || form.formState.isSubmitting
 					}
 				>
-					Clear
+					Cancel
 				</Button>
 				<Button
 					type="submit"

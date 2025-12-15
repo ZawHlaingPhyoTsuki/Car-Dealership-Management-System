@@ -47,10 +47,12 @@ export const columns: ColumnDef<EmployeeTableData>[] = [
 	{
 		accessorKey: "percentage",
 		header: ({ column }) => (
-			<DataTableColumnHeader column={column} title="Percentage ( % )" />
+			<DataTableColumnHeader column={column} title="Percentage (%)" />
 		),
 		cell: ({ row }) => {
-			return <Label>{row.original.percentage} %</Label>;
+			const percentage = row.original.percentage;
+			if (percentage == null) return "-";
+			return `${percentage}%`;
 		},
 	},
 	{

@@ -200,7 +200,10 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 				<Button
 					type="button"
 					variant="outline"
-					onClick={() => onClose?.()}
+					onClick={() => {
+						onClose?.();
+						form.reset();
+					}}
 					disabled={updateCarMutation.isPending || form.formState.isSubmitting}
 				>
 					Cancel

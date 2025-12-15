@@ -3,7 +3,7 @@ import * as z from "zod";
 export const CreateEmployeeSchema = z.object({
 	name: z.string().trim().min(3, "Name must be at least 3 characters long."),
 	position: z.string().trim().or(z.literal("")),
-	salary: z.number().min(0, "Salary must be at least 0."),
+	salary: z.number().min(0, "Salary must be at least 0.").optional(),
 	percentage: z
 		.number()
 		.min(0, "Percentage must be at least 0.")
