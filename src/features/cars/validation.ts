@@ -7,16 +7,19 @@ export const CreateCarSchema = z.object({
 	color: z
 		.string()
 		.optional()
-		.transform((e) => (e === "" ? undefined : e)),
+		.transform((e) => (e === "" ? "" : e))
+		.optional(),
 	licenseNumber: z
 		.string()
 		.optional()
-		.transform((e) => (e === "" ? undefined : e)),
+		.transform((e) => (e === "" ? "" : e))
+		.optional(),
 	status: z.enum(CarStatus),
 	notes: z
 		.string()
 		.optional()
-		.transform((e) => (e === "" ? undefined : e)),
+		.transform((e) => (e === "" ? "" : e))
+		.optional(),
 });
 
 export type CreateCarValues = z.infer<typeof CreateCarSchema>;

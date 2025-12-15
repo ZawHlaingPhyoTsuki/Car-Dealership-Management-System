@@ -399,8 +399,8 @@ export default function EditCarSharerForm({
 					type="button"
 					variant="outline"
 					onClick={() => {
-						onClose?.();
 						form.reset();
+						onClose?.();
 					}}
 					disabled={
 						updateCarSharerMutation.isPending || form.formState.isSubmitting

@@ -38,11 +38,11 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 	const form = useForm<CreateCarValues>({
 		resolver: zodResolver(CreateCarSchema),
 		defaultValues: {
-			name: undefined,
+			name: "",
 			price: 0,
-			color: undefined,
-			licenseNumber: undefined,
-			notes: undefined,
+			color: "",
+			licenseNumber: "",
+			notes: "",
 			status: CarStatus.AVAILABLE,
 		},
 	});
@@ -200,8 +200,8 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 					type="button"
 					variant="outline"
 					onClick={() => {
-						onClose?.();
 						form.reset();
+						onClose?.();
 					}}
 					disabled={createCarMutation.isPending || form.formState.isSubmitting}
 				>

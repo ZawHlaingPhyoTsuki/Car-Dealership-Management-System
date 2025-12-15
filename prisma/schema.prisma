@@ -89,7 +89,7 @@ model Car {
   name          String
   price         Int
   color         String?
-  licenseNumber String?   @unique
+  licenseNumber String?
   notes         String?
   status        CarStatus @default(AVAILABLE)
   soldAt        DateTime?

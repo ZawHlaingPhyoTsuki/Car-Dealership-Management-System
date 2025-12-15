@@ -4,6 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Edit, EllipsisVertical, Trash } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import { DataTableColumnHeader } from "@/components/shared/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,12 +13,16 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Label } from "@/components/ui/label";
 import { formatInLakhsCrores } from "@/lib/utils";
 import type { Car } from "../actions/get-cars";
 import DeleteCarDialog from "./delete-car-dialog";
 import EditCarDialog from "./edit-car-dialog";
-import { Label } from "@/components/ui/label";
-import { DataTableColumnHeader } from "@/components/shared/data-table-column-header";
+import {
+	HoverCard,
+	HoverCardContent,
+	HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 export const columns: ColumnDef<Car>[] = [
 	{
@@ -98,6 +103,27 @@ export const columns: ColumnDef<Car>[] = [
 		cell: ({ row }) => {
 			const value = row.getValue("licenseNumber");
 			return value || "-";
+		},
+	},
+	{
+		accessorKey: "notes",
+		header: () => <Label className="text-lg">Notes</Label>,
+		cell: ({ row }) => {
+			const notes = row.original.notes || "-";
+			const preview = notes.length <= 20 ? notes : `${notes.slice(0, 10)}...`;
+			return (
+				<HoverCard>
+					<HoverCardTrigger asChild>
+						<span className="cursor-pointer text-muted-foreground">
+							{preview}
+						</span>
+					</HoverCardTrigger>
+
+					<HoverCardContent className="max-w-sm wrap-break-word">
+						{notes}
+					</HoverCardContent>
+				</HoverCard>
+			);
 		},
 	},
 	{

@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -173,9 +173,7 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 										onChange={(e) => {
 											const dateValue = e.target.value;
 											field.onChange(
-												dateValue
-													? new Date(`${dateValue}T00:00:00`)
-													: undefined,
+												dateValue ? parseISO(dateValue) : undefined,
 											);
 										}}
 									/>
@@ -195,8 +193,8 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 					type="button"
 					variant="outline"
 					onClick={() => {
-						onClose?.();
 						form.reset();
+						onClose?.();
 					}}
 					disabled={
 						createEmployeeMutation.isPending || form.formState.isSubmitting

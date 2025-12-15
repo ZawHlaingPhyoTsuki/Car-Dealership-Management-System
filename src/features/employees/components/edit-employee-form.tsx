@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,10 +17,10 @@ import {
 	InputGroupAddon,
 	InputGroupInput,
 } from "@/components/ui/input-group";
+import { parseAmountInput, parsePercentageInput } from "@/lib/utils";
 import { useUpdateEmployee } from "../mutations/use-update-employee";
 import { UpdateEmployeeSchema, type UpdateEmployeeValues } from "../validation";
 import type { EmployeeTableData } from "./columns";
-import { parseAmountInput, parsePercentageInput } from "@/lib/utils";
 
 interface EditEmployeeFormProps {
 	onClose: () => void;
@@ -104,12 +104,7 @@ export default function EditEmployeeForm({
 										placeholder="50000"
 										{...field}
 										onChange={(e) => {
-											field.onChange(
-												parseAmountInput(
-													e.target.value,
-													field.value !== undefined ? field.value : undefined,
-												),
-											);
+											field.onChange(parseAmountInput(e.target.value));
 										}}
 										value={field.value ?? ""}
 									/>
@@ -177,9 +172,7 @@ export default function EditEmployeeForm({
 										onChange={(e) => {
 											const dateValue = e.target.value;
 											field.onChange(
-												dateValue
-													? new Date(`${dateValue}T00:00:00`)
-													: undefined,
+												dateValue ? parseISO(dateValue) : undefined,
 											);
 										}}
 									/>
@@ -199,8 +192,8 @@ export default function EditEmployeeForm({
 					type="button"
 					variant="outline"
 					onClick={() => {
-						onClose?.();
 						form.reset();
+						onClose?.();
 					}}
 					disabled={
 						updateEmployeeMutation.isPending || form.formState.isSubmitting
