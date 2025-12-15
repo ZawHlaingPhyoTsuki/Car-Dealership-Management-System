@@ -3,6 +3,7 @@ import {
 	ChartColumn,
 	CircleQuestionMark,
 	FileSpreadsheet,
+	HandCoins,
 	LayoutDashboard,
 	Settings,
 	Users,
@@ -14,15 +15,14 @@ export const navigationTitle = {
 	Dashboard: "Dashboard",
 
 	CarsListing: "Cars Listing",
+	CarSharersManagement: "Car Sharers Management",
 	Expenses: "Expenses",
 	Employees: "Employees",
 
 	// Analytics pages
 	Analytics: "Analytics",
-	AnalyticsOverview: "Overview",
 	AnalyticsAvailableCars: "Available Cars",
 	AnalyticsSoldCars: "Sold Cars",
-	AnalyticsExpenseCategories: "Expense Categories",
 	AnalyticsCarProfitSummary: "Car Profit Summary",
 	AnalyticsSharersTotal: "Sharers Total",
 
@@ -46,6 +46,11 @@ export const data: {
 			icon: Car,
 		},
 		{
+			title: navigationTitle.CarSharersManagement,
+			url: paths.dashboard.carSharers.getHref(),
+			icon: HandCoins,
+		},
+		{
 			title: navigationTitle.Expenses,
 			url: paths.dashboard.expenses.getHref(),
 			icon: FileSpreadsheet,
@@ -61,20 +66,12 @@ export const data: {
 			icon: ChartColumn,
 			items: [
 				{
-					title: navigationTitle.AnalyticsOverview,
-					url: paths.dashboard.analytics.overview.getHref(),
-				},
-				{
 					title: navigationTitle.AnalyticsAvailableCars,
 					url: paths.dashboard.analytics.availableCars.getHref(),
 				},
 				{
 					title: navigationTitle.AnalyticsSoldCars,
 					url: paths.dashboard.analytics.soldCars.getHref(),
-				},
-				{
-					title: navigationTitle.AnalyticsExpenseCategories,
-					url: paths.dashboard.analytics.expenseCategories.getHref(),
 				},
 				{
 					title: navigationTitle.AnalyticsCarProfitSummary,
@@ -114,10 +111,6 @@ export const titleMap = [
 		title: navigationTitle.AnalyticsSoldCars,
 	},
 	{
-		match: paths.dashboard.analytics.expenseCategories.getHref(),
-		title: navigationTitle.AnalyticsExpenseCategories,
-	},
-	{
 		match: paths.dashboard.analytics.carProfitSummary.getHref(),
 		title: navigationTitle.AnalyticsCarProfitSummary,
 	},
@@ -130,12 +123,12 @@ export const titleMap = [
 	// MAIN PAGES (lower priority)
 	// ------------------------
 	{
-		match: paths.dashboard.analytics.overview.getHref(),
-		title: navigationTitle.AnalyticsOverview,
-	},
-	{
 		match: paths.dashboard.cars.getHref(),
 		title: navigationTitle.CarsListing,
+	},
+	{
+		match: paths.dashboard.carSharers.getHref(),
+		title: navigationTitle.CarSharersManagement,
 	},
 	{
 		match: paths.dashboard.expenses.getHref(),

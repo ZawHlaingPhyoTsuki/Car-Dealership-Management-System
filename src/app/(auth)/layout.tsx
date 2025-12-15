@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ModeSwitcher } from "@/components/sidebar/mode-switcher";
+import { ModeSwitcher } from "@/components/shared/mode-switcher";
 import { paths } from "@/config/paths";
 import { auth } from "@/lib/auth";
 
