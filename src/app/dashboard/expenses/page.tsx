@@ -5,10 +5,10 @@ import {
 } from "@tanstack/react-query";
 import type { Metadata } from "next";
 import ContentWrapper from "@/components/shared/content-wrapper";
+import { getEmployeesQueryOptions } from "@/features/employees/queries/use-employees";
 import AddExpenseDialog from "@/features/expenses/components/add-expense-dialog";
 import { ExpenseTable } from "@/features/expenses/components/expense-table";
 import { getExpensesQueryOptions } from "@/features/expenses/queries/get-expenses";
-import { getEmployeesQueryOptions } from "@/features/employees/queries/use-employees";
 
 export const metadata: Metadata = {
 	title: "Expenses",

@@ -48,7 +48,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useEmployees } from "@/features/employees/queries/get-employees";
+import { useEmployees } from "@/features/employees/queries/use-employees";
 import { cn } from "@/lib/utils";
 import { useCreateExpense } from "../mutations/use-create-expense";
 import { CreateExpenseSchema, type CreateExpenseValues } from "../validation";
@@ -61,7 +61,7 @@ const expenseCategories = [
 	{ value: ExpenseCategory.REPAIRS, label: "Repair" },
 	{ value: ExpenseCategory.TRANSPORT, label: "Transport" },
 	{ value: ExpenseCategory.AUCTION_FEES, label: "Auction Fee" },
-	{ value: ExpenseCategory.CLEANING_DETAILING, label: "Clearning Detailing" },
+	{ value: ExpenseCategory.CLEANING_DETAILING, label: "Cleaning Detailing" },
 	{ value: ExpenseCategory.UTILITIES, label: "Utilities" },
 	{ value: ExpenseCategory.RENT, label: "Rent" },
 	{ value: ExpenseCategory.SALARIES, label: "Salaries" },
@@ -85,7 +85,7 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 
 	const employeeBtnRef: RefObject<HTMLButtonElement | null> = useRef(null);
 	const carBtnRef: RefObject<HTMLButtonElement | null> = useRef(null);
-	const [emplyeeBtnWidth, setEmplyeeBtnWidth] = useState(0);
+	const [employeeBtnWidth, setEmployeeBtnWidth] = useState(0);
 	const [carBtnWidth, setCarBtnWidth] = useState(0);
 
 	const [isEmployeeOpen, setEmployeeOpen] = useState(false);
@@ -179,7 +179,7 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 											)}
 											onClick={() => {
 												if (employeeBtnRef.current) {
-													setEmplyeeBtnWidth(
+													setEmployeeBtnWidth(
 														employeeBtnRef.current.offsetWidth,
 													);
 												}
@@ -194,7 +194,7 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 									<PopoverContent
 										className="p-0"
 										style={{
-											width: emplyeeBtnWidth > 0 ? emplyeeBtnWidth : "auto",
+											width: employeeBtnWidth > 0 ? employeeBtnWidth : "auto",
 										}}
 									>
 										{isLoadingEmployees ? (

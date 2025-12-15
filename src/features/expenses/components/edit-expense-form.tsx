@@ -48,7 +48,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useEmployees } from "@/features/employees/queries/get-employees";
+import { useEmployees } from "@/features/employees/queries/use-employees";
 import { cn } from "@/lib/utils";
 import { useUpdateExpense } from "../mutations/use-update-expense";
 import { UpdateExpenseSchema, type UpdateExpenseValues } from "../validation";
@@ -91,7 +91,7 @@ export default function EditExpenseForm({
 
 	const employeeBtnRef: RefObject<HTMLButtonElement | null> = useRef(null);
 	const carBtnRef: RefObject<HTMLButtonElement | null> = useRef(null);
-	const [emplyeeBtnWidth, setEmplyeeBtnWidth] = useState(0);
+	const [employeeBtnWidth, setEmployeeBtnWidth] = useState(0);
 	const [carBtnWidth, setCarBtnWidth] = useState(0);
 
 	const [isEmployeeOpen, setEmployeeOpen] = useState(false);
@@ -190,7 +190,7 @@ export default function EditExpenseForm({
 											)}
 											onClick={() => {
 												if (employeeBtnRef.current) {
-													setEmplyeeBtnWidth(
+													setEmployeeBtnWidth(
 														employeeBtnRef.current.offsetWidth,
 													);
 												}
@@ -205,7 +205,7 @@ export default function EditExpenseForm({
 									<PopoverContent
 										className="p-0"
 										style={{
-											width: emplyeeBtnWidth > 0 ? emplyeeBtnWidth : "auto",
+											width: employeeBtnWidth > 0 ? employeeBtnWidth : "auto",
 										}}
 									>
 										{isLoadingEmployees ? (
@@ -478,7 +478,6 @@ export default function EditExpenseForm({
 				>
 					Clear
 				</Button>
-				ne
 				<Button
 					type="submit"
 					disabled={
