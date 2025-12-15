@@ -275,7 +275,7 @@ export default function EditExpenseForm({
 											const current = field.value ?? 0;
 											const newAmount = current - 10000;
 											if (newAmount < 0) {
-												field.onChange(0);
+												field.onChange(1);
 											} else {
 												field.onChange(newAmount);
 											}
@@ -332,7 +332,7 @@ export default function EditExpenseForm({
 							<FieldGroup>
 								<Select
 									onValueChange={field.onChange}
-									defaultValue={field.value}
+									value={field.value}
 								>
 									<SelectTrigger className="w-full">
 										<SelectValue placeholder="Select a category" />
