@@ -2,7 +2,7 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type z from "zod";
+import type { z } from "zod";
 import { updateExpense } from "../actions/update-expense";
 import { getExpensesQueryOptions } from "../queries/get-expenses";
 import type { UpdateExpenseSchema } from "../validation";
