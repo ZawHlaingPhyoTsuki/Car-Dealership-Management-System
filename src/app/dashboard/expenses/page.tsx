@@ -11,8 +11,8 @@ import { getExpensesQueryOptions } from "@/features/expenses/queries/get-expense
 import { getEmployeesQueryOptions } from "@/features/employees/queries/use-employees";
 
 export const metadata: Metadata = {
-	title: "Employees",
-	description: "Business employees dashboard",
+	title: "Expenses",
+	description: "Business Expenses dashboard",
 };
 
 export default async function Page() {
