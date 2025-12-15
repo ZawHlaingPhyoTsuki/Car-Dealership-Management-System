@@ -16,11 +16,9 @@ export const deleteEmployee = async (id: string) => {
 		select: {
 			id: true,
 			name: true,
-			email: true,
 			position: true,
-			phone: true,
-			address: true,
 			salary: true,
+			percentage: true,
 			startDate: true,
 		},
 	});
