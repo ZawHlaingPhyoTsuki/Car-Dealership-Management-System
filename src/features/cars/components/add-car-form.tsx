@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { CarStatus, PaidMethod } from "@/app/generated/prisma/enums";
+import { CarStatus } from "@/app/generated/prisma/enums";
 import { Button } from "@/components/ui/button";
 import {
 	Field,
@@ -38,14 +38,12 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 	const form = useForm<CreateCarValues>({
 		resolver: zodResolver(CreateCarSchema),
 		defaultValues: {
-			name: undefined,
+			name: "",
 			price: 0,
-			color: undefined,
-			licenseNumber: undefined,
-			notes: undefined,
+			color: "",
+			licenseNumber: "",
+			notes: "",
 			status: CarStatus.AVAILABLE,
-			paidMethod: undefined,
-			paidAmount: undefined,
 		},
 	});
 
@@ -171,72 +169,6 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 							</Field>
 						)}
 					/>
-
-					{/* Paid Method */}
-					<Controller
-						name="paidMethod"
-						control={form.control}
-						render={({ field, fieldState }) => (
-							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="paidMethod">Paid Method</FieldLabel>
-								<Select
-									value={field.value ?? undefined}
-									onValueChange={(val) =>
-										field.onChange(val === "unselected" ? undefined : val)
-									}
-								>
-									<SelectTrigger
-										id="paidMethod"
-										aria-invalid={fieldState.invalid}
-									>
-										<SelectValue placeholder="Select paid method" />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value="unselected">None</SelectItem>
-										{Object.values(PaidMethod).map((method) => (
-											<SelectItem key={method} value={method}>
-												{method.replace(/_/g, " ")}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-								{fieldState.error && (
-									<FieldError>{fieldState.error.message}</FieldError>
-								)}
-							</Field>
-						)}
-					/>
-
-					{/* Paid Amount */}
-					<Controller
-						name="paidAmount"
-						control={form.control}
-						render={({ field, fieldState }) => (
-							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="paidAmount">Paid Amount</FieldLabel>
-								<InputGroup>
-									<InputGroupInput
-										id="paidAmount"
-										type="number"
-										min="0"
-										step="1"
-										placeholder="10000"
-										{...field}
-										onChange={(e) =>
-											field.onChange(
-												e.target.value ? parseFloat(e.target.value) : undefined,
-											)
-										}
-										value={field.value || ""}
-									/>
-									<InputGroupAddon>$</InputGroupAddon>
-								</InputGroup>
-								{fieldState.error && (
-									<FieldError>{fieldState.error.message}</FieldError>
-								)}
-							</Field>
-						)}
-					/>
 				</FieldGroup>
 
 				{/* Notes */}
@@ -267,10 +199,13 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 				<Button
 					type="button"
 					variant="outline"
-					onClick={() => form.reset()}
+					onClick={() => {
+						form.reset();
+						onClose?.();
+					}}
 					disabled={createCarMutation.isPending || form.formState.isSubmitting}
 				>
-					Clear
+					Cancel
 				</Button>
 				<Button
 					type="submit"

@@ -126,12 +126,15 @@ export default function AddCarSharerForm({ onClose }: AddCarFormProps) {
 				<Button
 					type="button"
 					variant="outline"
-					onClick={() => form.reset()}
+					onClick={() => {
+						form.reset();
+						onClose?.();
+					}}
 					disabled={
 						createCarSharerMutation.isPending || form.formState.isSubmitting
 					}
 				>
-					Clear
+					Cancel
 				</Button>
 				<Button
 					type="submit"

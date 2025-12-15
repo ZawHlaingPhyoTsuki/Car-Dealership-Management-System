@@ -30,6 +30,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
 						<SidebarMenuButton
 							asChild
 							className="data-[slot=sidebar-menu-button]:p-1.5!"
+							size="lg"
 						>
 							{/* TODO: Replace with your logo and link */}
 							<div>

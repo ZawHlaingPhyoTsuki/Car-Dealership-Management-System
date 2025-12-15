@@ -29,12 +29,12 @@ import EditCarSharerDialog from "./edit-car-sharer-dialog";
 export const columns: ColumnDef<Car>[] = [
 	{
 		id: "no.",
-		header: "No.",
+		header: () => <Label className="text-lg">No.</Label>,
 		cell: ({ row }) => row.index + 1,
 	},
 	{
 		accessorKey: "name",
-		header: "Name",
+		header: () => <Label className="text-lg">Name</Label>,
 		cell: ({ row }) => {
 			const car = row.original;
 
@@ -67,7 +67,7 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "price",
-		header: "Price",
+		header: () => <Label className="text-lg">Price</Label>,
 		cell: ({ row }) => {
 			const price = Number.parseFloat(row.getValue("price"));
 			if (Number.isNaN(price)) return "-";
@@ -76,7 +76,7 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "licenseNumber",
-		header: "License No.",
+		header: () => <Label className="text-lg">License No.</Label>,
 		cell: ({ row }) => {
 			const value = row.getValue("licenseNumber");
 			return value || "-";
@@ -84,7 +84,7 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "7hrs-profit",
-		header: "7hrs Profit",
+		header: () => <Label className="text-lg">7hrs Profit</Label>,
 		cell: ({ row }) => {
 			const price = row.original.price;
 			const percentage = row.original.shareholderPercentage || 0;
@@ -100,7 +100,7 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "sharer-profit",
-		header: "Sharer Profit",
+		header: () => <Label className="text-lg">Sharer Profit</Label>,
 		cell: ({ row }) => {
 			const price = row.original.price;
 			const percentage = row.original.shareholderPercentage || 0;
@@ -118,7 +118,7 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "investmentAmount",
-		header: "Invested Amount",
+		header: () => <Label className="text-lg">Invested Amount</Label>,
 		cell: ({ row }) => {
 			const investmentAmount = Number.parseFloat(
 				row.getValue("investmentAmount"),
@@ -133,7 +133,7 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "shareholderName",
-		header: "Sharer Name",
+		header: () => <Label className="text-lg">Sharer Name</Label>,
 		cell: ({ row }) => {
 			const shareholder = row.original.shareholder;
 			if (!shareholder) return "-";
@@ -167,7 +167,7 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "soldAt",
-		header: "Sold Date",
+		header: () => <Label className="text-lg">Sold Date</Label>,
 		cell: ({ row }) => {
 			const car = row.original;
 			if (car.status === "SOLD" && car.soldAt) {
@@ -178,7 +178,7 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "actions",
-		header: "Actions",
+		header: () => <Label className="text-lg">Actions</Label>,
 		cell: ({ row }) => <CarActions car={row.original} />,
 	},
 ];

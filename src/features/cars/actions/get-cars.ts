@@ -24,8 +24,6 @@ export async function getCars() {
 				shareholderPercentage: true,
 				investmentAmount: true,
 				soldAt: true,
-				paidMethod: true,
-				paidAmount: true,
 				notes: true,
 				createdAt: true,
 				updatedAt: true,
