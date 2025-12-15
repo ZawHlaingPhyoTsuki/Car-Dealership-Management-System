@@ -71,9 +71,7 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 						control={form.control}
 						render={({ field, fieldState }) => (
 							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="position">
-									Position <span className="text-red-500">*</span>
-								</FieldLabel>
+								<FieldLabel htmlFor="position">Position</FieldLabel>
 								<Input
 									id="position"
 									placeholder="Software Engineer"
@@ -92,9 +90,7 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 						control={form.control}
 						render={({ field, fieldState }) => (
 							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="salary">
-									Salary <span className="text-red-500">*</span>
-								</FieldLabel>
+								<FieldLabel htmlFor="salary">Salary</FieldLabel>
 								<InputGroup>
 									<InputGroupInput
 										id="salary"
@@ -105,9 +101,9 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 										{...field}
 										onChange={(e) => {
 											const value = e.target.value;
-											field.onChange(value === "" ? undefined : Number(value));
+											field.onChange(value === "" ? 0 : Number(value));
 										}}
-										value={field.value ?? ""}
+										value={field.value}
 									/>
 									<InputGroupAddon>
 										<span className="text-gray-500">Ks</span>

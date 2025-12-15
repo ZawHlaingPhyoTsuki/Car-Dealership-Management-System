@@ -13,16 +13,16 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Label } from "@/components/ui/label";
-import { formatInLakhsCrores } from "@/lib/utils";
-import type { Car } from "../actions/get-cars";
-import DeleteCarDialog from "./delete-car-dialog";
-import EditCarDialog from "./edit-car-dialog";
 import {
 	HoverCard,
 	HoverCardContent,
 	HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { Label } from "@/components/ui/label";
+import { formatInLakhsCrores } from "@/lib/utils";
+import type { Car } from "../actions/get-cars";
+import DeleteCarDialog from "./delete-car-dialog";
+import EditCarDialog from "./edit-car-dialog";
 
 export const columns: ColumnDef<Car>[] = [
 	{

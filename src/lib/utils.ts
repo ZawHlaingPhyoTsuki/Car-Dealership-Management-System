@@ -172,3 +172,17 @@ export const calculatePercentageFromAmount = (
 	const percentage = (amount / price) * 100;
 	return roundToSixDecimals(percentage);
 };
+
+export const salaryFormatter = new Intl.NumberFormat("en-US", {
+	style: "currency",
+	currency: "USD",
+	minimumFractionDigits: 0,
+	maximumFractionDigits: 0,
+});
+
+export const expenseFormatter = new Intl.NumberFormat("en-US", {
+	style: "currency",
+	currency: "USD",
+	minimumFractionDigits: 0,
+	maximumFractionDigits: 0,
+});

@@ -46,11 +46,13 @@ import { useDataTable } from "@/hooks/use-data-table";
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
+	filterName?: string;
 }
 
 export default function DataTable<TData, TValue>({
 	columns,
 	data,
+	filterName = "name",
 }: DataTableProps<TData, TValue>) {
 	const tableState = useDataTable<TData, TValue>({
 		data,
@@ -89,10 +91,12 @@ export default function DataTable<TData, TValue>({
 		<div className="w-full flex-col justify-start gap-6 mt-6">
 			<div className="flex items-center py-4">
 				<Input
-					placeholder="Filter name..."
-					value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+					placeholder={`Filter ${filterName}...`}
+					value={
+						(table.getColumn(filterName)?.getFilterValue() as string) ?? ""
+					}
 					onChange={(event) =>
-						table.getColumn("name")?.setFilterValue(event.target.value)
+						table.getColumn(filterName)?.setFilterValue(event.target.value)
 					}
 					className="max-w-sm mr-4"
 				/>
