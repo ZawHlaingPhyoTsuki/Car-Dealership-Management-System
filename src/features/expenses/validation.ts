@@ -5,7 +5,7 @@ export const CreateExpenseSchema = z.object({
 	date: z.date(),
 	paidToId: z
 		.string()
-		.min(3, "Empoyee Id must be at at least 3 characters long.")
+		.min(3, "Employee Id must be at at least 3 characters long.")
 		.optional(),
 	category: z.enum(ExpenseCategory),
 	amount: z.number().min(1, "Amount must be at least 1"),
