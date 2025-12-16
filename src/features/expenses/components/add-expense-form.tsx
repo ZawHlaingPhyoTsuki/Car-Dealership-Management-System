@@ -427,7 +427,7 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 															</CommandItem>
 															{cars.map((car) => (
 																<CommandItem
-																	value={car.name}
+																	value={car.id}
 																	key={car.id}
 																	onSelect={() => {
 																		field.onChange(car.id);
