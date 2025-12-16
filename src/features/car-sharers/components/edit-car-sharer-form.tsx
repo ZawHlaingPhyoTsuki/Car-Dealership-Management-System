@@ -63,10 +63,16 @@ export default function EditCarSharerForm({
 		isError: isErrorSharholders,
 	} = useGetShareholders();
 
+	const handleNoShareHolder = () =>{
+		form.setValue('shareholderPercentage',0);
+	}
+
 	const onSubmit = async (values: UpdateCarSharerValues) => {
 		await updateCarSharerMutation.mutateAsync(values);
 		onClose?.();
 	};
+
+
 
 	return (
 		<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -296,6 +302,7 @@ export default function EditCarSharerForm({
 						getValue={(sh) => sh.id}
 						getLabel={(sh) => sh.name}
 						getSubLabel={(sh) => sh.email ?? "No email"}
+						onDone={()=>handleNoShareHolder()}
 					/>
 				</FieldGroup>
 			</FieldSet>
