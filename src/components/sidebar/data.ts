@@ -23,7 +23,7 @@ export const navigationTitle = {
 	AnalyticsAvailableCars: "Available Cars",
 	AnalyticsSoldCars: "Sold Cars",
 	AnalyticsCarProfitSummary: "Car Profit Summary",
-	AnalyticsSharersTotal: "Sharers Total",
+	// AnalyticsSharersTotal: "Sharers Total",
 
 	Account: "Account",
 };
@@ -72,10 +72,10 @@ export const data: {
 					title: navigationTitle.AnalyticsCarProfitSummary,
 					url: paths.dashboard.analytics.carProfitSummary.getHref(),
 				},
-				{
-					title: navigationTitle.AnalyticsSharersTotal,
-					url: paths.dashboard.analytics.sharersTotal.getHref(),
-				},
+				// {
+				// 	title: navigationTitle.AnalyticsSharersTotal,
+				// 	url: paths.dashboard.analytics.sharersTotal.getHref(),
+				// },
 			],
 		},
 		{
@@ -109,10 +109,10 @@ export const titleMap = [
 		match: paths.dashboard.analytics.carProfitSummary.getHref(),
 		title: navigationTitle.AnalyticsCarProfitSummary,
 	},
-	{
-		match: paths.dashboard.analytics.sharersTotal.getHref(),
-		title: navigationTitle.AnalyticsSharersTotal,
-	},
+	// {
+	// 	match: paths.dashboard.analytics.sharersTotal.getHref(),
+	// 	title: navigationTitle.AnalyticsSharersTotal,
+	// },
 
 	// ------------------------
 	// MAIN PAGES (lower priority)

@@ -2,7 +2,6 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { Edit, EllipsisVertical, Trash } from "lucide-react";
-import Image from "next/image";
 import { useState } from "react";
 import { DataTableColumnHeader } from "@/components/shared/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
@@ -37,27 +36,12 @@ export const columns: ColumnDef<Car>[] = [
 			const car = row.original;
 
 			return (
-				<div className="flex items-center gap-3 min-w-0">
-					{car.photos.length > 0 ? (
-						<Image
-							src={car.photos[0].url}
-							alt={car.name}
-							width={50}
-							height={30}
-							className="rounded-md object-cover shrink-0"
-						/>
-					) : (
-						<div className="h-[50px] w-[50px] rounded-md bg-gray-100 flex items-center justify-center shrink-0">
-							<span className="text-xs text-gray-500">No image</span>
-						</div>
-					)}
-					<div className="min-w-0">
-						<div className="font-medium truncate">{car.name}</div>
+				<div className="min-w-0">
+					<div className="font-medium truncate">{car.name}</div>
 
-						{car.color && (
-							<div className="text-sm text-gray-500 truncate">{car.color}</div>
-						)}
-					</div>
+					{car.color && (
+						<div className="text-sm text-gray-500 truncate">{car.color}</div>
+					)}
 				</div>
 			);
 		},

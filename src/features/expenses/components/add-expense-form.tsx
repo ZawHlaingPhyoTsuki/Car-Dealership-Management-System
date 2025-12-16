@@ -2,20 +2,11 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format as formatDate } from "date-fns";
-import { CalendarIcon, ChevronsUpDown, Loader2 } from "lucide-react";
-import { type RefObject, useRef, useState } from "react";
+import { CalendarIcon } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
-import { Badge } from "@/components/ui/badge";
+import FormPopoverSelect from "@/components/shared/form-popover-select";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-	CommandList,
-} from "@/components/ui/command";
 import {
 	Field,
 	FieldError,
@@ -49,31 +40,20 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 	const {
 		data: employees = [],
 		isLoading: isLoadingEmployees,
-		error: errorEmployees,
+		isError: isErrorEmployees,
 	} = useEmployees();
-	const createExpenseMutation = useCreateExpense();
-
 	const {
 		data: cars = [],
 		isLoading: isLoadingCars,
-		error: errorCars,
+		isError: isErrorCars,
 	} = useGetCars();
 	const {
 		data: expenseCategories = [],
 		isLoading: isLoadingExpenseCategories,
-		error: errorExpenseCategories,
+		isError: isErrorExpenseCategories,
 	} = useExpenseCategories();
 
-	const employeeBtnRef: RefObject<HTMLButtonElement | null> = useRef(null);
-	const carBtnRef: RefObject<HTMLButtonElement | null> = useRef(null);
-	const categoryBtnRef: RefObject<HTMLButtonElement | null> = useRef(null);
-	const [employeeBtnWidth, setEmployeeBtnWidth] = useState(0);
-	const [carBtnWidth, setCarBtnWidth] = useState(0);
-	const [categoryBtnWidth, setCategoryBtnWidth] = useState(0);
-
-	const [isEmployeeOpen, setEmployeeOpen] = useState(false);
-	const [isCarOpen, setCarOpen] = useState(false);
-	const [isCategoryOpen, setCategoryOpen] = useState(false);
+	const createExpenseMutation = useCreateExpense();
 
 	const form = useForm<CreateExpenseValues>({
 		resolver: zodResolver(CreateExpenseSchema),
@@ -92,11 +72,6 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 		form.reset();
 		onClose();
 	};
-
-	if (errorEmployees) return <div>Error loading employees</div>;
-	if (errorCars) return <div>Error loading cars</div>;
-	if (errorExpenseCategories)
-		return <div>Error loading expense categories</div>;
 
 	return (
 		<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -155,7 +130,9 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 							name="amount"
 							render={({ field, fieldState }) => (
 								<Field>
-									<FieldLabel>Amount *</FieldLabel>
+									<FieldLabel>
+										Amount <span className="text-red-500">*</span>
+									</FieldLabel>
 									<FieldGroup>
 										<InputGroup className="flex-1">
 											<InputGroupInput
@@ -187,278 +164,50 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 					</div>
 
 					{/* Category */}
-					<Controller
+					<FormPopoverSelect
 						control={form.control}
-						name="categoryId"
-						render={({ field, fieldState }) => (
-							<Field>
-								<FieldLabel>Reason (Optional)</FieldLabel>
-								<FieldGroup>
-									<Popover open={isCategoryOpen} onOpenChange={setCategoryOpen}>
-										<PopoverTrigger asChild>
-											<Button
-												ref={categoryBtnRef}
-												variant="outline"
-												role="combobox"
-												className={cn(
-													"w-full justify-between",
-													!field.value && "text-muted-foreground",
-												)}
-												onClick={() => {
-													if (categoryBtnRef.current) {
-														setCategoryBtnWidth(
-															categoryBtnRef.current.offsetWidth,
-														);
-													}
-												}}
-											>
-												{field.value
-													? expenseCategories.find(
-															(category) => category.id === field.value,
-														)?.name
-													: "Select reason"}
-												<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-											</Button>
-										</PopoverTrigger>
-										<PopoverContent
-											className="p-0"
-											style={{
-												width: categoryBtnWidth > 0 ? categoryBtnWidth : "auto",
-											}}
-										>
-											{isLoadingExpenseCategories ? (
-												<div className="flex items-center justify-center p-4">
-													<Loader2 className="h-4 w-4 animate-spin" />
-												</div>
-											) : (
-												<Command>
-													<CommandInput placeholder="Search reason..." />
-													<CommandEmpty>No reason found.</CommandEmpty>
-													<CommandList
-														className="max-h-[300px] overflow-y-auto overscroll-contain"
-														onWheel={(e) => e.stopPropagation()}
-													>
-														<CommandGroup>
-															<CommandItem
-																value="none"
-																onSelect={() => {
-																	field.onChange(null);
-																	setCategoryOpen(false);
-																}}
-															>
-																<span className="text-muted-foreground">
-																	No reason selected
-																</span>
-															</CommandItem>
-															{expenseCategories.map((category) => (
-																<CommandItem
-																	value={category.name}
-																	key={category.id}
-																	onSelect={() => {
-																		field.onChange(category.id);
-																		setCategoryOpen(false);
-																	}}
-																>
-																	<span>{category.name}</span>
-																</CommandItem>
-															))}
-														</CommandGroup>
-													</CommandList>
-												</Command>
-											)}
-										</PopoverContent>
-									</Popover>
-								</FieldGroup>
-								{fieldState.error && (
-									<FieldError>{fieldState.error.message}</FieldError>
-								)}
-							</Field>
-						)}
+						selector={"reason"}
+						name={"categoryId"}
+						label={"Reason"}
+						items={expenseCategories}
+						isLoading={isLoadingExpenseCategories}
+						isError={isErrorExpenseCategories}
+						allowNone
+						matchTriggerWidth
+						getLabel={(cat) => cat.name}
+						getValue={(cat) => cat.id}
 					/>
 
 					{/* Employee */}
-					<Controller
+					<FormPopoverSelect
 						control={form.control}
-						name="paidToId"
-						render={({ field, fieldState }) => (
-							<Field>
-								<FieldLabel>Employee (Optional)</FieldLabel>
-								<FieldGroup>
-									<Popover open={isEmployeeOpen} onOpenChange={setEmployeeOpen}>
-										<PopoverTrigger asChild>
-											<Button
-												ref={employeeBtnRef}
-												variant="outline"
-												role="combobox"
-												className={cn(
-													"w-full justify-between",
-													!field.value && "text-muted-foreground",
-												)}
-												onClick={() => {
-													if (employeeBtnRef.current) {
-														setEmployeeBtnWidth(
-															employeeBtnRef.current.offsetWidth,
-														);
-													}
-												}}
-											>
-												{field.value
-													? employees.find((emp) => emp.id === field.value)
-															?.name
-													: "Select employee"}
-												<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-											</Button>
-										</PopoverTrigger>
-										<PopoverContent
-											className="p-0"
-											style={{
-												width: employeeBtnWidth > 0 ? employeeBtnWidth : "auto",
-											}}
-										>
-											{isLoadingEmployees ? (
-												<div className="flex items-center justify-center p-4">
-													<Loader2 className="h-4 w-4 animate-spin" />
-												</div>
-											) : (
-												<Command>
-													<CommandInput placeholder="Search employee name..." />
-													<CommandEmpty>No employee found.</CommandEmpty>
-													<CommandList
-														className="max-h-[300px] overflow-y-auto overscroll-contain"
-														onWheel={(e) => e.stopPropagation()}
-													>
-														<CommandGroup>
-															<CommandItem
-																value="none"
-																onSelect={() => {
-																	field.onChange(null);
-																	setEmployeeOpen(false);
-																}}
-															>
-																<span className="text-muted-foreground">
-																	No employee selected
-																</span>
-															</CommandItem>
-															{employees.map((emp) => (
-																<CommandItem
-																	value={emp.name}
-																	key={emp.id}
-																	onSelect={() => {
-																		field.onChange(emp.id);
-																		setEmployeeOpen(false);
-																	}}
-																>
-																	<span>{emp.name}</span>
-																</CommandItem>
-															))}
-														</CommandGroup>
-													</CommandList>
-												</Command>
-											)}
-										</PopoverContent>
-									</Popover>
-								</FieldGroup>
-								{fieldState.error && (
-									<FieldError>{fieldState.error.message}</FieldError>
-								)}
-							</Field>
-						)}
+						selector={"employee"}
+						name={"paidToId"}
+						label={"Employee (Optional)"}
+						items={employees}
+						isLoading={isLoadingEmployees}
+						isError={isErrorEmployees}
+						allowNone
+						matchTriggerWidth
+						getLabel={(emp) => emp.name}
+						getValue={(emp) => emp.id}
+						getSubLabel={(emp) => emp.position}
 					/>
 
 					{/* Car */}
-					<Controller
+					<FormPopoverSelect
 						control={form.control}
-						name="carId"
-						render={({ field, fieldState }) => (
-							<Field>
-								<FieldLabel>Car (Optional)</FieldLabel>
-								<FieldGroup>
-									<Popover open={isCarOpen} onOpenChange={setCarOpen}>
-										<PopoverTrigger asChild>
-											<Button
-												ref={carBtnRef}
-												variant="outline"
-												role="combobox"
-												className={cn(
-													"w-full justify-between",
-													!field.value && "text-muted-foreground",
-												)}
-												onClick={() => {
-													if (carBtnRef.current) {
-														setCarBtnWidth(carBtnRef.current.offsetWidth);
-													}
-												}}
-											>
-												{field.value
-													? cars.find((car) => car.id === field.value)?.name
-													: "Select car"}
-												<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-											</Button>
-										</PopoverTrigger>
-										<PopoverContent
-											className="p-0"
-											style={{
-												width: carBtnWidth > 0 ? carBtnWidth : "auto",
-											}}
-										>
-											{isLoadingCars ? (
-												<div className="flex items-center justify-center p-4">
-													<Loader2 className="h-4 w-4 animate-spin" />
-												</div>
-											) : (
-												<Command>
-													<CommandInput placeholder="Search car..." />
-													<CommandEmpty>No car found.</CommandEmpty>
-													<CommandList
-														className="max-h-[300px] overflow-y-auto overscroll-contain"
-														onWheel={(e) => e.stopPropagation()}
-													>
-														<CommandGroup>
-															<CommandItem
-																value="none"
-																onSelect={() => {
-																	field.onChange(null);
-																	setCarOpen(false);
-																}}
-															>
-																<span className="text-muted-foreground">
-																	No car selected
-																</span>
-															</CommandItem>
-															{cars.map((car) => (
-																<CommandItem
-																	value={car.id}
-																	key={car.id}
-																	onSelect={() => {
-																		field.onChange(car.id);
-																		setCarOpen(false);
-																	}}
-																>
-																	<div className="flex items-center justify-between w-full">
-																		<span>{car.name}</span>
-																		{car.color && (
-																			<Badge
-																				variant="secondary"
-																				className="ml-2"
-																			>
-																				{car.color}
-																			</Badge>
-																		)}
-																	</div>
-																</CommandItem>
-															))}
-														</CommandGroup>
-													</CommandList>
-												</Command>
-											)}
-										</PopoverContent>
-									</Popover>
-								</FieldGroup>
-								{fieldState.error && (
-									<FieldError>{fieldState.error.message}</FieldError>
-								)}
-							</Field>
-						)}
+						selector={"car"}
+						name={"carId"}
+						label={"Car (Optional)"}
+						items={cars}
+						isLoading={isLoadingCars}
+						isError={isErrorCars}
+						allowNone
+						matchTriggerWidth
+						getLabel={(car) => `${car.name} (${car.color})`}
+						getValue={(car) => car.id}
+						getSubLabel={(car) => car.licenseNumber ?? "No Number"}
 					/>
 
 					{/* Note*/}
