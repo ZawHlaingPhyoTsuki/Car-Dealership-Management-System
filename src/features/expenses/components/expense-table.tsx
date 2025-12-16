@@ -57,7 +57,7 @@ export default function ExpensesTable() {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [sorting, setSorting] = useState<SortingState>([
 		{
-			id: "price",
+			id: "amount",
 			desc: false,
 		},
 	]);
@@ -154,35 +154,47 @@ export default function ExpensesTable() {
 						</Button>
 					</div>
 					<div className="flex gap-2">
-						<input
-							type="date"
-							className="border rounded px-2 py-1 text-sm"
-							value={dateRange.from ?? ""}
-							onChange={(e) => {
-								const from = e.target.value;
-								setDateRange((prev) => ({ ...prev, from }));
+						<div className="flex flex-col gap-1">
+							<Label htmlFor="date-from" className="text-sm">
+								From
+							</Label>
+							<input
+								id="date-from"
+								type="date"
+								className="border rounded px-2 py-1 text-sm"
+								value={dateRange.from ?? ""}
+								onChange={(e) => {
+									const from = e.target.value;
+									setDateRange((prev) => ({ ...prev, from }));
 
-								table.getColumn("date")?.setFilterValue({
-									from: from ? new Date(from) : undefined,
-									to: dateRange.to ? new Date(dateRange.to) : undefined,
-								});
-							}}
-						/>
+									table.getColumn("date")?.setFilterValue({
+										from: from ? new Date(from) : undefined,
+										to: dateRange.to ? new Date(dateRange.to) : undefined,
+									});
+								}}
+							/>
+						</div>
 
-						<input
-							type="date"
-							className="border rounded px-2 py-1 text-sm"
-							value={dateRange.to ?? ""}
-							onChange={(e) => {
-								const to = e.target.value;
-								setDateRange((prev) => ({ ...prev, to }));
+						<div className="flex flex-col gap-1">
+							<Label htmlFor="date-to" className="text-sm">
+								To
+							</Label>
+							<input
+								id="date-to"
+								type="date"
+								className="border rounded px-2 py-1 text-sm"
+								value={dateRange.to ?? ""}
+								onChange={(e) => {
+									const to = e.target.value;
+									setDateRange((prev) => ({ ...prev, to }));
 
-								table.getColumn("date")?.setFilterValue({
-									from: dateRange.from ? new Date(dateRange.from) : undefined,
-									to: to ? new Date(to) : undefined,
-								});
-							}}
-						/>
+									table.getColumn("date")?.setFilterValue({
+										from: dateRange.from ? new Date(dateRange.from) : undefined,
+										to: to ? new Date(to) : undefined,
+									});
+								}}
+							/>
+						</div>
 					</div>
 				</div>
 				<Button
