@@ -14,8 +14,13 @@ export async function getExpenses() {
 			id: true,
 			date: true,
 			amount: true,
-			category: true,
 			notes: true,
+			category: {
+				select: {
+					id: true,
+					name: true,
+				},
+			},
 			paidTo: {
 				select: {
 					id: true,

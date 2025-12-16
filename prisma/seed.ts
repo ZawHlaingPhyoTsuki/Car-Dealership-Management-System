@@ -1,9 +1,5 @@
 import { faker } from "@faker-js/faker";
-import {
-	CarStatus,
-	ExpenseCategory,
-	type Prisma,
-} from "@/app/generated/prisma/client";
+import { CarStatus, type Prisma } from "@/app/generated/prisma/client";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
@@ -54,6 +50,7 @@ async function main() {
 		await prisma.account.deleteMany();
 		await prisma.photo.deleteMany();
 		await prisma.expense.deleteMany();
+		await prisma.expenseCategory.deleteMany(); // Added this line
 		await prisma.car.deleteMany();
 		await prisma.shareholder.deleteMany();
 		await prisma.employee.deleteMany();
@@ -95,6 +92,36 @@ async function main() {
 	} else {
 		console.log("✅ Admin user already exists");
 	}
+
+	// ==================== EXPENSE CATEGORIES ====================
+	console.log("📊 Creating expense categories...");
+
+	const expenseCategoryNames = [
+		"Fuel",
+		"Maintenance",
+		"Insurance",
+		"Registration",
+		"Cleaning",
+		"Repairs",
+		"Parking",
+		"Tolls",
+		"Utilities",
+		"Office",
+	];
+
+	// Create expense categories first
+	await prisma.expenseCategory.createMany({
+		data: expenseCategoryNames.map((name) => ({
+			name,
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		})),
+		skipDuplicates: true,
+	});
+
+	// Get category IDs for later use
+	const expenseCategories = await prisma.expenseCategory.findMany();
+	console.log(`✅ ${expenseCategories.length} expense categories created`);
 
 	// ==================== SHAREHOLDERS ====================
 	console.log("👥 Creating shareholders...");
@@ -260,28 +287,16 @@ async function main() {
 
 	// ==================== EXPENSES ====================
 	console.log("💰 Creating expenses...");
-	const expenseCategories = [
-		ExpenseCategory.REPAIRS,
-		ExpenseCategory.TRANSPORT,
-		ExpenseCategory.AUCTION_FEES,
-		ExpenseCategory.CLEANING_DETAILING,
-		ExpenseCategory.UTILITIES,
-		ExpenseCategory.RENT,
-		ExpenseCategory.SALARIES,
-		ExpenseCategory.MARKETING,
-		ExpenseCategory.OFFICE_SUPPLIES,
-		ExpenseCategory.OTHER,
-	];
 
 	// Create expenses with employee relationships
-	const expensesData = Array.from({ length: 100 }, (_, i) => {
+	const expensesData = Array.from({ length: 100 }, (_, _i) => {
 		const isCarExpense = faker.datatype.boolean(0.6); // 60% are car-specific
 		const hasPaidTo = faker.datatype.boolean(0.4); // 40% paid to employees
 
 		return {
 			amount: faker.number.int({ min: 50, max: 10000 }),
 			notes: faker.lorem.sentence(),
-			category: expenseCategories[i % expenseCategories.length],
+			categoryId: faker.helpers.arrayElement(expenseCategories).id,
 			date: faker.date.past({ years: 1 }),
 			carId: isCarExpense ? faker.helpers.arrayElement(carIds) : null,
 			paidToId: hasPaidTo ? faker.helpers.arrayElement(employeeIds) : null,

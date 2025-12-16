@@ -5,7 +5,6 @@ import { format as formatDate } from "date-fns";
 import { CalendarIcon, ChevronsUpDown, Loader2 } from "lucide-react";
 import { type RefObject, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ExpenseCategory } from "@/app/generated/prisma/enums";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -34,36 +33,17 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useGetCars } from "@/features/cars/queries/use-cars";
 import { useEmployees } from "@/features/employees/queries/use-employees";
 import { cn } from "@/lib/utils";
 import { useCreateExpense } from "../mutations/use-create-expense";
+import { useExpenseCategories } from "../queries/get-expense-category";
 import { CreateExpenseSchema, type CreateExpenseValues } from "../validation";
 
 interface AddExpenseFormProps {
 	onClose: () => void;
 }
-
-const expenseCategories = [
-	{ value: ExpenseCategory.REPAIRS, label: "Repair" },
-	{ value: ExpenseCategory.TRANSPORT, label: "Transport" },
-	{ value: ExpenseCategory.AUCTION_FEES, label: "Auction Fee" },
-	{ value: ExpenseCategory.CLEANING_DETAILING, label: "Cleaning Detailing" },
-	{ value: ExpenseCategory.UTILITIES, label: "Utilities" },
-	{ value: ExpenseCategory.RENT, label: "Rent" },
-	{ value: ExpenseCategory.SALARIES, label: "Salaries" },
-	{ value: ExpenseCategory.MARKETING, label: "Marketing" },
-	{ value: ExpenseCategory.OFFICE_SUPPLIES, label: "Office Supplies" },
-	{ value: ExpenseCategory.OTHER, label: "Other" },
-];
 
 export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 	const {
@@ -78,21 +58,29 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 		isLoading: isLoadingCars,
 		error: errorCars,
 	} = useGetCars();
+	const {
+		data: expenseCategories = [],
+		isLoading: isLoadingExpenseCategories,
+		error: errorExpenseCategories,
+	} = useExpenseCategories();
 
 	const employeeBtnRef: RefObject<HTMLButtonElement | null> = useRef(null);
 	const carBtnRef: RefObject<HTMLButtonElement | null> = useRef(null);
+	const categoryBtnRef: RefObject<HTMLButtonElement | null> = useRef(null);
 	const [employeeBtnWidth, setEmployeeBtnWidth] = useState(0);
 	const [carBtnWidth, setCarBtnWidth] = useState(0);
+	const [categoryBtnWidth, setCategoryBtnWidth] = useState(0);
 
 	const [isEmployeeOpen, setEmployeeOpen] = useState(false);
 	const [isCarOpen, setCarOpen] = useState(false);
+	const [isCategoryOpen, setCategoryOpen] = useState(false);
 
 	const form = useForm<CreateExpenseValues>({
 		resolver: zodResolver(CreateExpenseSchema),
 		defaultValues: {
 			date: new Date(),
 			paidToId: null,
-			category: ExpenseCategory.OTHER,
+			categoryId: null,
 			amount: 0,
 			carId: null,
 			notes: "",
@@ -107,6 +95,8 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 
 	if (errorEmployees) return <div>Error loading employees</div>;
 	if (errorCars) return <div>Error loading cars</div>;
+	if (errorExpenseCategories)
+		return <div>Error loading expense categories</div>;
 
 	return (
 		<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -196,28 +186,88 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 						/>
 					</div>
 
-					{/* Category*/}
+					{/* Category */}
 					<Controller
 						control={form.control}
-						name="category"
+						name="categoryId"
 						render={({ field, fieldState }) => (
 							<Field>
-								<FieldLabel>
-									Category <span className="text-red-500">*</span>
-								</FieldLabel>
+								<FieldLabel>Reason (Optional)</FieldLabel>
 								<FieldGroup>
-									<Select onValueChange={field.onChange} value={field.value}>
-										<SelectTrigger className="w-full">
-											<SelectValue placeholder="Select a category" />
-										</SelectTrigger>
-										<SelectContent>
-											{expenseCategories.map((category) => (
-												<SelectItem key={category.value} value={category.value}>
-													{category.label}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
+									<Popover open={isCategoryOpen} onOpenChange={setCategoryOpen}>
+										<PopoverTrigger asChild>
+											<Button
+												ref={categoryBtnRef}
+												variant="outline"
+												role="combobox"
+												className={cn(
+													"w-full justify-between",
+													!field.value && "text-muted-foreground",
+												)}
+												onClick={() => {
+													if (categoryBtnRef.current) {
+														setCategoryBtnWidth(
+															categoryBtnRef.current.offsetWidth,
+														);
+													}
+												}}
+											>
+												{field.value
+													? expenseCategories.find(
+															(category) => category.id === field.value,
+														)?.name
+													: "Select reason"}
+												<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+											</Button>
+										</PopoverTrigger>
+										<PopoverContent
+											className="p-0"
+											style={{
+												width: categoryBtnWidth > 0 ? categoryBtnWidth : "auto",
+											}}
+										>
+											{isLoadingExpenseCategories ? (
+												<div className="flex items-center justify-center p-4">
+													<Loader2 className="h-4 w-4 animate-spin" />
+												</div>
+											) : (
+												<Command>
+													<CommandInput placeholder="Search reason..." />
+													<CommandEmpty>No reason found.</CommandEmpty>
+													<CommandList
+														className="max-h-[300px] overflow-y-auto overscroll-contain"
+														onWheel={(e) => e.stopPropagation()}
+													>
+														<CommandGroup>
+															<CommandItem
+																value="none"
+																onSelect={() => {
+																	field.onChange(null);
+																	setCategoryOpen(false);
+																}}
+															>
+																<span className="text-muted-foreground">
+																	No reason selected
+																</span>
+															</CommandItem>
+															{expenseCategories.map((category) => (
+																<CommandItem
+																	value={category.name}
+																	key={category.id}
+																	onSelect={() => {
+																		field.onChange(category.id);
+																		setCategoryOpen(false);
+																	}}
+																>
+																	<span>{category.name}</span>
+																</CommandItem>
+															))}
+														</CommandGroup>
+													</CommandList>
+												</Command>
+											)}
+										</PopoverContent>
+									</Popover>
 								</FieldGroup>
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>
@@ -281,7 +331,7 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 															<CommandItem
 																value="none"
 																onSelect={() => {
-																	field.onChange(undefined);
+																	field.onChange(null);
 																	setEmployeeOpen(false);
 																}}
 															>
@@ -367,7 +417,7 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 															<CommandItem
 																value="none"
 																onSelect={() => {
-																	field.onChange(undefined);
+																	field.onChange(null);
 																	setCarOpen(false);
 																}}
 															>
@@ -439,12 +489,15 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 				<Button
 					type="button"
 					variant="outline"
-					onClick={() => form.reset()}
+					onClick={() => {
+						form.reset();
+						onClose();
+					}}
 					disabled={
 						createExpenseMutation.isPending || form.formState.isSubmitting
 					}
 				>
-					Clear
+					Cancel
 				</Button>
 				<Button
 					type="submit"
@@ -452,7 +505,7 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 						createExpenseMutation.isPending || form.formState.isSubmitting
 					}
 				>
-					{createExpenseMutation.isPending ? "Saving..." : "Save Expense"}
+					{createExpenseMutation.isPending ? "Saving..." : "Create"}
 				</Button>
 			</div>
 		</form>
