@@ -3,7 +3,6 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Edit, EllipsisVertical, Trash } from "lucide-react";
 import { useState } from "react";
-import type { Employee } from "@/app/generated/prisma/client";
 import { DataTableColumnHeader } from "@/components/shared/data-table-column-header";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,15 +13,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import { formatInLakhsCrores } from "@/lib/utils";
+import type { Employee } from "../actions/get-employees";
 import { DeleteEmployeeDialog } from "./delete-employee-dialog";
 import EditEmployeeDialog from "./edit-employee-dialog";
 
-export type EmployeeTableData = Pick<
-	Employee,
-	"id" | "name" | "position" | "percentage" | "salary" | "startDate"
->;
-
-export const columns: ColumnDef<EmployeeTableData>[] = [
+export const columns: ColumnDef<Employee>[] = [
 	{
 		id: "no.",
 		header: () => <Label className="text-lg">No.</Label>,
@@ -84,7 +79,7 @@ export const columns: ColumnDef<EmployeeTableData>[] = [
 	},
 ];
 
-function EmployeeActionsCell({ employee }: { employee: EmployeeTableData }) {
+function EmployeeActionsCell({ employee }: { employee: Employee }) {
 	const [editOpen, setEditOpen] = useState(false);
 	const [deleteOpen, setDeleteOpen] = useState(false);
 
