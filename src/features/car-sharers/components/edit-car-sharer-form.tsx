@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import FormPopoverSelect from "@/components/shared/form-popover-select";
+import FormPopoverSelect from "@/components/shared/popover-select";
 import { Button } from "@/components/ui/button";
 import {
 	Field,

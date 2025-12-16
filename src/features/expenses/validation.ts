@@ -39,3 +39,8 @@ export type CreateExpenseCategoryValues = z.infer<
 export type UpdateExpenseCategoryValues = z.infer<
 	typeof UpdateExpenseCategorySchema
 >;
+
+export const FilterExpenseByCarSchema = z.object({
+	carId: z.uuidv4("Car Id must be a valid UUID").optional().nullable(),
+});
+export type FilterExpenseByCarValues = z.infer<typeof FilterExpenseByCarSchema>;

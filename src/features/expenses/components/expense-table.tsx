@@ -20,6 +20,7 @@ import {
 	X,
 } from "lucide-react";
 import { useState } from "react";
+import PopoverSelect from "@/components/shared/popover-select";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -65,6 +66,11 @@ export default function ExpensesTable() {
 		to?: string;
 	}>({});
 
+	const [selectedCarId, setSelectedCarId] = useState<string | null>(null);
+	const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+		null,
+	);
+
 	const table = useReactTable({
 		data,
 		columns,
@@ -94,48 +100,50 @@ export default function ExpensesTable() {
 	return (
 		<div className="w-full flex-col justify-start gap-6 mt-6">
 			<div className="flex items-center py-4">
-				{/* Filter here */}
+				{/* Filter */}
 				<div className="flex flex-wrap gap-3 px-2 py-6">
-					<Select
-						onValueChange={(value) => {
-							table
-								.getColumn("category")
-								?.setFilterValue(value === "all" ? undefined : value);
-						}}
-					>
-						<SelectTrigger className="w-40">
-							<SelectValue placeholder="Category" />
-						</SelectTrigger>
+					<div className="w-[200px]">
+						<PopoverSelect
+							value={selectedCategoryId}
+							onChange={(val) => {
+								table
+									.getColumn("category")
+									?.setFilterValue(
+										val === null ? undefined : val === "none" ? "_NONE_" : val,
+									);
+								setSelectedCategoryId(val);
+							}}
+							selector="Reason"
+							items={[{ id: "none", name: "Without Reason" }, ...categories]}
+							allowNone
+							matchTriggerWidth
+							getLabel={(cat) => `${cat.name}`}
+							getValue={(cat) => cat.id}
+							customLabel="All"
+							customSubLabel="Show all reasons"
+						/>
+					</div>
+					<div className="w-[200px]">
+						<PopoverSelect
+							value={selectedCarId}
+							onChange={(val) => {
+								table
+									.getColumn("car")
+									?.setFilterValue(val === null ? undefined : val);
+								setSelectedCarId(val);
+							}}
+							selector="Car"
+							items={cars}
+							allowNone
+							matchTriggerWidth
+							getLabel={(car) => `${car.name} (${car.color})`}
+							getValue={(car) => car.id}
+							getSubLabel={(car) => car.licenseNumber ?? "No Number"}
+							customLabel="All"
+							customSubLabel="Show all cars"
+						/>
+					</div>
 
-						<SelectContent>
-							<SelectItem value="all">All Reason</SelectItem>
-							{categories.map((cat) => (
-								<SelectItem key={cat.id} value={cat.id}>
-									{cat.name}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-					<Select
-						onValueChange={(value) => {
-							table
-								.getColumn("car")
-								?.setFilterValue(value === "all" ? undefined : value);
-						}}
-					>
-						<SelectTrigger className="w-40">
-							<SelectValue placeholder="Car" />
-						</SelectTrigger>
-
-						<SelectContent>
-							<SelectItem value="all">All Cars</SelectItem>
-							{cars.map((car) => (
-								<SelectItem key={car.id} value={car.id}>
-									{car.name}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
 					<div className="flex gap-2 flex-wrap">
 						<Button
 							variant="outline"

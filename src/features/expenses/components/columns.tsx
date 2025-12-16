@@ -46,7 +46,18 @@ export const columns: ColumnDef<Expense>[] = [
 		accessorFn: (row) => row.category?.id ?? null,
 		header: () => <Label className="text-lg">Reason</Label>,
 		cell: ({ row }) => row.original.category?.name ?? "_",
-		filterFn: "equalsString",
+		filterFn: (row, columnId, filterValue) => {
+			const rowValue = row.getValue<string | null>(columnId);
+			//  No filter → show all
+			if (filterValue === undefined) return true;
+
+			//  Filter rows with NO category
+			if (filterValue === "__NONE__") {
+				return rowValue === null;
+			}
+			// Normal category filter
+			return rowValue === filterValue;
+		},
 	},
 	{
 		accessorKey: "date",
