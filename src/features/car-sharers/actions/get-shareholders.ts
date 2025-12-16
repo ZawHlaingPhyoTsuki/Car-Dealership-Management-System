@@ -18,7 +18,7 @@ export const getShareholders = async () => {
 				phone: true,
 			},
 			orderBy: {
-				name: "asc",
+				createdAt: "desc",
 			},
 		});
 

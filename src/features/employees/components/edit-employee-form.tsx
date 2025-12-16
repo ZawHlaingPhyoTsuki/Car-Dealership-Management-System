@@ -18,13 +18,13 @@ import {
 	InputGroupInput,
 } from "@/components/ui/input-group";
 import { parseAmountInput, parsePercentageInput } from "@/lib/utils";
+import type { Employee } from "../actions/get-employees";
 import { useUpdateEmployee } from "../mutations/use-update-employee";
 import { UpdateEmployeeSchema, type UpdateEmployeeValues } from "../validation";
-import type { EmployeeTableData } from "./columns";
 
 interface EditEmployeeFormProps {
 	onClose: () => void;
-	employee: EmployeeTableData;
+	employee: Employee;
 }
 
 export default function EditEmployeeForm({

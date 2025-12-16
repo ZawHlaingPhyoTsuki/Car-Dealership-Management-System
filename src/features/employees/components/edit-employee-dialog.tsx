@@ -8,11 +8,11 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import type { EmployeeTableData } from "@/features/employees/components/columns";
+import type { Employee } from "../actions/get-employees";
 import EditEmployeeForm from "./edit-employee-form";
 
 interface EditEmployeeDialogProps {
-	employee: EmployeeTableData;
+	employee: Employee;
 	open: boolean;
 	onOpenChange: Dispatch<SetStateAction<boolean>>;
 }
