@@ -48,9 +48,8 @@ async function main() {
 		await prisma.verification.deleteMany();
 		await prisma.session.deleteMany();
 		await prisma.account.deleteMany();
-		await prisma.photo.deleteMany();
 		await prisma.expense.deleteMany();
-		await prisma.expenseCategory.deleteMany(); // Added this line
+		await prisma.expenseCategory.deleteMany();
 		await prisma.car.deleteMany();
 		await prisma.shareholder.deleteMany();
 		await prisma.employee.deleteMany();
@@ -286,7 +285,7 @@ async function main() {
 
 	console.log(`✅ ${carsData.length} cars created`);
 
-	// Get car IDs for expenses and photos
+	// Get car IDs for expenses
 	const cars = await prisma.car.findMany();
 	const carIds = cars.map((c) => c.id);
 
@@ -316,36 +315,6 @@ async function main() {
 		skipDuplicates: true,
 	});
 	console.log(`✅ ${expensesData.length} expenses created`);
-
-	// ==================== PHOTOS ====================
-	console.log("📸 Creating photos...");
-	const photosData = [];
-
-	// Each car gets 2-5 photos
-	for (const carId of carIds) {
-		const numPhotos = faker.number.int({ min: 2, max: 5 });
-
-		for (let i = 0; i < numPhotos; i++) {
-			photosData.push({
-				url: faker.image.url({
-					width: 800,
-					height: 600,
-				}),
-				publicId: `car_${carId}_${faker.string.alphanumeric(10)}`,
-				alt: faker.lorem.words(3),
-				order: i,
-				carId: carId,
-				createdAt: faker.date.past({ years: 1 }),
-				deletedAt: faker.datatype.boolean(0.05) ? faker.date.recent() : null,
-			});
-		}
-	}
-
-	await prisma.photo.createMany({
-		data: photosData,
-		skipDuplicates: true,
-	});
-	console.log(`✅ ${photosData.length} photos created`);
 
 	console.log("🎉 Seeding completed successfully!");
 }
