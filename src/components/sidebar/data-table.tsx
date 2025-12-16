@@ -1,15 +1,6 @@
 "use client";
 
 import {
-	IconChevronLeft,
-	IconChevronRight,
-	IconChevronsLeft,
-	IconChevronsRight,
-	IconCircleCheckFilled,
-	IconDotsVertical,
-	IconLoader,
-} from "@tabler/icons-react";
-import {
 	type ColumnDef,
 	type ColumnFiltersState,
 	flexRender,
@@ -23,6 +14,15 @@ import {
 	useReactTable,
 	type VisibilityState,
 } from "@tanstack/react-table";
+import {
+	ChevronLeft,
+	ChevronRight,
+	ChevronsLeft,
+	ChevronsRight,
+	CircleCheckBig,
+	EllipsisVertical,
+	Loader2,
+} from "lucide-react";
 import * as React from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -126,9 +126,9 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
 		cell: ({ row }) => (
 			<Badge variant="outline" className="text-muted-foreground px-1.5">
 				{row.original.status === "Done" ? (
-					<IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
+					<CircleCheckBig className="fill-green-500 dark:fill-green-400" />
 				) : (
-					<IconLoader />
+					<Loader2 />
 				)}
 				{row.original.status}
 			</Badge>
@@ -228,7 +228,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
 						className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
 						size="icon"
 					>
-						<IconDotsVertical />
+						<EllipsisVertical />
 						<span className="sr-only">Open menu</span>
 					</Button>
 				</DropdownMenuTrigger>
@@ -373,7 +373,7 @@ export function DataTable({ data }: { data: z.infer<typeof schema>[] }) {
 							disabled={!table.getCanPreviousPage()}
 						>
 							<span className="sr-only">Go to first page</span>
-							<IconChevronsLeft />
+							<ChevronsLeft />
 						</Button>
 						<Button
 							variant="outline"
@@ -383,7 +383,7 @@ export function DataTable({ data }: { data: z.infer<typeof schema>[] }) {
 							disabled={!table.getCanPreviousPage()}
 						>
 							<span className="sr-only">Go to previous page</span>
-							<IconChevronLeft />
+							<ChevronLeft />
 						</Button>
 						<Button
 							variant="outline"
@@ -393,7 +393,7 @@ export function DataTable({ data }: { data: z.infer<typeof schema>[] }) {
 							disabled={!table.getCanNextPage()}
 						>
 							<span className="sr-only">Go to next page</span>
-							<IconChevronRight />
+							<ChevronRight />
 						</Button>
 						<Button
 							variant="outline"
@@ -403,7 +403,7 @@ export function DataTable({ data }: { data: z.infer<typeof schema>[] }) {
 							disabled={!table.getCanNextPage()}
 						>
 							<span className="sr-only">Go to last page</span>
-							<IconChevronsRight />
+							<ChevronsRight />
 						</Button>
 					</div>
 				</div>
