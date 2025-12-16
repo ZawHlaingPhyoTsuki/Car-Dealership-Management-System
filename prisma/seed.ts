@@ -242,7 +242,7 @@ async function main() {
 			? faker.number.int({ min: 5500, max: 85000 })
 			: faker.number.int({ min: 5000, max: 80000 });
 
-		// Shareholder logic
+		// Determine if car has shareholder (60% of cars)
 		const hasShareholder = faker.datatype.boolean(0.6);
 		let shareholderId: string | null = null;
 		let shareholderPercentage: number | null = null;
