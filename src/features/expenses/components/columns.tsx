@@ -22,6 +22,7 @@ import { formatInLakhsCrores } from "@/lib/utils";
 import type { Expense } from "../actions/get-expenses";
 import { DeleteExpenseDialog } from "./delete-expense-dialog";
 import EditExpenseDialog from "./edit-expense-dialog";
+import { dateBetweenFilter } from "./filterFn";
 
 export const columns: ColumnDef<Expense>[] = [
 	{
@@ -42,9 +43,11 @@ export const columns: ColumnDef<Expense>[] = [
 		},
 	},
 	{
-		accessorKey: "category",
+		id: "category",
+		accessorFn: (row) => row.category?.id ?? "",
 		header: () => <Label className="text-lg">Reason</Label>,
 		cell: ({ row }) => row.original.category?.name ?? "_",
+		filterFn: "equalsString",
 	},
 	{
 		accessorKey: "date",
@@ -57,8 +60,8 @@ export const columns: ColumnDef<Expense>[] = [
 			const d = typeof date === "string" ? new Date(date) : date;
 			return Number.isNaN(d.getTime()) ? "N/A" : d.toLocaleDateString("en-US");
 		},
+		filterFn: dateBetweenFilter,
 	},
-
 	{
 		accessorKey: "name",
 		accessorFn: (row) => row.paidTo?.name ?? "",

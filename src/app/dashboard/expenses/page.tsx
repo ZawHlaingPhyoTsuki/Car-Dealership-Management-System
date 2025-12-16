@@ -8,7 +8,7 @@ import ContentWrapper from "@/components/shared/content-wrapper";
 import { getEmployeesQueryOptions } from "@/features/employees/queries/use-employees";
 import AddExpenseCategoryDialog from "@/features/expenses/components/add-expense-category-dialog";
 import AddExpenseDialog from "@/features/expenses/components/add-expense-dialog";
-import { ExpenseTable } from "@/features/expenses/components/expense-table";
+import ExpensesTable from "@/features/expenses/components/expense-table";
 import { getExpenseCategoriesQueryOptions } from "@/features/expenses/queries/get-expense-category";
 import { getExpensesQueryOptions } from "@/features/expenses/queries/get-expenses";
 
@@ -38,7 +38,7 @@ export default async function Page() {
 			}
 		>
 			<HydrationBoundary state={dehydrate(queryClient)}>
-				<ExpenseTable />
+				<ExpensesTable />
 			</HydrationBoundary>
 		</ContentWrapper>
 	);
