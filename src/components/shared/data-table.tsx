@@ -10,13 +10,18 @@ import {
 } from "@tabler/icons-react";
 import {
 	type ColumnDef,
+	type ColumnFiltersState,
 	flexRender,
 	getCoreRowModel,
 	getFilteredRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
+	type PaginationState,
+	type SortingState,
 	useReactTable,
+	type VisibilityState,
 } from "@tanstack/react-table";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -41,43 +46,46 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { useDataTable } from "@/hooks/use-data-table";
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
-	filterName?: string;
 }
 
 export default function DataTable<TData, TValue>({
 	columns,
 	data,
-	filterName = "name",
 }: DataTableProps<TData, TValue>) {
-	const tableState = useDataTable<TData, TValue>({
-		data,
-		columns,
-		initialPageSize: 10,
+	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+	const [sorting, setSorting] = useState<SortingState>([
+		{
+			id: "price",
+			desc: false,
+		},
+	]);
+	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+	const [pagination, setPagination] = useState<PaginationState>({
+		pageIndex: 0,
+		pageSize: 10,
 	});
 
 	const table = useReactTable({
 		data,
 		columns,
 		state: {
-			sorting: tableState.sorting,
-			columnVisibility: tableState.columnVisibility,
-			columnFilters: tableState.columnFilters,
-			pagination: tableState.pagination,
+			sorting,
+			columnVisibility,
+			columnFilters,
+			pagination,
 		},
-		// getRowId: (row) => row.id,
 		getCoreRowModel: getCoreRowModel(),
 		getSortedRowModel: getSortedRowModel(),
 		getFilteredRowModel: getFilteredRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
-		onSortingChange: tableState.setSorting,
-		onColumnVisibilityChange: tableState.setColumnVisibility,
-		onColumnFiltersChange: tableState.setColumnFilters,
-		onPaginationChange: tableState.setPagination,
+		onSortingChange: setSorting,
+		onColumnVisibilityChange: setColumnVisibility,
+		onColumnFiltersChange: setColumnFilters,
+		onPaginationChange: setPagination,
 	});
 
 	// Calculate showing text correctly
@@ -91,12 +99,10 @@ export default function DataTable<TData, TValue>({
 		<div className="w-full flex-col justify-start gap-6 mt-6">
 			<div className="flex items-center py-4">
 				<Input
-					placeholder={`Filter ${filterName}...`}
-					value={
-						(table.getColumn(filterName)?.getFilterValue() as string) ?? ""
-					}
+					placeholder="Filter name.."
+					value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
 					onChange={(event) =>
-						table.getColumn(filterName)?.setFilterValue(event.target.value)
+						table.getColumn("name")?.setFilterValue(event.target.value)
 					}
 					className="max-w-sm mr-4"
 				/>
@@ -131,6 +137,7 @@ export default function DataTable<TData, TValue>({
 				</DropdownMenu>
 			</div>
 
+			{/* Table */}
 			<div className="overflow-hidden rounded-lg border">
 				<Table>
 					<TableHeader className="bg-muted sticky top-0 z-10">
@@ -181,7 +188,7 @@ export default function DataTable<TData, TValue>({
 					</TableBody>
 				</Table>
 			</div>
-			{/* <DataTablePagination table={table} /> */}
+			{/* Pagination */}
 			<div className="flex items-center justify-between mt-4">
 				{/* Left */}
 				<div className="text-sm text-gray-500 whitespace-nowrap">
