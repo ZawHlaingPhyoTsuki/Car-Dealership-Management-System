@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
-import React, { useState } from "react";
+import { useRef, useState } from "react";
 import {
 	type Control,
 	Controller,
@@ -46,7 +46,7 @@ type FormPopoverSelectProps<TFieldValues extends FieldValues, TItem> = {
 	getLabel: (item: TItem) => string;
 	getValue: (item: TItem) => string;
 	getSubLabel?: (item: TItem) => string | undefined;
-	onDone?: () => void;
+	onClear?: () => void;
 };
 
 function FormPopoverSelect<TFieldValues extends FieldValues, TItem>({
@@ -62,11 +62,11 @@ function FormPopoverSelect<TFieldValues extends FieldValues, TItem>({
 	getLabel,
 	getValue,
 	getSubLabel,
-	onDone,
+	onClear,
 }: FormPopoverSelectProps<TFieldValues, TItem>) {
 	const [open, setOpen] = useState(false);
-	const triggerRef = React.useRef<HTMLButtonElement>(null);
-	const [triggerWidth, setTriggerWidth] = React.useState<number>();
+	const triggerRef = useRef<HTMLButtonElement>(null);
+	const [triggerWidth, setTriggerWidth] = useState<number>();
 
 	return (
 		<Controller
@@ -104,7 +104,7 @@ function FormPopoverSelect<TFieldValues extends FieldValues, TItem>({
 											!field.value && "text-muted-foreground",
 										)}
 										onClick={() => {
-											if (matchTriggerWidth && triggerRef.current) {
+											if (matchTriggerWidth && triggerRef.current && !open) {
 												setTriggerWidth(triggerRef.current.offsetWidth);
 											}
 										}}
@@ -144,7 +144,7 @@ function FormPopoverSelect<TFieldValues extends FieldValues, TItem>({
 															onSelect={() => {
 																field.onChange(null);
 																setOpen(false);
-																onDone?.();
+																onClear?.();
 															}}
 														>
 															<Check
@@ -182,7 +182,7 @@ function FormPopoverSelect<TFieldValues extends FieldValues, TItem>({
 																	)}
 																/>
 																<div className="w-full space-y-1">
-																	<div className="">
+																	<div>
 																		<span>{getLabel(item)}</span>
 																		{getSubLabel && (
 																			<span className="block text-sm text-muted-foreground">

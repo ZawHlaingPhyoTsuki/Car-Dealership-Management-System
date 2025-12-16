@@ -293,8 +293,8 @@ export default function EditCarSharerForm({
 					<FormPopoverSelect
 						control={form.control}
 						name="shareholderId"
-						label={"Select Shareholder (Optional)"}
-						selector={"shareholder"}
+						label="Select Shareholder (Optional)"
+						selector="shareholder"
 						matchTriggerWidth
 						allowNone
 						items={shareholders ?? []}
@@ -303,7 +303,7 @@ export default function EditCarSharerForm({
 						getValue={(sh) => sh.id}
 						getLabel={(sh) => sh.name}
 						getSubLabel={(sh) => sh.email ?? "No email"}
-						onDone={resetShareholderPercentage}
+						onClear={resetShareholderPercentage}
 					/>
 				</FieldGroup>
 			</FieldSet>
