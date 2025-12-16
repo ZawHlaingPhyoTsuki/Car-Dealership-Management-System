@@ -1,7 +1,8 @@
 "use client";
 
 import type { User } from "better-auth";
-import { Van } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import type * as React from "react";
 import { NavMain } from "@/components/sidebar/nav-main";
 import { NavSecondary } from "@/components/sidebar/nav-secondary";
@@ -11,10 +12,8 @@ import {
 	SidebarContent,
 	SidebarFooter,
 	SidebarHeader,
-	SidebarMenu,
-	SidebarMenuButton,
-	SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { paths } from "@/config/paths";
 import { data } from "./data";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
@@ -25,20 +24,20 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
 	return (
 		<Sidebar collapsible="offcanvas" {...props}>
 			<SidebarHeader>
-				<SidebarMenu>
-					<SidebarMenuItem>
-						<SidebarMenuButton
-							asChild
-							className="data-[slot=sidebar-menu-button]:p-1.5!"
-						>
-							{/* TODO: Replace with your logo and link */}
-							<div>
-								<Van className="size-5!" />
-								<span className="text-base font-semibold">Acme Inc.</span>
-							</div>
-						</SidebarMenuButton>
-					</SidebarMenuItem>
-				</SidebarMenu>
+				<Link
+					href={paths.dashboard.root.getHref()}
+					className="flex items-center gap-2 font-semibold text-xl"
+				>
+					<Image
+						src="/images/logo.jpg"
+						width={40}
+						height={40}
+						className="rounded-full"
+						alt="7hrs Automobile Logo"
+						priority
+					/>
+					7hrs Automobile
+				</Link>
 			</SidebarHeader>
 			<SidebarContent>
 				<NavMain items={data.navMain} />

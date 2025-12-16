@@ -4,6 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Edit, EllipsisVertical, Trash } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import { DataTableColumnHeader } from "@/components/shared/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +13,12 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+	HoverCard,
+	HoverCardContent,
+	HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { Label } from "@/components/ui/label";
 import { formatInLakhsCrores } from "@/lib/utils";
 import type { Car } from "../actions/get-cars";
 import DeleteCarDialog from "./delete-car-dialog";
@@ -20,12 +27,12 @@ import EditCarDialog from "./edit-car-dialog";
 export const columns: ColumnDef<Car>[] = [
 	{
 		id: "no.",
-		header: "No.",
+		header: () => <Label className="text-lg">No.</Label>,
 		cell: ({ row }) => row.index + 1,
 	},
 	{
 		accessorKey: "name",
-		header: "Name",
+		header: () => <Label className="text-lg">Name</Label>,
 		cell: ({ row }) => {
 			const car = row.original;
 
@@ -57,7 +64,9 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "price",
-		header: "Price",
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Price" />
+		),
 		cell: ({ row }) => {
 			const price = Number.parseFloat(row.getValue("price"));
 			if (Number.isNaN(price)) return "-";
@@ -67,7 +76,7 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "status",
-		header: "Status",
+		header: () => <Label className="text-lg">Status</Label>,
 		cell: ({ row }) => {
 			const status: string = row.getValue("status");
 			let variant:
@@ -90,33 +99,38 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "licenseNumber",
-		header: "License No.",
+		header: () => <Label className="text-lg">License No.</Label>,
 		cell: ({ row }) => {
 			const value = row.getValue("licenseNumber");
 			return value || "-";
 		},
 	},
 	{
-		accessorKey: "paidAmount",
-		header: "Paid Amount",
+		accessorKey: "notes",
+		header: () => <Label className="text-lg">Notes</Label>,
 		cell: ({ row }) => {
-			const paidAmount = Number.parseFloat(row.getValue("paidAmount"));
-			if (paidAmount == null || Number.isNaN(paidAmount)) return "-";
-			const formatted = formatInLakhsCrores(paidAmount);
-			return formatted;
-		},
-	},
-	{
-		accessorKey: "paidMethod",
-		header: "Paid Method",
-		cell: ({ row }) => {
-			const paidMethod = row.getValue("paidMethod");
-			return paidMethod || "-";
+			const notes = row.original.notes || "-";
+			const preview = notes.length <= 20 ? notes : `${notes.slice(0, 10)}...`;
+			return (
+				<HoverCard>
+					<HoverCardTrigger asChild>
+						<span className="cursor-pointer text-muted-foreground">
+							{preview}
+						</span>
+					</HoverCardTrigger>
+
+					<HoverCardContent className="max-w-sm wrap-break-word">
+						{notes}
+					</HoverCardContent>
+				</HoverCard>
+			);
 		},
 	},
 	{
 		accessorKey: "createdAt",
-		header: "Added At",
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Added At" />
+		),
 		cell: ({ row }) => {
 			const date = row.getValue("createdAt");
 			if (!date) return "-";
@@ -125,7 +139,7 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "actions",
-		header: "Actions",
+		header: () => <Label className="text-lg">Actions</Label>,
 		cell: ({ row }) => <CarActions car={row.original} />,
 	},
 ];

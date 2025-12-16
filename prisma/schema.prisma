@@ -77,8 +77,8 @@ model Shareholder {
 
   cars Car[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   @@map("shareholder")
@@ -89,18 +89,15 @@ model Car {
   name          String
   price         Int
   color         String?
-  licenseNumber String?   @unique
+  licenseNumber String?
   notes         String?
   status        CarStatus @default(AVAILABLE)
-
-  paidMethod PaidMethod?
-  soldAt     DateTime?
-  paidAmount Int?
+  soldAt        DateTime?
 
   expenses              Expense[]
   photos                Photo[]      @relation("CarPhotos")
   shareholderId         String?
-  shareholder           Shareholder? @relation(fields: [shareholderId], references: [id])
+  shareholder           Shareholder? @relation(fields: [shareholderId], references: [id], onDelete: SetNull)
   shareholderPercentage Int?
   investmentAmount      Int?
 
@@ -118,23 +115,19 @@ enum CarStatus {
   SOLD
 }
 
-enum PaidMethod {
-  CASH
-  SCAN
-}
-
 model Expense {
-  id       String          @id @default(uuid())
-  amount   Int
-  notes    String
-  category ExpenseCategory @default(OTHER)
-  date     DateTime        @default(now())
+  id         String           @id @default(uuid())
+  amount     Int
+  notes      String
+  category   ExpenseCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId String?
+  date       DateTime         @default(now())
 
   // Optional: Link to car if this expense is car-specific
   carId String?
-  car   Car?    @relation(fields: [carId], references: [id])
+  car   Car?    @relation(fields: [carId], references: [id], onDelete: SetNull)
 
-  paidTo   Employee? @relation("EmployeeExpenses", fields: [paidToId], references: [id])
+  paidTo   Employee? @relation("EmployeeExpenses", fields: [paidToId], references: [id], onDelete: SetNull)
   paidToId String?
 
   createdAt DateTime  @default(now())
@@ -144,30 +137,26 @@ model Expense {
   @@map("expense")
 }
 
-enum ExpenseCategory {
-  REPAIRS
-  TRANSPORT
-  AUCTION_FEES
-  CLEANING_DETAILING
-  UTILITIES
-  RENT
-  SALARIES
-  MARKETING
-  OFFICE_SUPPLIES
-  OTHER
+model ExpenseCategory {
+  id       String    @id @default(uuid())
+  name     String    @unique
+  expenses Expense[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("expense_category")
 }
 
 model Employee {
-  id       String  @id @default(uuid())
+  id       String @id @default(uuid())
   name     String
-  email    String  @unique
   position String
-  phone    String?
-  address  String?
-  // notes    String?
 
-  salary    Int
-  startDate DateTime @default(now())
+  percentage Int
+  salary     Int
+  startDate  DateTime
 
   expenses Expense[] @relation("EmployeeExpenses")
 
@@ -186,7 +175,7 @@ model Photo {
   order    Int     @default(0) // for sorting
 
   carId String?
-  car   Car?    @relation("CarPhotos", fields: [carId], references: [id])
+  car   Car?    @relation("CarPhotos", fields: [carId], references: [id], onDelete: Cascade)
 
   createdAt DateTime  @default(now())
   deletedAt DateTime?

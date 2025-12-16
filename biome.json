@@ -20,6 +20,12 @@
 		"enabled": true,
 		"indentStyle": "tab"
 	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "double",
+			"jsxQuoteStyle": "double"
+		}
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {

@@ -13,13 +13,11 @@ export async function getEmployees() {
 		select: {
 			id: true,
 			name: true,
-			email: true,
 			position: true,
-			phone: true,
-			address: true,
 			salary: true,
+			percentage: true,
 			startDate: true,
 		},
-		orderBy: { startDate: "desc" },
+		orderBy: { createdAt: "desc" },
 	});
 }
