@@ -96,17 +96,26 @@ async function main() {
 	// ==================== EXPENSE CATEGORIES ====================
 	console.log("📊 Creating expense categories...");
 
+	const expenseCategoryNames = [
+		"Fuel",
+		"Maintenance",
+		"Insurance",
+		"Registration",
+		"Cleaning",
+		"Repairs",
+		"Parking",
+		"Tolls",
+		"Utilities",
+		"Office",
+	];
+
 	// Create expense categories first
 	await prisma.expenseCategory.createMany({
-		data: Array.from(
-			{ length: 10 },
-			(_, _i) =>
-				({
-					name: faker.lorem.word(),
-					createdAt: new Date(),
-					updatedAt: new Date(),
-				}) as Prisma.ExpenseCategoryCreateInput,
-		),
+		data: expenseCategoryNames.map((name) => ({
+			name,
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		})),
 		skipDuplicates: true,
 	});
 

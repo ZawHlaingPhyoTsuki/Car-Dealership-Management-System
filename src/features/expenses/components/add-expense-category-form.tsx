@@ -69,7 +69,10 @@ export default function AddExpenseCategoryForm({
 				<Button
 					type="button"
 					variant="outline"
-					onClick={() => form.reset()}
+					onClick={() => {
+                        form.reset();
+                        onClose();
+                    }}
 					disabled={
 						createExpenseCategoryMutation.isPending ||
 						form.formState.isSubmitting
@@ -86,7 +89,7 @@ export default function AddExpenseCategoryForm({
 				>
 					{createExpenseCategoryMutation.isPending
 						? "Saving..."
-						: "Save Changes"}
+						: "Create"}
 				</Button>
 			</div>
 		</form>

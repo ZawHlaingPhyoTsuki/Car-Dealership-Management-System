@@ -12,13 +12,13 @@ export const useDeleteExpenseCategory = () => {
 	return useMutation({
 		mutationFn: deleteExpenseCategory,
 		onSuccess: () => {
-			toast.success("Expense category deleted successfully");
-			queryClient.invalidateQueries({
-				queryKey: getExpenseCategoriesQueryOptions.queryKey,
+            queryClient.invalidateQueries({
+                queryKey: getExpenseCategoriesQueryOptions.queryKey,
 			});
 			queryClient.invalidateQueries({
-				queryKey: getExpensesQueryOptions.queryKey,
+                queryKey: getExpensesQueryOptions.queryKey,
 			});
+            toast.success("Expense category deleted successfully");
 		},
 		onError: () => {
 			toast.error("Failed to delete expense category");

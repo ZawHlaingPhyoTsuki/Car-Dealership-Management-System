@@ -489,7 +489,10 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 				<Button
 					type="button"
 					variant="outline"
-					onClick={() => form.reset()}
+					onClick={() => {
+						form.reset();
+						onClose();
+					}}
 					disabled={
 						createExpenseMutation.isPending || form.formState.isSubmitting
 					}
@@ -502,7 +505,7 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 						createExpenseMutation.isPending || form.formState.isSubmitting
 					}
 				>
-					{createExpenseMutation.isPending ? "Saving..." : "Save Changes"}
+					{createExpenseMutation.isPending ? "Saving..." : "Create"}
 				</Button>
 			</div>
 		</form>

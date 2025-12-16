@@ -97,7 +97,7 @@ model Car {
   expenses              Expense[]
   photos                Photo[]      @relation("CarPhotos")
   shareholderId         String?
-  shareholder           Shareholder? @relation(fields: [shareholderId], references: [id])
+  shareholder           Shareholder? @relation(fields: [shareholderId], references: [id], onDelete: SetNull)
   shareholderPercentage Int?
   investmentAmount      Int?
 
@@ -116,18 +116,18 @@ enum CarStatus {
 }
 
 model Expense {
-  id         String          @id @default(uuid())
+  id         String           @id @default(uuid())
   amount     Int
   notes      String
-  category   ExpenseCategory? @relation(fields: [categoryId], references: [id])
+  category   ExpenseCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   categoryId String?
-  date       DateTime        @default(now())
+  date       DateTime         @default(now())
 
   // Optional: Link to car if this expense is car-specific
   carId String?
-  car   Car?    @relation(fields: [carId], references: [id])
+  car   Car?    @relation(fields: [carId], references: [id], onDelete: SetNull)
 
-  paidTo   Employee? @relation("EmployeeExpenses", fields: [paidToId], references: [id])
+  paidTo   Employee? @relation("EmployeeExpenses", fields: [paidToId], references: [id], onDelete: SetNull)
   paidToId String?
 
   createdAt DateTime  @default(now())
@@ -175,7 +175,7 @@ model Photo {
   order    Int     @default(0) // for sorting
 
   carId String?
-  car   Car?    @relation("CarPhotos", fields: [carId], references: [id])
+  car   Car?    @relation("CarPhotos", fields: [carId], references: [id], onDelete: Cascade)
 
   createdAt DateTime  @default(now())
   deletedAt DateTime?

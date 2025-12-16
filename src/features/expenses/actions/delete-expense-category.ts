@@ -21,9 +21,12 @@ export const deleteExpenseCategory = async (id: string) => {
 			throw new Error("Expense category not found");
 		}
 
-		return await prisma.expenseCategory.delete({
+		return await prisma.expenseCategory.update({
 			where: {
 				id,
+			},
+			data: {
+				deletedAt: new Date(),
 			},
 		});
 	} catch (error) {

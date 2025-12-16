@@ -500,7 +500,10 @@ export default function EditExpenseForm({
 				<Button
 					type="button"
 					variant="outline"
-					onClick={() => form.reset()}
+					onClick={() => {
+						form.reset();
+						onClose();
+					}}
 					disabled={
 						updateExpenseMutation.isPending || form.formState.isSubmitting
 					}
