@@ -6,9 +6,7 @@ import prisma from "@/lib/prisma";
 
 export const deleteExpense = async (id: string) => {
 	// Validate input
-	if (!id || z.uuid().safeParse(id).success === false) {
-		throw new Error("Invalid expense ID.");
-	}
+	z.uuid().parse(id);
 
 	await requireAuth();
 

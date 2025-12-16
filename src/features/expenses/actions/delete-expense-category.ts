@@ -8,13 +8,12 @@ export const deleteExpenseCategory = async (id: string) => {
 	await requireAuth();
 
 	try {
-		if (!id || z.uuid().safeParse(id).success === false) {
-			throw new Error("Invalid expense category ID.");
-		}
+		z.uuid().parse(id);
 
-		const expenseCategory = await prisma.expenseCategory.findUnique({
+		const expenseCategory = await prisma.expenseCategory.findFirst({
 			where: {
 				id,
+				deletedAt: null,
 			},
 		});
 		if (!expenseCategory) {

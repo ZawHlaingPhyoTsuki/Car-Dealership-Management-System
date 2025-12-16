@@ -1,12 +1,12 @@
 "use server";
 
+import { Prisma } from "@/app/generated/prisma/client";
 import { requireAuth } from "@/lib/auth-guard";
 import prisma from "@/lib/prisma";
 import {
 	UpdateExpenseCategorySchema,
 	type UpdateExpenseCategoryValues,
 } from "../validation";
-import { Prisma } from "@/app/generated/prisma/client";
 
 export const updateExpenseCategory = async (
 	data: UpdateExpenseCategoryValues,
