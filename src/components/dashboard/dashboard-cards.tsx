@@ -1,5 +1,10 @@
-import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react";
-import { BanknoteArrowUp, CarFront, DollarSign } from "lucide-react";
+import {
+	BanknoteArrowUp,
+	CarFront,
+	DollarSign,
+	TrendingDown,
+	TrendingUp,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
 	Card,
@@ -25,14 +30,14 @@ export default function DashboardCards() {
 					</CardTitle>
 					<CardAction>
 						<Badge variant="outline">
-							<IconTrendingUp />
+							<TrendingUp />
 							+12.5%
 						</Badge>
 					</CardAction>
 				</CardHeader>
 				<CardFooter className="flex-col items-start gap-1.5 text-sm">
 					<div className="line-clamp-1 flex gap-2 font-medium">
-						Selling up this month <IconTrendingUp className="size-4" />
+						Selling up this month <TrendingUp className="size-4" />
 					</div>
 					<div className="text-muted-foreground">
 						More sales than last month
@@ -49,14 +54,14 @@ export default function DashboardCards() {
 					</CardTitle>
 					<CardAction>
 						<Badge variant="outline">
-							<IconTrendingUp />
+							<TrendingUp />
 							+20%
 						</Badge>
 					</CardAction>
 				</CardHeader>
 				<CardFooter className="flex-col items-start gap-1.5 text-sm">
 					<div className="line-clamp-1 flex gap-2 font-medium">
-						Up 20% this period <IconTrendingUp className="size-4" />
+						Up 20% this period <TrendingUp className="size-4" />
 					</div>
 					<div className="text-muted-foreground">Did a great job</div>
 				</CardFooter>
@@ -71,14 +76,14 @@ export default function DashboardCards() {
 					</CardTitle>
 					<CardAction>
 						<Badge variant="outline">
-							<IconTrendingDown />
+							<TrendingDown />
 							-12.5%
 						</Badge>
 					</CardAction>
 				</CardHeader>
 				<CardFooter className="flex-col items-start gap-1.5 text-sm">
 					<div className="line-clamp-1 flex gap-2 font-medium">
-						Good spending <IconTrendingDown className="size-4" />
+						Good spending <TrendingDown className="size-4" />
 					</div>
 					<div className="text-muted-foreground">Less than earlier month</div>
 				</CardFooter>

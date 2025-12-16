@@ -1,12 +1,6 @@
 "use client";
 
 import {
-	IconChevronLeft,
-	IconChevronRight,
-	IconChevronsLeft,
-	IconChevronsRight,
-} from "@tabler/icons-react";
-import {
 	type ColumnFiltersState,
 	flexRender,
 	getCoreRowModel,
@@ -18,7 +12,13 @@ import {
 	useReactTable,
 	type VisibilityState,
 } from "@tanstack/react-table";
-import { X } from "lucide-react";
+import {
+	ChevronLeft,
+	ChevronRight,
+	ChevronsLeft,
+	ChevronsRight,
+	X,
+} from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -37,11 +37,11 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { useGetCars } from "@/features/cars/queries/use-cars";
 import { getPresetRange } from "@/lib/date-presets";
 import { useExpenseCategories } from "../queries/get-expense-category";
 import { useExpenses } from "../queries/get-expenses";
 import { columns } from "./columns";
-import { useGetCars } from "@/features/cars/queries/use-cars";
 
 export default function ExpensesTable() {
 	const { data = [] } = useExpenses();
@@ -326,7 +326,7 @@ export default function ExpensesTable() {
 							disabled={!table.getCanPreviousPage()}
 						>
 							<span className="sr-only">Go to first page</span>
-							<IconChevronsLeft />
+							<ChevronsLeft />
 						</Button>
 						<Button
 							variant="outline"
@@ -336,7 +336,7 @@ export default function ExpensesTable() {
 							disabled={!table.getCanPreviousPage()}
 						>
 							<span className="sr-only">Go to previous page</span>
-							<IconChevronLeft />
+							<ChevronLeft />
 						</Button>
 						<Button
 							variant="outline"
@@ -346,7 +346,7 @@ export default function ExpensesTable() {
 							disabled={!table.getCanNextPage()}
 						>
 							<span className="sr-only">Go to next page</span>
-							<IconChevronRight />
+							<ChevronRight />
 						</Button>
 						<Button
 							variant="outline"
@@ -356,7 +356,7 @@ export default function ExpensesTable() {
 							disabled={!table.getCanNextPage()}
 						>
 							<span className="sr-only">Go to last page</span>
-							<IconChevronsRight />
+							<ChevronsRight />
 						</Button>
 					</div>
 				</div>

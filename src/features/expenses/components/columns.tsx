@@ -1,7 +1,7 @@
 "use client";
 
-import { IconDotsVertical, IconEdit, IconTrash } from "@tabler/icons-react";
 import type { ColumnDef } from "@tanstack/react-table";
+import { EllipsisVertical, SquarePen, Trash } from "lucide-react";
 import { useState } from "react";
 import { DataTableColumnHeader } from "@/components/shared/data-table-column-header";
 import { Button } from "@/components/ui/button";
@@ -160,7 +160,7 @@ function ExpenseActionsCell({ expense }: { expense: Expense }) {
 						className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
 						size="icon"
 					>
-						<IconDotsVertical />
+						<EllipsisVertical />
 						<span className="sr-only">Open menu</span>
 					</Button>
 				</DropdownMenuTrigger>
@@ -169,7 +169,7 @@ function ExpenseActionsCell({ expense }: { expense: Expense }) {
 						className="flex items-center gap-2 w-full"
 						onSelect={() => setEditOpen(true)}
 					>
-						<IconEdit className="h-4 w-4" />
+						<SquarePen className="h-4 w-4" />
 						Edit
 					</DropdownMenuItem>
 					<DropdownMenuItem
@@ -177,7 +177,7 @@ function ExpenseActionsCell({ expense }: { expense: Expense }) {
 						className="flex items-center gap-2 w-full"
 						onSelect={() => setDeleteOpen(true)}
 					>
-						<IconTrash className="h-4 w-4" />
+						<Trash className="h-4 w-4" />
 						Delete
 					</DropdownMenuItem>
 				</DropdownMenuContent>
