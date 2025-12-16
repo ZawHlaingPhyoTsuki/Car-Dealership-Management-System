@@ -48,6 +48,7 @@ export default function DeleteCarDialog({
 						Cancel
 					</AlertDialogCancel>
 					<AlertDialogAction
+					    className="bg-destructive text-white hover:bg-destructive/90"
 						onClick={handleDelete}
 						disabled={deleteCarMutation.isPending}
 					>
