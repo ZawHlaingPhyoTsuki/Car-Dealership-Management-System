@@ -5,9 +5,9 @@ import { requireAuth } from "@/lib/auth-guard";
 import prisma from "@/lib/prisma";
 
 export const deleteCar = async (id: string) => {
-	z.uuid().parse(id);
-
 	await requireAuth();
+
+	z.uuid().parse(id);
 
 	try {
 		const car = await prisma.car.update({

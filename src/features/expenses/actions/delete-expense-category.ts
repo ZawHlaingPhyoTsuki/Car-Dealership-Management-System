@@ -10,16 +10,6 @@ export const deleteExpenseCategory = async (id: string) => {
 	try {
 		z.uuid().parse(id);
 
-		const expenseCategory = await prisma.expenseCategory.findFirst({
-			where: {
-				id,
-				deletedAt: null,
-			},
-		});
-		if (!expenseCategory) {
-			throw new Error("Expense category not found");
-		}
-
 		return await prisma.expenseCategory.update({
 			where: {
 				id,

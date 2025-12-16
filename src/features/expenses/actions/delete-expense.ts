@@ -1,11 +1,10 @@
 "use server";
 
-import z from "zod";
+import * as z from "zod";
 import { requireAuth } from "@/lib/auth-guard";
 import prisma from "@/lib/prisma";
 
 export const deleteExpense = async (id: string) => {
-	// Validate input
 	z.uuid().parse(id);
 
 	await requireAuth();
