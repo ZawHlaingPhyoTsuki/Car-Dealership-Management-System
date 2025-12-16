@@ -21,3 +21,5 @@ export async function getEmployees() {
 		orderBy: { createdAt: "desc" },
 	});
 }
+
+export type Employee = Awaited<ReturnType<typeof getEmployees>>[number];

@@ -229,19 +229,24 @@ async function main() {
 		"Purple",
 	];
 
-	// Create cars with shareholder relationships
+	// ==================== CARS ====================
+	console.log("🚗 Creating cars...");
+
+	const carsData: Prisma.CarCreateManyInput[] = [];
+
 	for (let i = 0; i < 100; i++) {
-		const isSold = faker.datatype.boolean(0.3); // 30% sold
+		const isSold = faker.datatype.boolean(0.3);
 		const createdAt = faker.date.past({ years: 2 });
+
 		const price = isSold
 			? faker.number.int({ min: 5500, max: 85000 })
 			: faker.number.int({ min: 5000, max: 80000 });
 
-		// Determine if car has shareholder (60% of cars)
+		// Shareholder logic
 		const hasShareholder = faker.datatype.boolean(0.6);
-		let shareholderId = null;
-		let shareholderPercentage = null;
-		let investmentAmount = null;
+		let shareholderId: string | null = null;
+		let shareholderPercentage: number | null = null;
+		let investmentAmount: number | null = null;
 
 		if (hasShareholder && shareholderIds.length > 0) {
 			shareholderId = faker.helpers.arrayElement(shareholderIds);
@@ -249,37 +254,37 @@ async function main() {
 			investmentAmount = Math.round(price * (shareholderPercentage / 100));
 		}
 
-		await prisma.car.create({
-			data: {
-				name: `${carMakes[i % carMakes.length]} ${carModels[i % carModels.length]} ${faker.number.int({ min: 2015, max: 2025 })}`,
-				price,
-				color: colors[i % colors.length],
-				licenseNumber: faker.datatype.boolean(0.9) ? licenseNumbers[i] : null,
-				notes: faker.datatype.boolean(0.4) ? faker.lorem.sentence() : null,
-				status: isSold
-					? CarStatus.SOLD
-					: faker.helpers.arrayElement([
-							CarStatus.AVAILABLE,
-							CarStatus.AVAILABLE,
-							CarStatus.AVAILABLE,
-							CarStatus.IN_MAINTENANCE,
-							CarStatus.RESERVED,
-						]),
-				soldAt: isSold ? faker.date.past({ years: 2 }) : null,
-				shareholderId,
-				shareholderPercentage,
-				investmentAmount,
-				createdAt,
-				updatedAt: faker.date.recent(),
-				deletedAt: faker.datatype.boolean(0.05) ? faker.date.recent() : null,
-			},
+		carsData.push({
+			name: `${carMakes[i % carMakes.length]} ${carModels[i % carModels.length]} ${faker.number.int({ min: 2015, max: 2025 })}`,
+			price,
+			color: colors[i % colors.length],
+			licenseNumber: faker.datatype.boolean(0.9) ? licenseNumbers[i] : null,
+			notes: faker.datatype.boolean(0.4) ? faker.lorem.sentence() : null,
+			status: isSold
+				? CarStatus.SOLD
+				: faker.helpers.arrayElement([
+						CarStatus.AVAILABLE,
+						CarStatus.AVAILABLE,
+						CarStatus.AVAILABLE,
+						CarStatus.IN_MAINTENANCE,
+						CarStatus.RESERVED,
+					]),
+			soldAt: isSold ? faker.date.past({ years: 2 }) : null,
+			shareholderId,
+			shareholderPercentage,
+			investmentAmount,
+			createdAt,
+			updatedAt: faker.date.recent(),
+			deletedAt: faker.datatype.boolean(0.05) ? faker.date.recent() : null,
 		});
-
-		if (i % 10 === 0) {
-			console.log(`   Created ${i + 1} cars...`);
-		}
 	}
-	console.log(`✅ 100 cars created`);
+
+	await prisma.car.createMany({
+		data: carsData,
+		skipDuplicates: true,
+	});
+
+	console.log(`✅ ${carsData.length} cars created`);
 
 	// Get car IDs for expenses and photos
 	const cars = await prisma.car.findMany();
