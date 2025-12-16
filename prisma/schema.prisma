@@ -95,7 +95,6 @@ model Car {
   soldAt        DateTime?
 
   expenses              Expense[]
-  photos                Photo[]      @relation("CarPhotos")
   shareholderId         String?
   shareholder           Shareholder? @relation(fields: [shareholderId], references: [id], onDelete: SetNull)
   shareholderPercentage Int?
@@ -165,20 +164,4 @@ model Employee {
   deletedAt DateTime?
 
   @@map("employee")
-}
-
-model Photo {
-  id       String  @id @default(uuid())
-  url      String
-  publicId String? @unique
-  alt      String?
-  order    Int     @default(0) // for sorting
-
-  carId String?
-  car   Car?    @relation("CarPhotos", fields: [carId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime  @default(now())
-  deletedAt DateTime?
-
-  @@map("photo")
 }

@@ -1,12 +1,10 @@
 "use client";
 
 import {
-	// IconChevronDown,
 	IconChevronLeft,
 	IconChevronRight,
 	IconChevronsLeft,
 	IconChevronsRight,
-	// IconLayoutColumns,
 } from "@tabler/icons-react";
 import {
 	type ColumnFiltersState,
@@ -23,12 +21,6 @@ import {
 import { X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-// import {
-// 	DropdownMenu,
-// 	DropdownMenuCheckboxItem,
-// 	DropdownMenuContent,
-// 	DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import {
 	Select,
@@ -49,10 +41,12 @@ import { getPresetRange } from "@/lib/date-presets";
 import { useExpenseCategories } from "../queries/get-expense-category";
 import { useExpenses } from "../queries/get-expenses";
 import { columns } from "./columns";
+import { useGetCars } from "@/features/cars/queries/use-cars";
 
 export default function ExpensesTable() {
 	const { data = [] } = useExpenses();
 	const { data: categories = [] } = useExpenseCategories();
+	const { data: cars = [] } = useGetCars();
 
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [sorting, setSorting] = useState<SortingState>([
@@ -118,6 +112,26 @@ export default function ExpensesTable() {
 							{categories.map((cat) => (
 								<SelectItem key={cat.id} value={cat.id}>
 									{cat.name}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+					<Select
+						onValueChange={(value) => {
+							table
+								.getColumn("car")
+								?.setFilterValue(value === "all" ? undefined : value);
+						}}
+					>
+						<SelectTrigger className="w-40">
+							<SelectValue placeholder="Car" />
+						</SelectTrigger>
+
+						<SelectContent>
+							<SelectItem value="all">All Cars</SelectItem>
+							{cars.map((car) => (
+								<SelectItem key={car.id} value={car.id}>
+									{car.name}
 								</SelectItem>
 							))}
 						</SelectContent>
@@ -208,35 +222,6 @@ export default function ExpensesTable() {
 					<X />
 					Clear Filters
 				</Button>
-				{/* <DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant="outline" className="ml-auto">
-							<IconLayoutColumns />
-							<span className="hidden lg:inline">Customize Columns</span>
-							<span className="lg:hidden">Columns</span>
-							<IconChevronDown />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end">
-						{table
-							.getAllColumns()
-							.filter((column) => column.getCanHide())
-							.map((column) => {
-								return (
-									<DropdownMenuCheckboxItem
-										key={column.id}
-										className="capitalize"
-										checked={column.getIsVisible()}
-										onCheckedChange={(value) =>
-											column.toggleVisibility(!!value)
-										}
-									>
-										{column.id}
-									</DropdownMenuCheckboxItem>
-								);
-							})}
-					</DropdownMenuContent>
-				</DropdownMenu> */}
 			</div>
 
 			{/* Table */}

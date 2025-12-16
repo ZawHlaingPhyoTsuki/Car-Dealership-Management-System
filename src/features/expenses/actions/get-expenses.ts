@@ -32,14 +32,7 @@ export async function getExpenses() {
 				select: {
 					id: true,
 					name: true,
-					color: true,
-					photos: {
-						select: {
-							id: true,
-							url: true,
-							alt: true,
-						},
-					},
+					licenseNumber: true,
 				},
 			},
 		},

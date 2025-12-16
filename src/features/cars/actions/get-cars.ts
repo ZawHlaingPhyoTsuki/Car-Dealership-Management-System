@@ -27,14 +27,6 @@ export async function getCars() {
 				notes: true,
 				createdAt: true,
 				updatedAt: true,
-				photos: {
-					select: {
-						id: true,
-						url: true,
-						alt: true,
-						order: true,
-					},
-				},
 				shareholder: {
 					select: {
 						id: true,
