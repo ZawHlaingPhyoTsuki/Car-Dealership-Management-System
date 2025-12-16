@@ -116,11 +116,12 @@ enum CarStatus {
 }
 
 model Expense {
-  id       String          @id @default(uuid())
-  amount   Int
-  notes    String
-  category ExpenseCategory @default(OTHER)
-  date     DateTime        @default(now())
+  id         String          @id @default(uuid())
+  amount     Int
+  notes      String
+  category   ExpenseCategory @relation(fields: [categoryId], references: [id])
+  categoryId String
+  date       DateTime        @default(now())
 
   // Optional: Link to car if this expense is car-specific
   carId String?
@@ -136,17 +137,12 @@ model Expense {
   @@map("expense")
 }
 
-enum ExpenseCategory {
-  REPAIRS
-  TRANSPORT
-  AUCTION_FEES
-  CLEANING_DETAILING
-  UTILITIES
-  RENT
-  SALARIES
-  MARKETING
-  OFFICE_SUPPLIES
-  OTHER
+model ExpenseCategory {
+  id       String    @id @default(uuid())
+  name     String    @unique
+  expenses Expense[]
+
+  @@map("expense_category")
 }
 
 model Employee {
