@@ -5,7 +5,6 @@ import { format as formatDate } from "date-fns";
 import { CalendarIcon, ChevronsUpDown, Loader2 } from "lucide-react";
 import { type RefObject, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ExpenseCategory } from "@/app/generated/prisma/enums";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -34,33 +33,14 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useGetCars } from "@/features/cars/queries/use-cars";
 import { useEmployees } from "@/features/employees/queries/use-employees";
 import { cn } from "@/lib/utils";
 import type { Expense } from "../actions/get-expenses";
 import { useUpdateExpense } from "../mutations/use-update-expense";
+import { useExpenseCategories } from "../queries/get-expense-category";
 import { UpdateExpenseSchema, type UpdateExpenseValues } from "../validation";
-
-const expenseCategories = [
-	{ value: ExpenseCategory.REPAIRS, label: "Repair" },
-	{ value: ExpenseCategory.TRANSPORT, label: "Transport" },
-	{ value: ExpenseCategory.AUCTION_FEES, label: "Auction Fee" },
-	{ value: ExpenseCategory.CLEANING_DETAILING, label: "Cleaning Detailing" },
-	{ value: ExpenseCategory.UTILITIES, label: "Utilities" },
-	{ value: ExpenseCategory.RENT, label: "Rent" },
-	{ value: ExpenseCategory.SALARIES, label: "Salaries" },
-	{ value: ExpenseCategory.MARKETING, label: "Marketing" },
-	{ value: ExpenseCategory.OFFICE_SUPPLIES, label: "Office Supplies" },
-	{ value: ExpenseCategory.OTHER, label: "Other" },
-];
 
 interface EditExpenseFormProps {
 	onClose: () => void;
@@ -71,41 +51,49 @@ export default function EditExpenseForm({
 	onClose,
 	expense,
 }: EditExpenseFormProps) {
+	const updateExpenseMutation = useUpdateExpense();
+
 	const {
 		data: employees = [],
 		isLoading: isLoadingEmployees,
 		error: errorEmployees,
 	} = useEmployees();
 
-	const updateExpenseMutation = useUpdateExpense();
 	const {
 		data: cars = [],
 		isLoading: isLoadingCars,
 		error: errorCars,
 	} = useGetCars();
 
+	const {
+		data: expenseCategories = [],
+		isLoading: isLoadingExpenseCategories,
+		error: errorExpenseCategories,
+	} = useExpenseCategories();
+
 	const employeeBtnRef: RefObject<HTMLButtonElement | null> = useRef(null);
 	const carBtnRef: RefObject<HTMLButtonElement | null> = useRef(null);
+	const categoryBtnRef: RefObject<HTMLButtonElement | null> = useRef(null);
+
 	const [employeeBtnWidth, setEmployeeBtnWidth] = useState(0);
 	const [carBtnWidth, setCarBtnWidth] = useState(0);
+	const [categoryBtnWidth, setCategoryBtnWidth] = useState(0);
 
 	const [isEmployeeOpen, setEmployeeOpen] = useState(false);
 	const [isCarOpen, setCarOpen] = useState(false);
+	const [isCategoryOpen, setCategoryOpen] = useState(false);
 
 	const form = useForm<UpdateExpenseValues>({
 		resolver: zodResolver(UpdateExpenseSchema),
 		defaultValues: {
 			id: expense.id,
-			date:
-				expense.date
-					? typeof expense.date === "string"
-						? new Date(expense.date)
-						: expense.date
-					: undefined,
+			date: expense.date
+				? typeof expense.date === "string"
+					? new Date(expense.date)
+					: expense.date
+				: undefined,
 			paidToId: expense.paidTo?.id ?? null,
-			category:
-				(expenseCategories.find((cat) => cat.value === expense.category)
-					?.value as UpdateExpenseValues["category"]) ?? "OTHER",
+			categoryId: expense.category?.id ?? null,
 			amount: expense.amount,
 			carId: expense.car?.id ?? null,
 			notes: expense.notes ?? "",
@@ -120,6 +108,8 @@ export default function EditExpenseForm({
 
 	if (errorEmployees) return <div>Error loading employees</div>;
 	if (errorCars) return <div>Error loading cars</div>;
+	if (errorExpenseCategories)
+		return <div>Error loading expense categories</div>;
 
 	return (
 		<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -210,28 +200,88 @@ export default function EditExpenseForm({
 						/>
 					</div>
 
-					{/* Category*/}
+					{/* Category */}
 					<Controller
 						control={form.control}
-						name="category"
+						name="categoryId"
 						render={({ field, fieldState }) => (
 							<Field>
-								<FieldLabel>
-									Category <span className="text-red-500">*</span>
-								</FieldLabel>
+								<FieldLabel>Reason (Optional)</FieldLabel>
 								<FieldGroup>
-									<Select onValueChange={field.onChange} value={field.value}>
-										<SelectTrigger className="w-full">
-											<SelectValue placeholder="Select a category" />
-										</SelectTrigger>
-										<SelectContent>
-											{expenseCategories.map((category) => (
-												<SelectItem key={category.value} value={category.value}>
-													{category.label}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
+									<Popover open={isCategoryOpen} onOpenChange={setCategoryOpen}>
+										<PopoverTrigger asChild>
+											<Button
+												ref={categoryBtnRef}
+												variant="outline"
+												role="combobox"
+												className={cn(
+													"w-full justify-between",
+													!field.value && "text-muted-foreground",
+												)}
+												onClick={() => {
+													if (categoryBtnRef.current) {
+														setCategoryBtnWidth(
+															categoryBtnRef.current.offsetWidth,
+														);
+													}
+												}}
+											>
+												{field.value
+													? expenseCategories.find(
+															(cat) => cat.id === field.value,
+														)?.name
+													: "Select category"}
+												<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+											</Button>
+										</PopoverTrigger>
+										<PopoverContent
+											className="p-0"
+											style={{
+												width: categoryBtnWidth > 0 ? categoryBtnWidth : "auto",
+											}}
+										>
+											{isLoadingExpenseCategories ? (
+												<div className="flex items-center justify-center p-4">
+													<Loader2 className="h-4 w-4 animate-spin" />
+												</div>
+											) : (
+												<Command>
+													<CommandInput placeholder="Search category name..." />
+													<CommandEmpty>No category found.</CommandEmpty>
+													<CommandList
+														className="max-h-[300px] overflow-y-auto overscroll-contain"
+														onWheel={(e) => e.stopPropagation()}
+													>
+														<CommandGroup>
+															<CommandItem
+																value="none"
+																onSelect={() => {
+																	field.onChange(null);
+																	setCategoryOpen(false);
+																}}
+															>
+																<span className="text-muted-foreground">
+																	No category selected
+																</span>
+															</CommandItem>
+															{expenseCategories.map((cat) => (
+																<CommandItem
+																	value={cat.name}
+																	key={cat.id}
+																	onSelect={() => {
+																		field.onChange(cat.id);
+																		setCategoryOpen(false);
+																	}}
+																>
+																	<span>{cat.name}</span>
+																</CommandItem>
+															))}
+														</CommandGroup>
+													</CommandList>
+												</Command>
+											)}
+										</PopoverContent>
+									</Popover>
 								</FieldGroup>
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>
@@ -455,7 +505,7 @@ export default function EditExpenseForm({
 						updateExpenseMutation.isPending || form.formState.isSubmitting
 					}
 				>
-					Clear
+					Cancel
 				</Button>
 				<Button
 					type="submit"

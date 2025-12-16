@@ -44,7 +44,7 @@ export const columns: ColumnDef<Expense>[] = [
 	{
 		accessorKey: "category",
 		header: () => <Label className="text-lg">Reason</Label>,
-		cell: ({ row }) => row.original.category,
+		cell: ({ row }) => row.original.category?.name ?? "_",
 	},
 	{
 		accessorKey: "date",
