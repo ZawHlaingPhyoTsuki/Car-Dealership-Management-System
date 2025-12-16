@@ -68,20 +68,22 @@ function FormPopoverSelect<TFieldValues extends FieldValues, TItem>({
 	const triggerRef = React.useRef<HTMLButtonElement>(null);
 	const [triggerWidth, setTriggerWidth] = React.useState<number>();
 
-	if (isError) {
-		return (
-			<Field>
-				<FieldLabel>{label}</FieldLabel>
-				<div className="text-sm text-destructive">Error loading {selector}</div>
-			</Field>
-		);
-	}
-
 	return (
 		<Controller
 			control={control}
 			name={name}
 			render={({ field, fieldState }) => {
+				if (isError) {
+					return (
+						<Field>
+							<FieldLabel>{label}</FieldLabel>
+							<div className="text-sm text-destructive">
+								Error loading {selector}
+							</div>
+						</Field>
+					);
+				}
+
 				const selectedItem = items?.find(
 					(item) => getValue(item) === field.value,
 				);
