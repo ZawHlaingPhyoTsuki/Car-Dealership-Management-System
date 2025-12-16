@@ -54,14 +54,21 @@ function FormPopoverSelect<TFieldValues extends FieldValues, TItem>({
     const triggerRef = React.useRef<HTMLButtonElement>(null);
     const [triggerWidth, setTriggerWidth] = React.useState<number>();
 
-    if (isError) return <div>Error while loading {selector}</div>;
+    if (isError) {
+        return (
+            <Field>
+                <FieldLabel>{label}</FieldLabel>
+                <div className="text-sm text-destructive">Error loading {selector}</div>
+            </Field>
+        );
+    }
 
     return (
         <Controller
             control={control}
             name={name}
             render={({ field, fieldState }) => {
-                const selelectedItem = items?.find((item) => getValue(item) === field.value);
+                const selectedItem = items?.find((item) => getValue(item) === field.value);
 
                 return (
                     <Field>
@@ -73,7 +80,7 @@ function FormPopoverSelect<TFieldValues extends FieldValues, TItem>({
                                         ref={triggerRef}
                                         variant="outline"
                                         role="combobox"
-                                        aria-expanded={true}
+                                        aria-expanded={open}
                                         className={cn(
                                             'w-full justify-between',
                                             !field.value && 'text-muted-foreground'
@@ -84,8 +91,8 @@ function FormPopoverSelect<TFieldValues extends FieldValues, TItem>({
                                             }
                                         }}
                                     >
-                                        {selelectedItem
-                                            ? getLabel(selelectedItem)
+                                        {selectedItem
+                                            ? getLabel(selectedItem)
                                             : `Select ${selector}`}
                                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                     </Button>
@@ -119,10 +126,7 @@ function FormPopoverSelect<TFieldValues extends FieldValues, TItem>({
                                                             onSelect={() => {
                                                                 field.onChange(null);
                                                                 setOpen(false);
-                                                                //for shareholder form,need to remove percentages automatically
-                                                                if (onDone) {
-                                                                    onDone();
-                                                                }
+                                                                onDone?.();
                                                             }}
                                                         >
                                                             <Check

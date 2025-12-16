@@ -60,11 +60,11 @@ export default function EditCarSharerForm({
 	const {
 		data: shareholders,
 		isLoading: isLoadingShareholders,
-		isError: isErrorSharholders,
+		isError: isErrorShareholders,
 	} = useGetShareholders();
 
-	const handleNoShareHolder = () =>{
-		form.setValue('shareholderPercentage',0);
+	const resetShareholderPercentage = () =>{
+		form.setValue('shareholderPercentage', 0);
 	}
 
 	const onSubmit = async (values: UpdateCarSharerValues) => {
@@ -297,12 +297,12 @@ export default function EditCarSharerForm({
 						matchTriggerWidth
 						allowNone
 						items={shareholders ?? []}
-						isError={isErrorSharholders}
+						isError={isErrorShareholders}
 						isLoading={isLoadingShareholders}
 						getValue={(sh) => sh.id}
 						getLabel={(sh) => sh.name}
 						getSubLabel={(sh) => sh.email ?? "No email"}
-						onDone={()=>handleNoShareHolder()}
+						onDone={()=> resetShareholderPercentage()}
 					/>
 				</FieldGroup>
 			</FieldSet>
