@@ -3,6 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Edit, EllipsisVertical, Trash } from "lucide-react";
 import { useState } from "react";
+import { DataTableColumnHeader } from "@/components/shared/data-table-column-header";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -157,7 +158,9 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "soldAt",
-		header: () => <Label className="text-lg">Sold Date</Label>,
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Sold Date" />
+		),
 		cell: ({ row }) => {
 			const car = row.original;
 			if (car.status === "SOLD" && car.soldAt) {

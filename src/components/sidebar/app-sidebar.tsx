@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import type * as React from "react";
 import { NavMain } from "@/components/sidebar/nav-main";
-import { NavSecondary } from "@/components/sidebar/nav-secondary";
 import { NavUser } from "@/components/sidebar/nav-user";
 import {
 	Sidebar,
@@ -41,7 +40,6 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
 			</SidebarHeader>
 			<SidebarContent>
 				<NavMain items={data.navMain} />
-				<NavSecondary items={data.navSecondary} className="mt-auto" />
 			</SidebarContent>
 			<SidebarFooter>
 				<NavUser user={user} />
