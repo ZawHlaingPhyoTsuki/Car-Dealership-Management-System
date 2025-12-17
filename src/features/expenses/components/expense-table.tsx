@@ -24,7 +24,9 @@ import {
 } from "lucide-react";
 import Papa from "papaparse";
 import { useState } from "react";
+import type { DateRange } from "react-day-picker";
 import * as XLSX from "xlsx";
+import { DateRangePopover } from "@/components/shared/date-range-popover";
 import PopoverSelect from "@/components/shared/popover-select";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,7 +39,6 @@ import { Label } from "@/components/ui/label";
 import {
 	Select,
 	SelectContent,
-	SelectGroup,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
@@ -51,13 +52,10 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { useGetCars } from "@/features/cars/queries/use-cars";
-import { getPresetRange } from "@/lib/date-presets";
 import { mapExpenseForExport } from "../map-expense-for-export";
 import { useExpenseCategories } from "../queries/get-expense-category";
 import { useExpenses } from "../queries/get-expenses";
 import { columns, NO_CATEGORY_FILTER } from "./columns";
-
-type Period = "today" | "month" | "year" | null;
 
 export default function ExpensesTable() {
 	const { data = [] } = useExpenses();
@@ -76,19 +74,13 @@ export default function ExpensesTable() {
 	const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
 		null,
 	);
-	const [selectedPeriod, setSelectedPeriod] = useState<Period>(null);
-	const [dateRange, setDateRange] = useState<{
-		from?: string;
-		to?: string;
-	}>({});
+	const [dateRange, setDateRange] = useState<DateRange | undefined>();
 
-	const hasDateRange = Boolean(dateRange.from || dateRange.to);
+	const hasDateRange = Boolean(dateRange?.from || dateRange?.to);
 
-	const filtersCount = [
-		selectedCarId,
-		selectedCategoryId,
-		selectedPeriod || hasDateRange,
-	].filter(Boolean).length;
+	const filtersCount = [selectedCarId, selectedCategoryId, hasDateRange].filter(
+		Boolean,
+	).length;
 
 	const table = useReactTable({
 		data,
@@ -176,160 +168,92 @@ export default function ExpensesTable() {
 			`expenses-export-${new Date().toISOString().split("T")[0]}.xlsx`,
 		);
 	};
+
 	function resetFilters() {
 		setSelectedCarId(null);
 		setSelectedCategoryId(null);
-		setSelectedPeriod(null);
-		setDateRange({});
+		setDateRange(undefined);
 	}
+
+	const handleDateChange = (range?: DateRange) => {
+		setDateRange(range);
+
+		table
+			.getColumn("date")
+			?.setFilterValue(range ? { from: range.from, to: range.to } : undefined);
+	};
 
 	return (
 		<div className="w-full flex-col justify-start gap-6 mt-6">
 			<div className="flex items-center py-4">
 				{/* Filter */}
 				<div className="w-full flex items-end justify-between flex-wrap gap-3 py-6">
-					{/* Reason Select */}
-					<div className="w-[200px]">
-						<PopoverSelect
-							value={selectedCategoryId}
-							onChange={(val) => {
-								table
-									.getColumn("category")
-									?.setFilterValue(
-										val === null
-											? undefined
-											: val === "none"
-												? NO_CATEGORY_FILTER
-												: val,
-									);
-								setSelectedCategoryId(val);
+					<div className="flex items-center gap-3">
+						{/* Date Range */}
+						<DateRangePopover value={dateRange} onChange={handleDateChange} />
+
+						{/* Reason Select */}
+						<div className="w-[200px]">
+							<PopoverSelect
+								value={selectedCategoryId}
+								onChange={(val) => {
+									table
+										.getColumn("category")
+										?.setFilterValue(
+											val === null
+												? undefined
+												: val === "none"
+													? NO_CATEGORY_FILTER
+													: val,
+										);
+									setSelectedCategoryId(val);
+								}}
+								selector="Reason"
+								items={[{ id: "none", name: "Without Reason" }, ...categories]}
+								allowNone
+								matchTriggerWidth
+								getLabel={(cat) => `${cat.name}`}
+								getValue={(cat) => cat.id}
+								customLabel="All"
+								customSubLabel="Show all reasons"
+							/>
+						</div>
+
+						{/* Car Select */}
+						<div className="w-[200px]">
+							<PopoverSelect
+								value={selectedCarId}
+								onChange={(val) => {
+									table
+										.getColumn("car")
+										?.setFilterValue(val === null ? undefined : val);
+									setSelectedCarId(val);
+								}}
+								selector="Car"
+								items={cars}
+								allowNone
+								matchTriggerWidth
+								getLabel={(car) => `${car.name} (${car.color})`}
+								getValue={(car) => car.id}
+								getSubLabel={(car) => car.licenseNumber ?? "No Number"}
+								customLabel="All"
+								customSubLabel="Show all cars"
+							/>
+						</div>
+
+						{/* Clear Filters Button */}
+						<Button
+							variant="ghost"
+							onClick={() => {
+								table.resetColumnFilters();
+								resetFilters();
 							}}
-							selector="Reason"
-							items={[{ id: "none", name: "Without Reason" }, ...categories]}
-							allowNone
-							matchTriggerWidth
-							getLabel={(cat) => `${cat.name}`}
-							getValue={(cat) => cat.id}
-							customLabel="All"
-							customSubLabel="Show all reasons"
-						/>
-					</div>
-
-					{/* Car Select */}
-					<div className="w-[200px]">
-						<PopoverSelect
-							value={selectedCarId}
-							onChange={(val) => {
-								table
-									.getColumn("car")
-									?.setFilterValue(val === null ? undefined : val);
-								setSelectedCarId(val);
-							}}
-							selector="Car"
-							items={cars}
-							allowNone
-							matchTriggerWidth
-							getLabel={(car) => `${car.name} (${car.color})`}
-							getValue={(car) => car.id}
-							getSubLabel={(car) => car.licenseNumber ?? "No Number"}
-							customLabel="All"
-							customSubLabel="Show all cars"
-						/>
-					</div>
-
-					{/* Period Select */}
-					<Select
-						key={selectedPeriod ?? "empty"}
-						value={selectedPeriod ?? undefined}
-						onValueChange={(period) => {
-							const p = period as "today" | "month" | "year";
-							setSelectedPeriod(p);
-							setDateRange({});
-
-							const range = getPresetRange(p);
-							table.getColumn("date")?.setFilterValue(range);
-						}}
-					>
-						<SelectTrigger className="w-[200px]">
-							<SelectValue placeholder="Select Period" />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectGroup>
-								<SelectItem value="today">Today</SelectItem>
-								<SelectItem value="month">This Month</SelectItem>
-								<SelectItem value="year">This Year</SelectItem>
-							</SelectGroup>
-						</SelectContent>
-					</Select>
-
-					{/* From Date Button */}
-					<div className="space-y-1">
-						<Label
-							htmlFor="date-from"
-							className="text-sm text-muted-foreground"
+							disabled={filtersCount === 0}
 						>
-							From
-						</Label>
-						<input
-							id="date-from"
-							type="date"
-							className="border rounded px-2 py-1 text-sm"
-							value={dateRange.from ?? ""}
-							onChange={(e) => {
-								const from = e.target.value;
-								setSelectedPeriod(null);
-								setDateRange((prev) => {
-									const newRange = { ...prev, from };
-
-									table.getColumn("date")?.setFilterValue({
-										from: from ? new Date(from) : undefined,
-										to: prev.to ? new Date(prev.to) : undefined,
-									});
-									return newRange;
-								});
-							}}
-						/>
+							Reset {filtersCount > 0 && `(${filtersCount})`}
+							<X />
+						</Button>
 					</div>
-
-					{/* To Date Button */}
-					<div className="space-y-1">
-						<Label htmlFor="date-to" className="text-sm text-muted-foreground">
-							To
-						</Label>
-						<input
-							id="date-to"
-							type="date"
-							className="border rounded px-2 py-1 text-sm"
-							value={dateRange.to ?? ""}
-							onChange={(e) => {
-								const to = e.target.value;
-								setSelectedPeriod(null);
-								setDateRange((prev) => {
-									const newRange = { ...prev, to };
-
-									table.getColumn("date")?.setFilterValue({
-										from: prev.from ? new Date(prev.from) : undefined,
-										to: to ? new Date(to) : undefined,
-									});
-									return newRange;
-								});
-							}}
-						/>
-					</div>
-
-					{/* Clear Filters Button */}
-					<Button
-						className="border-2 border-destructive dark:border-destructive"
-						variant="outline"
-						onClick={() => {
-							table.resetColumnFilters();
-							resetFilters();
-						}}
-						disabled={filtersCount === 0}
-					>
-						<X />
-						Clear Filters {filtersCount > 0 && `(${filtersCount})`}
-					</Button>
 
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
