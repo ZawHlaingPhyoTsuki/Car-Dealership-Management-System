@@ -8,7 +8,8 @@ export function mapExpenseForExport(expense: Expense) {
 		amount: expense.amount,
 		notes: expense.notes ?? "",
 		category: expense.category?.name ?? "",
-		employee: `${expense.paidTo?.name ?? ""} - ${expense.paidTo?.position ?? ""}`,
+		employee: expense.paidTo?.name ?? "",
+		position: expense.paidTo?.position ?? "",
 		car: expense.car?.name ?? "",
 		carLicense: expense.car?.licenseNumber ?? "",
 	};
