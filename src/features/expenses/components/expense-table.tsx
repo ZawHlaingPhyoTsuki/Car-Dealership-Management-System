@@ -70,12 +70,12 @@ export default function ExpensesTable() {
 		null,
 	);
 	const [selectedPeriod, setSelectedPeriod] = useState<Period>(null);
-	const [prev, setDateRange] = useState<{
+	const [dateRange, setDateRange] = useState<{
 		from?: string;
 		to?: string;
 	}>({});
 
-	const hasDateRange = Boolean(prev.from || prev.to);
+	const hasDateRange = Boolean(dateRange.from || dateRange.to);
 
 	const filtersCount = [
 		selectedCarId,
@@ -197,7 +197,7 @@ export default function ExpensesTable() {
 							id="date-from"
 							type="date"
 							className="border rounded px-2 py-1 text-sm"
-							value={prev.from ?? ""}
+							value={dateRange.from ?? ""}
 							onChange={(e) => {
 								const from = e.target.value;
 								setDateRange((prev) => {
@@ -221,7 +221,7 @@ export default function ExpensesTable() {
 							id="date-to"
 							type="date"
 							className="border rounded px-2 py-1 text-sm"
-							value={prev.to ?? ""}
+							value={dateRange.to ?? ""}
 							onChange={(e) => {
 								const to = e.target.value;
 								setDateRange((prev) => {
