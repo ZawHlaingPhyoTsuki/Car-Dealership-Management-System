@@ -70,12 +70,12 @@ export default function ExpensesTable() {
 		null,
 	);
 	const [selectedPeriod, setSelectedPeriod] = useState<Period>(null);
-	const [dateRange, setDateRange] = useState<{
+	const [prev, setDateRange] = useState<{
 		from?: string;
 		to?: string;
 	}>({});
 
-	const hasDateRange = Boolean(dateRange.from || dateRange.to);
+	const hasDateRange = Boolean(prev.from || prev.to);
 
 	const filtersCount = [
 		selectedCarId,
@@ -197,14 +197,17 @@ export default function ExpensesTable() {
 							id="date-from"
 							type="date"
 							className="border rounded px-2 py-1 text-sm"
-							value={dateRange.from ?? ""}
+							value={prev.from ?? ""}
 							onChange={(e) => {
 								const from = e.target.value;
-								setDateRange((prev) => ({ ...prev, from }));
+								setDateRange((prev) => {
+									const newRange = { ...prev, from };
 
-								table.getColumn("date")?.setFilterValue({
-									from: from ? new Date(from) : undefined,
-									to: dateRange.to ? new Date(dateRange.to) : undefined,
+									table.getColumn("date")?.setFilterValue({
+										from: from ? new Date(from) : undefined,
+										to: prev.to ? new Date(prev.to) : undefined,
+									});
+									return newRange;
 								});
 							}}
 						/>
@@ -218,14 +221,17 @@ export default function ExpensesTable() {
 							id="date-to"
 							type="date"
 							className="border rounded px-2 py-1 text-sm"
-							value={dateRange.to ?? ""}
+							value={prev.to ?? ""}
 							onChange={(e) => {
 								const to = e.target.value;
-								setDateRange((prev) => ({ ...prev, to }));
+								setDateRange((prev) => {
+									const newRange = { ...prev, to };
 
-								table.getColumn("date")?.setFilterValue({
-									from: dateRange.from ? new Date(dateRange.from) : undefined,
-									to: to ? new Date(to) : undefined,
+									table.getColumn("date")?.setFilterValue({
+										from: prev.from ? new Date(prev.from) : undefined,
+										to: to ? new Date(to) : undefined,
+									});
+									return newRange;
 								});
 							}}
 						/>

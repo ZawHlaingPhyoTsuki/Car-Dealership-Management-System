@@ -102,7 +102,7 @@ function PopoverSelectContent<TItem>({
 		);
 	}
 
-	const selectedItem = items?.find((item) => getValue(item) === value);
+	const selectedItem = items.find((item) => getValue(item) === value);
 
 	return (
 		<Field>

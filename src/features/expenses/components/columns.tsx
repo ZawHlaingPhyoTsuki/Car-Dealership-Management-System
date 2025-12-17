@@ -52,7 +52,7 @@ export const columns: ColumnDef<Expense>[] = [
 			if (filterValue === undefined) return true;
 
 			//  Filter rows with NO category
-			if (filterValue === "__NONE__") {
+			if (filterValue === "_NONE_") {
 				return rowValue === null;
 			}
 			// Normal category filter
