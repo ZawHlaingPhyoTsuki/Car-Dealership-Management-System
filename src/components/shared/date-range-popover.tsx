@@ -33,53 +33,53 @@ export function DateRangePopover({ value, onChange }: DateRangePopoverProps) {
 
 	const today = new Date();
 
-const dateRanges = [
-	{
-		label: "Today",
-		start: startOfDay(today),
-		end: endOfDay(today),
-	},
-	{
-		label: "Yesterday",
-		start: startOfDay(subDays(today, 1)),
-		end: endOfDay(subDays(today, 1)),
-	},
-	{
-		label: "This Week",
-		start: startOfWeek(today, { weekStartsOn: 1 }),
-		end: endOfWeek(today, { weekStartsOn: 1 }),
-	},
-	{
-		label: "Last Week",
-		start: startOfWeek(subDays(today, 7), { weekStartsOn: 1 }),
-		end: endOfWeek(subDays(today, 7), { weekStartsOn: 1 }),
-	},
-	{
-		label: "Last 7 Days",
-		start: startOfDay(subDays(today, 6)),
-		end: endOfDay(today),
-	},
-	{
-		label: "This Month",
-		start: startOfMonth(today),
-		end: endOfMonth(today),
-	},
-	{
-		label: "Last Month",
-		start: startOfMonth(subDays(today, today.getDate())),
-		end: endOfMonth(subDays(today, today.getDate())),
-	},
-	{
-		label: "This Year",
-		start: startOfYear(today),
-		end: endOfYear(today),
-	},
-	{
-		label: "Last Year",
-		start: startOfYear(subDays(today, 365)),
-		end: endOfYear(subDays(today, 365)),
-	},
-];
+	const dateRanges = [
+		{
+			label: "Today",
+			start: startOfDay(today),
+			end: endOfDay(today),
+		},
+		{
+			label: "Yesterday",
+			start: startOfDay(subDays(today, 1)),
+			end: endOfDay(subDays(today, 1)),
+		},
+		{
+			label: "This Week",
+			start: startOfWeek(today, { weekStartsOn: 1 }),
+			end: endOfWeek(today, { weekStartsOn: 1 }),
+		},
+		{
+			label: "Last Week",
+			start: startOfWeek(subDays(today, 7), { weekStartsOn: 1 }),
+			end: endOfWeek(subDays(today, 7), { weekStartsOn: 1 }),
+		},
+		{
+			label: "Last 7 Days",
+			start: startOfDay(subDays(today, 6)),
+			end: endOfDay(today),
+		},
+		{
+			label: "This Month",
+			start: startOfMonth(today),
+			end: endOfMonth(today),
+		},
+		{
+			label: "Last Month",
+			start: startOfMonth(subDays(today, today.getDate())),
+			end: endOfMonth(subDays(today, today.getDate())),
+		},
+		{
+			label: "This Year",
+			start: startOfYear(today),
+			end: endOfYear(today),
+		},
+		{
+			label: "Last Year",
+			start: startOfYear(subDays(today, 365)),
+			end: endOfYear(subDays(today, 365)),
+		},
+	];
 
 	return (
 		<Popover>
