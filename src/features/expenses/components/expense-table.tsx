@@ -25,6 +25,8 @@ import {
 import Papa from "papaparse";
 import { useState } from "react";
 import * as XLSX from "xlsx";
+import { MainErrorFallback } from "@/components/errors/main";
+import LoadingTable from "@/components/shared/loading-table";
 import PopoverSelect from "@/components/shared/popover-select";
 import { Button } from "@/components/ui/button";
 import {
@@ -60,7 +62,7 @@ import { columns, NO_CATEGORY_FILTER } from "./columns";
 type Period = "today" | "month" | "year" | null;
 
 export default function ExpensesTable() {
-	const { data = [], isLoading, isError } = useExpenses();
+	const { data = [], isLoading, error } = useExpenses();
 	const { data: categories = [] } = useExpenseCategories();
 	const { data: cars = [] } = useGetCars();
 
@@ -183,13 +185,8 @@ export default function ExpensesTable() {
 		setDateRange({});
 	}
 
-	if (isLoading) return <div className="text-center">Loading expenses...</div>;
-	if (isError)
-		return (
-			<div className="text-center text-destructive">
-				Failed to load expenses. Please try again.
-			</div>
-		);
+	if (isLoading) return <LoadingTable label="Getting Expenses..." />;
+	if (error) return <MainErrorFallback />;
 
 	return (
 		<div className="w-full flex-col justify-start gap-6 mt-6">
