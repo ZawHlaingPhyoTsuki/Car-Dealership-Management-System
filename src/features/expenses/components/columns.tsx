@@ -23,6 +23,8 @@ import { DeleteExpenseDialog } from "./delete-expense-dialog";
 import EditExpenseDialog from "./edit-expense-dialog";
 import { dateBetweenFilter } from "./filterFn";
 
+export const NO_CATEGORY_FILTER = "__NONE__";
+
 export const columns: ColumnDef<Expense>[] = [
 	{
 		id: "no.",
@@ -52,7 +54,7 @@ export const columns: ColumnDef<Expense>[] = [
 			if (filterValue === undefined) return true;
 
 			//  Filter rows with NO category
-			if (filterValue === "_NONE_") {
+			if (filterValue === NO_CATEGORY_FILTER) {
 				return rowValue === null;
 			}
 			// Normal category filter

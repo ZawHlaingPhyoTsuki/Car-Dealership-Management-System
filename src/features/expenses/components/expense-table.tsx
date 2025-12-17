@@ -43,7 +43,7 @@ import { useGetCars } from "@/features/cars/queries/use-cars";
 import { getPresetRange } from "@/lib/date-presets";
 import { useExpenseCategories } from "../queries/get-expense-category";
 import { useExpenses } from "../queries/get-expenses";
-import { columns } from "./columns";
+import { columns, NO_CATEGORY_FILTER } from "./columns";
 
 type Period = "today" | "month" | "year" | null;
 
@@ -80,8 +80,7 @@ export default function ExpensesTable() {
 	const filtersCount = [
 		selectedCarId,
 		selectedCategoryId,
-		selectedPeriod,
-		hasDateRange,
+		selectedPeriod || hasDateRange
 	].filter(Boolean).length;
 
 	const table = useReactTable({
@@ -129,7 +128,7 @@ export default function ExpensesTable() {
 								table
 									.getColumn("category")
 									?.setFilterValue(
-										val === null ? undefined : val === "none" ? "_NONE_" : val,
+										val === null ? undefined : val === "none" ? NO_CATEGORY_FILTER : val,
 									);
 								setSelectedCategoryId(val);
 							}}
