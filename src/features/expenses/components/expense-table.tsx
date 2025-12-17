@@ -17,11 +17,22 @@ import {
 	ChevronRight,
 	ChevronsLeft,
 	ChevronsRight,
+	DownloadIcon,
+	FileSpreadsheetIcon,
+	FileTextIcon,
 	X,
 } from "lucide-react";
+import Papa from "papaparse";
 import { useState } from "react";
+import * as XLSX from "xlsx";
 import PopoverSelect from "@/components/shared/popover-select";
 import { Button } from "@/components/ui/button";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import {
 	Select,
@@ -41,6 +52,7 @@ import {
 } from "@/components/ui/table";
 import { useGetCars } from "@/features/cars/queries/use-cars";
 import { getPresetRange } from "@/lib/date-presets";
+import { mapExpenseForExport } from "../map-expense-for-export";
 import { useExpenseCategories } from "../queries/get-expense-category";
 import { useExpenses } from "../queries/get-expenses";
 import { columns, NO_CATEGORY_FILTER } from "./columns";
@@ -104,6 +116,66 @@ export default function ExpensesTable() {
 	const startRow = currentPageIndex * pageSize + 1;
 	const endRow = Math.min((currentPageIndex + 1) * pageSize, totalRows);
 
+	const exportToCSV = () => {
+		const selectedRows = table.getSelectedRowModel().rows;
+
+		const rows =
+			selectedRows.length > 0 ? selectedRows : table.getFilteredRowModel().rows;
+
+		const dataToExport = rows.map((row) => mapExpenseForExport(row.original));
+
+		const csv = Papa.unparse(dataToExport, {
+			header: true,
+		});
+
+		const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+		const link = document.createElement("a");
+		const url = URL.createObjectURL(blob);
+
+		link.setAttribute("href", url);
+		link.setAttribute(
+			"download",
+			`expenses-export-${new Date().toISOString().split("T")[0]}.csv`,
+		);
+		link.style.visibility = "hidden";
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+	};
+
+	const exportToExcel = () => {
+		const selectedRows = table.getSelectedRowModel().rows;
+
+		const rows =
+			selectedRows.length > 0 ? selectedRows : table.getFilteredRowModel().rows;
+
+		const dataToExport = rows.map((row) => mapExpenseForExport(row.original));
+
+		if (dataToExport.length === 0) return;
+
+		type ExportRow = ReturnType<typeof mapExpenseForExport>;
+
+		const keys = Object.keys(dataToExport[0]) as (keyof ExportRow)[];
+
+		const cols = keys.map((key) => ({
+			wch:
+				Math.max(
+					String(key).length,
+					...dataToExport.map((row) => String(row[key] ?? "").length),
+				) + 2,
+		}));
+
+		const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+		const workbook = XLSX.utils.book_new();
+
+		XLSX.utils.book_append_sheet(workbook, worksheet, "Expenses");
+		worksheet["!cols"] = cols;
+
+		XLSX.writeFile(
+			workbook,
+			`expenses-export-${new Date().toISOString().split("T")[0]}.xlsx`,
+		);
+	};
 	function resetFilters() {
 		setSelectedCarId(null);
 		setSelectedCategoryId(null);
@@ -258,6 +330,25 @@ export default function ExpensesTable() {
 						<X />
 						Clear Filters {filtersCount > 0 && `(${filtersCount})`}
 					</Button>
+
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant="outline">
+								<DownloadIcon className="mr-2" />
+								Export
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							<DropdownMenuItem onClick={exportToCSV}>
+								<FileTextIcon className="mr-2 size-4" />
+								Export as CSV
+							</DropdownMenuItem>
+							<DropdownMenuItem onClick={exportToExcel}>
+								<FileSpreadsheetIcon className="mr-2 size-4" />
+								Export as Excel
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
 				</div>
 			</div>
 
