@@ -25,9 +25,9 @@ import {
 import Papa from "papaparse";
 import { useState } from "react";
 import * as XLSX from "xlsx";
-import { MainErrorFallback } from "@/components/errors/main";
-import LoadingTable from "@/components/shared/loading-table";
+import TableError from "@/components/errors/table-error";
 import PopoverSelect from "@/components/shared/popover-select";
+import TableLoading from "@/components/shared/table-loading";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -62,7 +62,7 @@ import { columns, NO_CATEGORY_FILTER } from "./columns";
 type Period = "today" | "month" | "year" | null;
 
 export default function ExpensesTable() {
-	const { data = [], isLoading, error } = useExpenses();
+	const { data = [], isLoading, error, refetch } = useExpenses();
 	const { data: categories = [] } = useExpenseCategories();
 	const { data: cars = [] } = useGetCars();
 
@@ -185,8 +185,8 @@ export default function ExpensesTable() {
 		setDateRange({});
 	}
 
-	if (isLoading) return <LoadingTable label="Getting Expenses..." />;
-	if (error) return <MainErrorFallback />;
+	if (isLoading) return <TableLoading label="Getting Expenses..." />;
+	if (error) return <TableError label={"expenses"} onRetry={refetch} />;
 
 	return (
 		<div className="w-full flex-col justify-start gap-6 mt-6">

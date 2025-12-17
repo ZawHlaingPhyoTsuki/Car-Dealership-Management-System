@@ -1,16 +1,16 @@
 "use client";
 
-import { MainErrorFallback } from "@/components/errors/main";
+import TableError from "@/components/errors/table-error";
 import DataTable from "@/components/shared/data-table";
-import LoadingTable from "@/components/shared/loading-table";
+import TableLoading from "@/components/shared/table-loading";
 import { columns } from "@/features/employees/components/columns";
 import { useEmployees } from "@/features/employees/queries/use-employees";
 
 export function EmployeeTable() {
-	const { data: employees = [], isLoading, error } = useEmployees();
+	const { data: employees = [], isLoading, error, refetch } = useEmployees();
 
-	if (isLoading) return <LoadingTable label="Getting Employees..." />;
-	if (error) return <MainErrorFallback />;
+	if (isLoading) return <TableLoading label="Getting Employees..." />;
+	if (error) return <TableError label={"employees"} onRetry={refetch} />;
 
 	return <DataTable columns={columns} data={employees} />;
 }
