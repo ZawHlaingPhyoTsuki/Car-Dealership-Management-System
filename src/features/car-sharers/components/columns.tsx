@@ -27,9 +27,16 @@ import EditCarSharerDialog from "./edit-car-sharer-dialog";
 
 export const columns: ColumnDef<Car>[] = [
 	{
-		id: "no.",
+		id: "no",
 		header: () => <Label className="text-lg">No.</Label>,
-		cell: ({ row }) => row.index + 1,
+		cell: ({ row, table }) => {
+			const { pageIndex, pageSize } = table.getState().pagination;
+			const filteredRows = table.getFilteredRowModel().rows;
+			const rowIndex = filteredRows.findIndex(
+				(filteredRow) => filteredRow.id === row.id,
+			);
+			return pageIndex * pageSize + rowIndex + 1;
+		},
 	},
 	{
 		accessorKey: "name",

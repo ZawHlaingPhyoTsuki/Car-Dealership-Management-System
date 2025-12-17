@@ -57,12 +57,7 @@ export default function DataTable<TData, TValue>({
 	data,
 }: DataTableProps<TData, TValue>) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-	const [sorting, setSorting] = useState<SortingState>([
-		{
-			id: "price",
-			desc: false,
-		},
-	]);
+	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 	const [pagination, setPagination] = useState<PaginationState>({
 		pageIndex: 0,

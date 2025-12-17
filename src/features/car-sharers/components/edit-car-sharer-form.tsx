@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import FormPopoverSelect from "@/components/shared/form-popover-select";
+import PopoverSelect from "@/components/shared/popover-select";
 import { Button } from "@/components/ui/button";
 import {
 	Field,
@@ -290,7 +290,7 @@ export default function EditCarSharerForm({
 				<FieldSeparator />
 				{/* Shareholder */}
 				<FieldGroup>
-					<FormPopoverSelect
+					<PopoverSelect
 						control={form.control}
 						name="shareholderId"
 						label="Select Shareholder (Optional)"
