@@ -13,7 +13,7 @@ import {
 } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
-import type { DateRange } from "react-day-picker";
+import { getDefaultClassNames, type DateRange } from "react-day-picker";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -90,7 +90,7 @@ export function DateRangePopover({ value, onChange }: DateRangePopoverProps) {
 				</Button>
 			</PopoverTrigger>
 
-			<PopoverContent align="start" className="w-auto">
+			<PopoverContent align="start" className="w-auto bg-sidebar">
 				<div className="flex">
 					{/* Presets */}
 					<div className="flex flex-col gap-1 pr-4 text-left border-r border-foreground/10">
@@ -120,8 +120,13 @@ export function DateRangePopover({ value, onChange }: DateRangePopoverProps) {
 						selected={value}
 						onSelect={onChange}
 						numberOfMonths={2}
-						className="p-3"
-						buttonVariant="outline"
+						showOutsideDays={false}
+						classNames={{
+							root: `${getDefaultClassNames().root} bg-sidebar p-3`,
+							day_button:
+								"h-9 w-9 text-base font-medium hover:bg-accent hover:text-accent-foreground",
+							caption_label: "text-lg font-bold",
+						}}
 					/>
 				</div>
 			</PopoverContent>
