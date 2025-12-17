@@ -60,7 +60,7 @@ import { columns, NO_CATEGORY_FILTER } from "./columns";
 type Period = "today" | "month" | "year" | null;
 
 export default function ExpensesTable() {
-	const { data = [] } = useExpenses();
+	const { data = [], isLoading, isError } = useExpenses();
 	const { data: categories = [] } = useExpenseCategories();
 	const { data: cars = [] } = useGetCars();
 
@@ -182,6 +182,14 @@ export default function ExpensesTable() {
 		setSelectedPeriod(null);
 		setDateRange({});
 	}
+
+	if (isLoading) return <div className="text-center">Loading expenses...</div>;
+	if (isError)
+		return (
+			<div className="text-center text-destructive">
+				Failed to load expenses. Please try again.
+			</div>
+		);
 
 	return (
 		<div className="w-full flex-col justify-start gap-6 mt-6">
