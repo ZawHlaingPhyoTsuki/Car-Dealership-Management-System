@@ -10,10 +10,11 @@ import {
 	startOfWeek,
 	startOfYear,
 	subDays,
+	subYears,
 } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
-import { getDefaultClassNames, type DateRange } from "react-day-picker";
+import { type DateRange, getDefaultClassNames } from "react-day-picker";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -29,7 +30,7 @@ interface DateRangePopoverProps {
 }
 
 export function DateRangePopover({ value, onChange }: DateRangePopoverProps) {
-	const [selectedRange, setSelectedRange] = useState<string | null>();
+	const [selectedRange, setSelectedRange] = useState<string | null>(null);
 
 	const today = new Date();
 
@@ -76,8 +77,8 @@ export function DateRangePopover({ value, onChange }: DateRangePopoverProps) {
 		},
 		{
 			label: "Last Year",
-			start: startOfYear(subDays(today, 365)),
-			end: endOfYear(subDays(today, 365)),
+			start: startOfYear(subYears(today, 1)),
+			end: endOfYear(subYears(today, 1)),
 		},
 	];
 

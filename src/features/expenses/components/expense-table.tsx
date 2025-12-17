@@ -178,10 +178,9 @@ export default function ExpensesTable() {
 	const handleDateChange = (range?: DateRange) => {
 		setDateRange(range);
 
-		table.getColumn("date")?.setFilterValue({
-			from: range?.from,
-			to: range?.to,
-		});
+		table
+			.getColumn("date")
+			?.setFilterValue(range ? { from: range.from, to: range.to } : undefined);
 	};
 
 	return (
