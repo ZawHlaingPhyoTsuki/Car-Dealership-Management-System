@@ -23,11 +23,20 @@ import { DeleteExpenseDialog } from "./delete-expense-dialog";
 import EditExpenseDialog from "./edit-expense-dialog";
 import { dateBetweenFilter } from "./filterFn";
 
+export const NO_CATEGORY_FILTER = "__NONE__";
+
 export const columns: ColumnDef<Expense>[] = [
 	{
-		id: "no.",
+		id: "no",
 		header: () => <Label className="text-lg">No.</Label>,
-		cell: ({ row }) => row.index + 1,
+		cell: ({ row, table }) => {
+			const { pageIndex, pageSize } = table.getState().pagination;
+			const filteredRows = table.getFilteredRowModel().rows;
+			const rowIndex = filteredRows.findIndex(
+				(filteredRow) => filteredRow.id === row.id,
+			);
+			return pageIndex * pageSize + rowIndex + 1;
+		},
 	},
 	{
 		accessorKey: "amount",
@@ -46,7 +55,18 @@ export const columns: ColumnDef<Expense>[] = [
 		accessorFn: (row) => row.category?.id ?? null,
 		header: () => <Label className="text-lg">Reason</Label>,
 		cell: ({ row }) => row.original.category?.name ?? "_",
-		filterFn: "equalsString",
+		filterFn: (row, columnId, filterValue) => {
+			const rowValue = row.getValue<string | null>(columnId);
+			//  No filter → show all
+			if (filterValue === undefined) return true;
+
+			//  Filter rows with NO category
+			if (filterValue === NO_CATEGORY_FILTER) {
+				return rowValue === null;
+			}
+			// Normal category filter
+			return rowValue === filterValue;
+		},
 	},
 	{
 		accessorKey: "date",
