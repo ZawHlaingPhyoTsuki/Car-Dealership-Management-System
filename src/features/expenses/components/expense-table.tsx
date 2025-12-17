@@ -173,7 +173,7 @@ export default function ExpensesTable() {
 
 		XLSX.writeFile(
 			workbook,
-			`expenses-export-${new Date().toISOString().slice(0, 10)}.xlsx`,
+			`expenses-export-${new Date().toISOString().split("T")[0]}.xlsx`,
 		);
 	};
 	function resetFilters() {
