@@ -199,6 +199,7 @@ export default function ExpensesTable() {
 							value={dateRange.from ?? ""}
 							onChange={(e) => {
 								const from = e.target.value;
+								setSelectedPeriod(null);
 								setDateRange((prev) => {
 									const newRange = { ...prev, from };
 
@@ -223,6 +224,7 @@ export default function ExpensesTable() {
 							value={dateRange.to ?? ""}
 							onChange={(e) => {
 								const to = e.target.value;
+								setSelectedPeriod(null);
 								setDateRange((prev) => {
 									const newRange = { ...prev, to };
 
