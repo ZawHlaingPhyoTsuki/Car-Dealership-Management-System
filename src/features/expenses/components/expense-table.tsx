@@ -53,12 +53,7 @@ export default function ExpensesTable() {
 	const { data: cars = [] } = useGetCars();
 
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-	const [sorting, setSorting] = useState<SortingState>([
-		{
-			id: "amount",
-			desc: false,
-		},
-	]);
+	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 	const [pagination, setPagination] = useState<PaginationState>({
 		pageIndex: 0,
@@ -80,7 +75,7 @@ export default function ExpensesTable() {
 	const filtersCount = [
 		selectedCarId,
 		selectedCategoryId,
-		selectedPeriod || hasDateRange
+		selectedPeriod || hasDateRange,
 	].filter(Boolean).length;
 
 	const table = useReactTable({
@@ -121,6 +116,7 @@ export default function ExpensesTable() {
 			<div className="flex items-center py-4">
 				{/* Filter */}
 				<div className="w-full flex items-end justify-between flex-wrap gap-3 py-6">
+					{/* Reason Select */}
 					<div className="w-[200px]">
 						<PopoverSelect
 							value={selectedCategoryId}
@@ -128,7 +124,11 @@ export default function ExpensesTable() {
 								table
 									.getColumn("category")
 									?.setFilterValue(
-										val === null ? undefined : val === "none" ? NO_CATEGORY_FILTER : val,
+										val === null
+											? undefined
+											: val === "none"
+												? NO_CATEGORY_FILTER
+												: val,
 									);
 								setSelectedCategoryId(val);
 							}}
@@ -142,6 +142,8 @@ export default function ExpensesTable() {
 							customSubLabel="Show all reasons"
 						/>
 					</div>
+
+					{/* Car Select */}
 					<div className="w-[200px]">
 						<PopoverSelect
 							value={selectedCarId}
@@ -162,6 +164,8 @@ export default function ExpensesTable() {
 							customSubLabel="Show all cars"
 						/>
 					</div>
+
+					{/* Period Select */}
 					<Select
 						key={selectedPeriod ?? "empty"}
 						value={selectedPeriod ?? undefined}
@@ -185,6 +189,8 @@ export default function ExpensesTable() {
 							</SelectGroup>
 						</SelectContent>
 					</Select>
+
+					{/* From Date Button */}
 					<div className="space-y-1">
 						<Label
 							htmlFor="date-from"
@@ -213,6 +219,7 @@ export default function ExpensesTable() {
 						/>
 					</div>
 
+					{/* To Date Button */}
 					<div className="space-y-1">
 						<Label htmlFor="date-to" className="text-sm text-muted-foreground">
 							To
@@ -237,6 +244,8 @@ export default function ExpensesTable() {
 							}}
 						/>
 					</div>
+
+					{/* Clear Filters Button */}
 					<Button
 						className="border-2 border-destructive dark:border-destructive"
 						variant="outline"

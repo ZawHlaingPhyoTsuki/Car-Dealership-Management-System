@@ -27,9 +27,16 @@ export const NO_CATEGORY_FILTER = "__NONE__";
 
 export const columns: ColumnDef<Expense>[] = [
 	{
-		id: "no.",
+		id: "no",
 		header: () => <Label className="text-lg">No.</Label>,
-		cell: ({ row }) => row.index + 1,
+		cell: ({ row, table }) => {
+			const { pageIndex, pageSize } = table.getState().pagination;
+			const filteredRows = table.getFilteredRowModel().rows;
+			const rowIndex = filteredRows.findIndex(
+				(filteredRow) => filteredRow.id === row.id,
+			);
+			return pageIndex * pageSize + rowIndex + 1;
+		},
 	},
 	{
 		accessorKey: "amount",
