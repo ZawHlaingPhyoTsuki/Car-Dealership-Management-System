@@ -41,13 +41,11 @@ export const columns: ColumnDef<Employee>[] = [
 	},
 	{
 		accessorKey: "percentage",
-		header: ({ column }) => (
-			<DataTableColumnHeader column={column} title="Percentage (%)" />
-		),
+		header: () => <Label className="text-lg">Percentage</Label>,
 		cell: ({ row }) => {
 			const percentage = row.original.percentage;
 			if (percentage == null) return "-";
-			return `${percentage}%`;
+			return <span className="text-sm text-purple-500">{percentage}%</span>;
 		},
 	},
 	{

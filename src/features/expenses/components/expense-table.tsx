@@ -1,14 +1,6 @@
 "use client";
 
 import {
-	// IconChevronDown,
-	IconChevronLeft,
-	IconChevronRight,
-	IconChevronsLeft,
-	IconChevronsRight,
-	// IconLayoutColumns,
-} from "@tabler/icons-react";
-import {
 	type ColumnFiltersState,
 	flexRender,
 	getCoreRowModel,
@@ -20,19 +12,32 @@ import {
 	useReactTable,
 	type VisibilityState,
 } from "@tanstack/react-table";
-import { X } from "lucide-react";
+import {
+	ChevronLeft,
+	ChevronRight,
+	ChevronsLeft,
+	ChevronsRight,
+	DownloadIcon,
+	FileSpreadsheetIcon,
+	FileTextIcon,
+	X,
+} from "lucide-react";
+import Papa from "papaparse";
 import { useState } from "react";
+import * as XLSX from "xlsx";
+import PopoverSelect from "@/components/shared/popover-select";
 import { Button } from "@/components/ui/button";
-// import {
-// 	DropdownMenu,
-// 	DropdownMenuCheckboxItem,
-// 	DropdownMenuContent,
-// 	DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import {
 	Select,
 	SelectContent,
+	SelectGroup,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
@@ -45,31 +50,45 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { useGetCars } from "@/features/cars/queries/use-cars";
 import { getPresetRange } from "@/lib/date-presets";
+import { mapExpenseForExport } from "../map-expense-for-export";
 import { useExpenseCategories } from "../queries/get-expense-category";
 import { useExpenses } from "../queries/get-expenses";
-import { columns } from "./columns";
+import { columns, NO_CATEGORY_FILTER } from "./columns";
+
+type Period = "today" | "month" | "year" | null;
 
 export default function ExpensesTable() {
 	const { data = [] } = useExpenses();
 	const { data: categories = [] } = useExpenseCategories();
+	const { data: cars = [] } = useGetCars();
 
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-	const [sorting, setSorting] = useState<SortingState>([
-		{
-			id: "amount",
-			desc: false,
-		},
-	]);
+	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 	const [pagination, setPagination] = useState<PaginationState>({
 		pageIndex: 0,
 		pageSize: 10,
 	});
+
+	const [selectedCarId, setSelectedCarId] = useState<string | null>(null);
+	const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+		null,
+	);
+	const [selectedPeriod, setSelectedPeriod] = useState<Period>(null);
 	const [dateRange, setDateRange] = useState<{
 		from?: string;
 		to?: string;
 	}>({});
+
+	const hasDateRange = Boolean(dateRange.from || dateRange.to);
+
+	const filtersCount = [
+		selectedCarId,
+		selectedCategoryId,
+		selectedPeriod || hasDateRange,
+	].filter(Boolean).length;
 
 	const table = useReactTable({
 		data,
@@ -97,146 +116,240 @@ export default function ExpensesTable() {
 	const startRow = currentPageIndex * pageSize + 1;
 	const endRow = Math.min((currentPageIndex + 1) * pageSize, totalRows);
 
+	const exportToCSV = () => {
+		const selectedRows = table.getSelectedRowModel().rows;
+
+		const rows =
+			selectedRows.length > 0 ? selectedRows : table.getFilteredRowModel().rows;
+
+		const dataToExport = rows.map((row) => mapExpenseForExport(row.original));
+
+		const csv = Papa.unparse(dataToExport, {
+			header: true,
+		});
+
+		const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+		const link = document.createElement("a");
+		const url = URL.createObjectURL(blob);
+
+		link.setAttribute("href", url);
+		link.setAttribute(
+			"download",
+			`expenses-export-${new Date().toISOString().split("T")[0]}.csv`,
+		);
+		link.style.visibility = "hidden";
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+	};
+
+	const exportToExcel = () => {
+		const selectedRows = table.getSelectedRowModel().rows;
+
+		const rows =
+			selectedRows.length > 0 ? selectedRows : table.getFilteredRowModel().rows;
+
+		const dataToExport = rows.map((row) => mapExpenseForExport(row.original));
+
+		if (dataToExport.length === 0) return;
+
+		type ExportRow = ReturnType<typeof mapExpenseForExport>;
+
+		const keys = Object.keys(dataToExport[0]) as (keyof ExportRow)[];
+
+		const cols = keys.map((key) => ({
+			wch:
+				Math.max(
+					String(key).length,
+					...dataToExport.map((row) => String(row[key] ?? "").length),
+				) + 2,
+		}));
+
+		const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+		const workbook = XLSX.utils.book_new();
+
+		XLSX.utils.book_append_sheet(workbook, worksheet, "Expenses");
+		worksheet["!cols"] = cols;
+
+		XLSX.writeFile(
+			workbook,
+			`expenses-export-${new Date().toISOString().split("T")[0]}.xlsx`,
+		);
+	};
+	function resetFilters() {
+		setSelectedCarId(null);
+		setSelectedCategoryId(null);
+		setSelectedPeriod(null);
+		setDateRange({});
+	}
+
 	return (
 		<div className="w-full flex-col justify-start gap-6 mt-6">
 			<div className="flex items-center py-4">
-				{/* Filter here */}
-				<div className="flex flex-wrap gap-3 px-2 py-6">
+				{/* Filter */}
+				<div className="w-full flex items-end justify-between flex-wrap gap-3 py-6">
+					{/* Reason Select */}
+					<div className="w-[200px]">
+						<PopoverSelect
+							value={selectedCategoryId}
+							onChange={(val) => {
+								table
+									.getColumn("category")
+									?.setFilterValue(
+										val === null
+											? undefined
+											: val === "none"
+												? NO_CATEGORY_FILTER
+												: val,
+									);
+								setSelectedCategoryId(val);
+							}}
+							selector="Reason"
+							items={[{ id: "none", name: "Without Reason" }, ...categories]}
+							allowNone
+							matchTriggerWidth
+							getLabel={(cat) => `${cat.name}`}
+							getValue={(cat) => cat.id}
+							customLabel="All"
+							customSubLabel="Show all reasons"
+						/>
+					</div>
+
+					{/* Car Select */}
+					<div className="w-[200px]">
+						<PopoverSelect
+							value={selectedCarId}
+							onChange={(val) => {
+								table
+									.getColumn("car")
+									?.setFilterValue(val === null ? undefined : val);
+								setSelectedCarId(val);
+							}}
+							selector="Car"
+							items={cars}
+							allowNone
+							matchTriggerWidth
+							getLabel={(car) => `${car.name} (${car.color})`}
+							getValue={(car) => car.id}
+							getSubLabel={(car) => car.licenseNumber ?? "No Number"}
+							customLabel="All"
+							customSubLabel="Show all cars"
+						/>
+					</div>
+
+					{/* Period Select */}
 					<Select
-						onValueChange={(value) => {
-							table
-								.getColumn("category")
-								?.setFilterValue(value === "all" ? undefined : value);
+						key={selectedPeriod ?? "empty"}
+						value={selectedPeriod ?? undefined}
+						onValueChange={(period) => {
+							const p = period as "today" | "month" | "year";
+							setSelectedPeriod(p);
+							setDateRange({});
+
+							const range = getPresetRange(p);
+							table.getColumn("date")?.setFilterValue(range);
 						}}
 					>
-						<SelectTrigger className="w-40">
-							<SelectValue placeholder="Category" />
+						<SelectTrigger className="w-[200px]">
+							<SelectValue placeholder="Select Period" />
 						</SelectTrigger>
-
 						<SelectContent>
-							<SelectItem value="all">All Reason</SelectItem>
-							{categories.map((cat) => (
-								<SelectItem key={cat.id} value={cat.id}>
-									{cat.name}
-								</SelectItem>
-							))}
+							<SelectGroup>
+								<SelectItem value="today">Today</SelectItem>
+								<SelectItem value="month">This Month</SelectItem>
+								<SelectItem value="year">This Year</SelectItem>
+							</SelectGroup>
 						</SelectContent>
 					</Select>
-					<div className="flex gap-2 flex-wrap">
-						<Button
-							variant="outline"
-							onClick={() => {
-								const range = getPresetRange("today");
-								table.getColumn("date")?.setFilterValue(range);
-							}}
-						>
-							Today
-						</Button>
 
-						<Button
-							variant="outline"
-							onClick={() => {
-								const range = getPresetRange("month");
-								table.getColumn("date")?.setFilterValue(range);
-							}}
+					{/* From Date Button */}
+					<div className="space-y-1">
+						<Label
+							htmlFor="date-from"
+							className="text-sm text-muted-foreground"
 						>
-							This Month
-						</Button>
-
-						<Button
-							variant="outline"
-							onClick={() => {
-								const range = getPresetRange("year");
-								table.getColumn("date")?.setFilterValue(range);
-							}}
-						>
-							This Year
-						</Button>
-					</div>
-					<div className="flex gap-2">
-						<div className="flex flex-col gap-1">
-							<Label htmlFor="date-from" className="text-sm">
-								From
-							</Label>
-							<input
-								id="date-from"
-								type="date"
-								className="border rounded px-2 py-1 text-sm"
-								value={dateRange.from ?? ""}
-								onChange={(e) => {
-									const from = e.target.value;
-									setDateRange((prev) => ({ ...prev, from }));
+							From
+						</Label>
+						<input
+							id="date-from"
+							type="date"
+							className="border rounded px-2 py-1 text-sm"
+							value={dateRange.from ?? ""}
+							onChange={(e) => {
+								const from = e.target.value;
+								setSelectedPeriod(null);
+								setDateRange((prev) => {
+									const newRange = { ...prev, from };
 
 									table.getColumn("date")?.setFilterValue({
 										from: from ? new Date(from) : undefined,
-										to: dateRange.to ? new Date(dateRange.to) : undefined,
+										to: prev.to ? new Date(prev.to) : undefined,
 									});
-								}}
-							/>
-						</div>
+									return newRange;
+								});
+							}}
+						/>
+					</div>
 
-						<div className="flex flex-col gap-1">
-							<Label htmlFor="date-to" className="text-sm">
-								To
-							</Label>
-							<input
-								id="date-to"
-								type="date"
-								className="border rounded px-2 py-1 text-sm"
-								value={dateRange.to ?? ""}
-								onChange={(e) => {
-									const to = e.target.value;
-									setDateRange((prev) => ({ ...prev, to }));
+					{/* To Date Button */}
+					<div className="space-y-1">
+						<Label htmlFor="date-to" className="text-sm text-muted-foreground">
+							To
+						</Label>
+						<input
+							id="date-to"
+							type="date"
+							className="border rounded px-2 py-1 text-sm"
+							value={dateRange.to ?? ""}
+							onChange={(e) => {
+								const to = e.target.value;
+								setSelectedPeriod(null);
+								setDateRange((prev) => {
+									const newRange = { ...prev, to };
 
 									table.getColumn("date")?.setFilterValue({
-										from: dateRange.from ? new Date(dateRange.from) : undefined,
+										from: prev.from ? new Date(prev.from) : undefined,
 										to: to ? new Date(to) : undefined,
 									});
-								}}
-							/>
-						</div>
+									return newRange;
+								});
+							}}
+						/>
 					</div>
+
+					{/* Clear Filters Button */}
+					<Button
+						className="border-2 border-destructive dark:border-destructive"
+						variant="outline"
+						onClick={() => {
+							table.resetColumnFilters();
+							resetFilters();
+						}}
+						disabled={filtersCount === 0}
+					>
+						<X />
+						Clear Filters {filtersCount > 0 && `(${filtersCount})`}
+					</Button>
+
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant="outline">
+								<DownloadIcon className="mr-2" />
+								Export
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							<DropdownMenuItem onClick={exportToCSV}>
+								<FileTextIcon className="mr-2 size-4" />
+								Export as CSV
+							</DropdownMenuItem>
+							<DropdownMenuItem onClick={exportToExcel}>
+								<FileSpreadsheetIcon className="mr-2 size-4" />
+								Export as Excel
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
 				</div>
-				<Button
-					variant="outline"
-					onClick={() => {
-						// setDateRange({});
-						// table.getColumn("date")?.setFilterValue(undefined);
-						table.resetColumnFilters();
-					}}
-				>
-					<X />
-					Clear Filters
-				</Button>
-				{/* <DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<Button variant="outline" className="ml-auto">
-							<IconLayoutColumns />
-							<span className="hidden lg:inline">Customize Columns</span>
-							<span className="lg:hidden">Columns</span>
-							<IconChevronDown />
-						</Button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end">
-						{table
-							.getAllColumns()
-							.filter((column) => column.getCanHide())
-							.map((column) => {
-								return (
-									<DropdownMenuCheckboxItem
-										key={column.id}
-										className="capitalize"
-										checked={column.getIsVisible()}
-										onCheckedChange={(value) =>
-											column.toggleVisibility(!!value)
-										}
-									>
-										{column.id}
-									</DropdownMenuCheckboxItem>
-								);
-							})}
-					</DropdownMenuContent>
-				</DropdownMenu> */}
 			</div>
 
 			{/* Table */}
@@ -341,7 +454,7 @@ export default function ExpensesTable() {
 							disabled={!table.getCanPreviousPage()}
 						>
 							<span className="sr-only">Go to first page</span>
-							<IconChevronsLeft />
+							<ChevronsLeft />
 						</Button>
 						<Button
 							variant="outline"
@@ -351,7 +464,7 @@ export default function ExpensesTable() {
 							disabled={!table.getCanPreviousPage()}
 						>
 							<span className="sr-only">Go to previous page</span>
-							<IconChevronLeft />
+							<ChevronLeft />
 						</Button>
 						<Button
 							variant="outline"
@@ -361,7 +474,7 @@ export default function ExpensesTable() {
 							disabled={!table.getCanNextPage()}
 						>
 							<span className="sr-only">Go to next page</span>
-							<IconChevronRight />
+							<ChevronRight />
 						</Button>
 						<Button
 							variant="outline"
@@ -371,7 +484,7 @@ export default function ExpensesTable() {
 							disabled={!table.getCanNextPage()}
 						>
 							<span className="sr-only">Go to last page</span>
-							<IconChevronsRight />
+							<ChevronsRight />
 						</Button>
 					</div>
 				</div>

@@ -1,14 +1,6 @@
 "use client";
 
 import {
-	IconChevronDown,
-	IconChevronLeft,
-	IconChevronRight,
-	IconChevronsLeft,
-	IconChevronsRight,
-	IconLayoutColumns,
-} from "@tabler/icons-react";
-import {
 	type ColumnDef,
 	type ColumnFiltersState,
 	flexRender,
@@ -21,6 +13,14 @@ import {
 	useReactTable,
 	type VisibilityState,
 } from "@tanstack/react-table";
+import {
+	ChevronDown,
+	ChevronLeft,
+	ChevronRight,
+	ChevronsLeft,
+	ChevronsRight,
+	LayoutGrid,
+} from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -57,12 +57,7 @@ export default function DataTable<TData, TValue>({
 	data,
 }: DataTableProps<TData, TValue>) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-	const [sorting, setSorting] = useState<SortingState>([
-		{
-			id: "price",
-			desc: false,
-		},
-	]);
+	const [sorting, setSorting] = useState<SortingState>([]);
 	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 	const [pagination, setPagination] = useState<PaginationState>({
 		pageIndex: 0,
@@ -109,10 +104,10 @@ export default function DataTable<TData, TValue>({
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button variant="outline" className="ml-auto">
-							<IconLayoutColumns />
+							<LayoutGrid />
 							<span className="hidden lg:inline">Customize Columns</span>
 							<span className="lg:hidden">Columns</span>
-							<IconChevronDown />
+							<ChevronDown />
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end">
@@ -238,7 +233,7 @@ export default function DataTable<TData, TValue>({
 							disabled={!table.getCanPreviousPage()}
 						>
 							<span className="sr-only">Go to first page</span>
-							<IconChevronsLeft />
+							<ChevronsLeft />
 						</Button>
 						<Button
 							variant="outline"
@@ -248,7 +243,7 @@ export default function DataTable<TData, TValue>({
 							disabled={!table.getCanPreviousPage()}
 						>
 							<span className="sr-only">Go to previous page</span>
-							<IconChevronLeft />
+							<ChevronLeft />
 						</Button>
 						<Button
 							variant="outline"
@@ -258,7 +253,7 @@ export default function DataTable<TData, TValue>({
 							disabled={!table.getCanNextPage()}
 						>
 							<span className="sr-only">Go to next page</span>
-							<IconChevronRight />
+							<ChevronRight />
 						</Button>
 						<Button
 							variant="outline"
@@ -268,7 +263,7 @@ export default function DataTable<TData, TValue>({
 							disabled={!table.getCanNextPage()}
 						>
 							<span className="sr-only">Go to last page</span>
-							<IconChevronsRight />
+							<ChevronsRight />
 						</Button>
 					</div>
 				</div>

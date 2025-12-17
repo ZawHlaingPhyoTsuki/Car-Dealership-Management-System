@@ -1,18 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronsUpDown } from "lucide-react";
-import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import PopoverSelect from "@/components/shared/popover-select";
 import { Button } from "@/components/ui/button";
-import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-	CommandList,
-} from "@/components/ui/command";
 import {
 	Field,
 	FieldError,
@@ -26,15 +17,9 @@ import {
 	InputGroupAddon,
 	InputGroupInput,
 } from "@/components/ui/input-group";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
 import type { Car } from "@/features/cars/actions/get-cars";
 import {
 	calculatePercentageFromAmount,
-	cn,
 	companyProfitAndPercentageCalculator,
 	parseAmountInput,
 	parsePercentageInput,
@@ -71,14 +56,19 @@ export default function EditCarSharerForm({
 
 	const price = form.watch("price");
 	const shareholderPercentage = form.watch("shareholderPercentage");
-	const shareholderId = form.watch("shareholderId");
 
-	const [open, setOpen] = useState(false);
-	const { data: shareholders, isLoading, isError } = useGetShareholders();
+	const {
+		data: shareholders,
+		isLoading: isLoadingShareholders,
+		isError: isErrorShareholders,
+	} = useGetShareholders();
 
-	const selectedShareholder = shareholders?.find(
-		(sh) => sh.id === shareholderId,
-	);
+	const resetShareholderPercentage = () => {
+		const shareholderId = form.getValues("shareholderId");
+		if (!shareholderId) {
+			form.setValue("shareholderPercentage", 0);
+		}
+	};
 
 	const onSubmit = async (values: UpdateCarSharerValues) => {
 		await updateCarSharerMutation.mutateAsync(values);
@@ -298,98 +288,22 @@ export default function EditCarSharerForm({
 					/>
 				</FieldGroup>
 				<FieldSeparator />
+				{/* Shareholder */}
 				<FieldGroup>
-					{/* Shareholder Selection */}
-					<Controller
-						name="shareholderId"
+					<PopoverSelect
 						control={form.control}
-						render={({ field }) => (
-							<Field className="flex flex-col gap-2">
-								<FieldLabel htmlFor="shareholderId">Shareholder</FieldLabel>
-								<Popover open={open} onOpenChange={setOpen}>
-									<PopoverTrigger asChild>
-										<Button
-											variant="outline"
-											role="combobox"
-											aria-expanded={open}
-											className="justify-between font-normal"
-										>
-											{selectedShareholder
-												? selectedShareholder.name
-												: "Select shareholder..."}
-											<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-										</Button>
-									</PopoverTrigger>
-									<PopoverContent className="w-[300px] p-0" align="start">
-										<Command>
-											<CommandInput placeholder="Search shareholder..." />
-											<CommandList>
-												<CommandEmpty>
-													{isLoading
-														? "Loading..."
-														: isError
-															? "Failed to load shareholders"
-															: "No shareholder found."}
-												</CommandEmpty>
-												<CommandGroup>
-													<CommandItem
-														value=""
-														onSelect={() => {
-															field.onChange(undefined);
-															setOpen(false);
-														}}
-													>
-														<Check
-															className={cn(
-																"mr-2 h-4 w-4",
-																!field.value ? "opacity-100" : "opacity-0",
-															)}
-														/>
-														<div className="flex flex-col">
-															<span>No shareholder</span>
-															<span className="text-xs text-muted-foreground">
-																Remove shareholder
-															</span>
-														</div>
-													</CommandItem>
-													{shareholders?.map((shareholder) => (
-														<CommandItem
-															key={shareholder.id}
-															value={shareholder.name}
-															// keywords={[
-															// 	shareholder.name,
-															// 	shareholder.email || "",
-															// ]}
-															onSelect={() => {
-																field.onChange(shareholder.id);
-																setOpen(false);
-															}}
-														>
-															<Check
-																className={cn(
-																	"mr-2 h-4 w-4",
-																	field.value === shareholder.id
-																		? "opacity-100"
-																		: "opacity-0",
-																)}
-															/>
-															<div className="flex flex-col">
-																<span>{shareholder.name}</span>
-																{shareholder.email && (
-																	<span className="text-xs text-muted-foreground">
-																		{shareholder.email}
-																	</span>
-																)}
-															</div>
-														</CommandItem>
-													))}
-												</CommandGroup>
-											</CommandList>
-										</Command>
-									</PopoverContent>
-								</Popover>
-							</Field>
-						)}
+						name="shareholderId"
+						label="Select Shareholder (Optional)"
+						selector="shareholder"
+						matchTriggerWidth
+						allowNone
+						items={shareholders ?? []}
+						isError={isErrorShareholders}
+						isLoading={isLoadingShareholders}
+						getValue={(sh) => sh.id}
+						getLabel={(sh) => sh.name}
+						getSubLabel={(sh) => sh.email ?? "No email"}
+						onClear={resetShareholderPercentage}
 					/>
 				</FieldGroup>
 			</FieldSet>

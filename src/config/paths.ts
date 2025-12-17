@@ -33,9 +33,9 @@ export const paths = {
 			carProfitSummary: {
 				getHref: () => "/dashboard/analytics/car-profit-summary",
 			},
-			sharersTotal: {
-				getHref: () => "/dashboard/analytics/sharers-total",
-			},
+			// sharersTotal: {
+			// 	getHref: () => "/dashboard/analytics/sharers-total",
+			// },
 		},
 		account: {
 			getHref: () => "/dashboard/account",

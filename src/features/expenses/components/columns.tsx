@@ -1,8 +1,7 @@
 "use client";
 
-import { IconDotsVertical, IconEdit, IconTrash } from "@tabler/icons-react";
 import type { ColumnDef } from "@tanstack/react-table";
-import Image from "next/image";
+import { EllipsisVertical, SquarePen, Trash } from "lucide-react";
 import { useState } from "react";
 import { DataTableColumnHeader } from "@/components/shared/data-table-column-header";
 import { Button } from "@/components/ui/button";
@@ -24,11 +23,20 @@ import { DeleteExpenseDialog } from "./delete-expense-dialog";
 import EditExpenseDialog from "./edit-expense-dialog";
 import { dateBetweenFilter } from "./filterFn";
 
+export const NO_CATEGORY_FILTER = "__NONE__";
+
 export const columns: ColumnDef<Expense>[] = [
 	{
-		id: "no.",
+		id: "no",
 		header: () => <Label className="text-lg">No.</Label>,
-		cell: ({ row }) => row.index + 1,
+		cell: ({ row, table }) => {
+			const { pageIndex, pageSize } = table.getState().pagination;
+			const filteredRows = table.getFilteredRowModel().rows;
+			const rowIndex = filteredRows.findIndex(
+				(filteredRow) => filteredRow.id === row.id,
+			);
+			return pageIndex * pageSize + rowIndex + 1;
+		},
 	},
 	{
 		accessorKey: "amount",
@@ -44,10 +52,21 @@ export const columns: ColumnDef<Expense>[] = [
 	},
 	{
 		id: "category",
-		accessorFn: (row) => row.category?.id ?? "",
+		accessorFn: (row) => row.category?.id ?? null,
 		header: () => <Label className="text-lg">Reason</Label>,
 		cell: ({ row }) => row.original.category?.name ?? "_",
-		filterFn: "equalsString",
+		filterFn: (row, columnId, filterValue) => {
+			const rowValue = row.getValue<string | null>(columnId);
+			//  No filter → show all
+			if (filterValue === undefined) return true;
+
+			//  Filter rows with NO category
+			if (filterValue === NO_CATEGORY_FILTER) {
+				return rowValue === null;
+			}
+			// Normal category filter
+			return rowValue === filterValue;
+		},
 	},
 	{
 		accessorKey: "date",
@@ -70,64 +89,38 @@ export const columns: ColumnDef<Expense>[] = [
 			const employee = row.original.paidTo;
 			if (!employee) return "_";
 			return (
-				<div className="flex items-center gap-3 min-w-0">
-					{/* {employee.photos.length > 0 ? (
-						<Image
-							src={employee.photos[0].url}
-							alt={employee.name}
-							width={50}
-							height={30}
-							className="rounded-md object-cover shrink-0"
-						/>
-					) : ( */}
-					<div className="h-[50px] w-[50px] rounded-md bg-gray-100 flex items-center justify-center shrink-0">
-						<span className="text-xs text-gray-500">No image</span>
-					</div>
-					{/* )} */}
-					<div className="min-w-0">
-						<div className="font-medium truncate">{employee.name}</div>
-
-						{employee.position && (
-							<div className="text-sm text-gray-500 truncate">
-								{employee.position}
-							</div>
-						)}
-					</div>
+				<div className="min-w-0">
+					<div className="font-medium truncate">{employee.name}</div>
+					{employee.position && (
+						<div className="text-sm text-gray-500 truncate">
+							{employee.position}
+						</div>
+					)}
 				</div>
 			);
 		},
 	},
 	{
-		accessorKey: "car",
+		id: "car",
+		accessorFn: (row) => row.car?.id ?? null,
 		header: () => <Label className="text-lg">Car</Label>,
 		cell: ({ row }) => {
 			const car = row.original.car;
 			if (!car) return "_";
 			return (
 				<div className="flex items-center gap-3 min-w-0">
-					{car.photos.length > 0 ? (
-						<Image
-							src={car.photos[0].url}
-							alt={car.name}
-							width={50}
-							height={30}
-							className="rounded-md object-cover shrink-0"
-						/>
-					) : (
-						<div className="h-[50px] w-[50px] rounded-md bg-gray-100 flex items-center justify-center shrink-0">
-							<span className="text-xs text-gray-500">No image</span>
-						</div>
-					)}
 					<div className="min-w-0">
 						<div className="font-medium truncate">{car.name}</div>
-
-						{car.color && (
-							<div className="text-sm text-gray-500 truncate">{car.color}</div>
+						{car.licenseNumber && (
+							<div className="text-sm text-gray-500 truncate">
+								{car.licenseNumber}
+							</div>
 						)}
 					</div>
 				</div>
 			);
 		},
+		filterFn: "equalsString",
 	},
 
 	{
@@ -187,7 +180,7 @@ function ExpenseActionsCell({ expense }: { expense: Expense }) {
 						className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
 						size="icon"
 					>
-						<IconDotsVertical />
+						<EllipsisVertical />
 						<span className="sr-only">Open menu</span>
 					</Button>
 				</DropdownMenuTrigger>
@@ -196,7 +189,7 @@ function ExpenseActionsCell({ expense }: { expense: Expense }) {
 						className="flex items-center gap-2 w-full"
 						onSelect={() => setEditOpen(true)}
 					>
-						<IconEdit className="h-4 w-4" />
+						<SquarePen className="h-4 w-4" />
 						Edit
 					</DropdownMenuItem>
 					<DropdownMenuItem
@@ -204,7 +197,7 @@ function ExpenseActionsCell({ expense }: { expense: Expense }) {
 						className="flex items-center gap-2 w-full"
 						onSelect={() => setDeleteOpen(true)}
 					>
-						<IconTrash className="h-4 w-4" />
+						<Trash className="h-4 w-4" />
 						Delete
 					</DropdownMenuItem>
 				</DropdownMenuContent>
