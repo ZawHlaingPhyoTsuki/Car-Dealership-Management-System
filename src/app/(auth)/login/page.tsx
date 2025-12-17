@@ -1,12 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
-import * as React from "react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -28,7 +27,8 @@ export const loginSchema = z.object({
 type LoginValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
-	const [loading, setLoading] = React.useState(false);
+	const [loading, setLoading] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
 
 	const form = useForm<LoginValues>({
 		resolver: zodResolver(loginSchema),
@@ -104,12 +104,31 @@ export default function LoginPage() {
 							render={({ field, fieldState }) => (
 								<Field data-invalid={fieldState.invalid}>
 									<FieldLabel htmlFor="password">Password</FieldLabel>
-									<Input
-										id="password"
-										type="password"
-										placeholder="Your password"
-										{...field}
-									/>
+									<div className="relative">
+										<Input
+											id="password"
+											type={showPassword ? "text" : "password"}
+											placeholder="Your password"
+											className="pr-10"
+											{...field}
+										/>
+										<Button
+											type="button"
+											variant={"ghost"}
+											size={"icon-sm"}
+											className="absolute right-1 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+											onClick={() => setShowPassword((prev) => !prev)}
+											aria-label={
+												showPassword ? "Hide password" : "Show password"
+											}
+										>
+											{showPassword ? (
+												<EyeOff className="h-4 w-4" />
+											) : (
+												<Eye className="h-4 w-4" />
+											)}
+										</Button>
+									</div>
 									{fieldState.error && (
 										<FieldError>{fieldState.error.message}</FieldError>
 									)}
