@@ -1,9 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
 	Field,
 	FieldError,
@@ -17,6 +19,11 @@ import {
 	InputGroupAddon,
 	InputGroupInput,
 } from "@/components/ui/input-group";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
 import { parseAmountInput, parsePercentageInput } from "@/lib/utils";
 import type { Employee } from "../actions/get-employees";
 import { useUpdateEmployee } from "../mutations/use-update-employee";
@@ -159,24 +166,38 @@ export default function EditEmployeeForm({
 						render={({ field, fieldState }) => (
 							<Field data-invalid={fieldState.invalid}>
 								<FieldLabel htmlFor="startDate">Start Date</FieldLabel>
-								<InputGroup>
-									<InputGroupInput
-										id="startDate"
-										type="date"
-										{...field}
-										value={
-											field.value
-												? format(new Date(field.value), "yyyy-MM-dd")
-												: ""
-										}
-										onChange={(e) => {
-											const dateValue = e.target.value;
-											field.onChange(
-												dateValue ? parseISO(dateValue) : undefined,
-											);
-										}}
-									/>
-								</InputGroup>
+								<Popover>
+									<PopoverTrigger asChild>
+										<Button
+											id="startDate"
+											variant="outline"
+											className="w-full justify-start text-left font-normal"
+										>
+											<CalendarIcon className="mr-2 h-4 w-4" />
+											{field.value ? (
+												format(field.value, "PPP")
+											) : (
+												<span>Pick a date</span>
+											)}
+										</Button>
+									</PopoverTrigger>
+									<PopoverContent className="w-auto p-0" align="start">
+										<Calendar
+											mode="single"
+											selected={field.value}
+											onSelect={(date) => {
+												if (date) {
+													// Set to noon to avoid timezone issues
+													const noonDate = new Date(date);
+													noonDate.setHours(12, 0, 0, 0);
+													field.onChange(noonDate);
+												}
+											}}
+											disabled={(date) => date > new Date()}
+											autoFocus
+										/>
+									</PopoverContent>
+								</Popover>
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>
 								)}
