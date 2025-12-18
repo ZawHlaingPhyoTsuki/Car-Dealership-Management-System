@@ -43,7 +43,7 @@ export async function getCarProfitSummary() {
 			if (!car.soldAt) return;
 
 			const monthKey = format(car.soldAt, "yyyy-MM");
-			const monthName = format(car.soldAt, "MMMM yyyy");
+			const monthName = format(car.soldAt, "yyyy MMMM");
 
 			if (!monthlyProfits[monthKey]) {
 				monthlyProfits[monthKey] = {

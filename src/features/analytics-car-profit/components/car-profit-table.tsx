@@ -5,7 +5,10 @@ import {
 	getCoreRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
+import { DownloadIcon } from "lucide-react";
 import { useMemo, useState } from "react";
+import * as XLSX from "xlsx";
+import { Button } from "@/components/ui/button";
 import {
 	Select,
 	SelectContent,
@@ -68,6 +71,57 @@ export default function CarProfitTable() {
 		},
 	);
 
+	const exportToExcel = () => {
+		const selectedRows = table.getSelectedRowModel().rows;
+
+		const rows =
+			selectedRows.length > 0 ? selectedRows : table.getFilteredRowModel().rows;
+
+		if (rows.length === 0) return;
+
+		const dataToExport = rows.map((row) => ({
+			month: row.original.month,
+			carsSold: row.original.carsSold,
+			totalProfit: row.original.totalProfit,
+		}));
+
+		// Append TOTAL row
+		dataToExport.push({
+			month: "Grand Total",
+			carsSold: totals.carsSold,
+			totalProfit: totals.totalProfit,
+		});
+
+		// Create worksheet
+		const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+
+		// Auto-size columns
+		const headers = Object.keys(dataToExport[0]);
+
+		const colWidths = headers.map((header) => {
+			const maxLength = Math.max(
+				header.length,
+				...dataToExport.map(
+					(row) => String(row[header as keyof typeof row] ?? "").length,
+				),
+			);
+
+			return { wch: maxLength + 2 }; // +2 padding
+		});
+
+		worksheet["!cols"] = colWidths;
+
+		// Create workbook
+		const workbook = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(workbook, worksheet, "Car Profit");
+
+		// Export
+		XLSX.writeFile(
+			workbook,
+			`car-profit-${new Date().toISOString().split("T")[0]}.xlsx`,
+		);
+	};
+
 	if (isLoading) {
 		return <div>Loading...</div>;
 	}
@@ -89,8 +143,8 @@ export default function CarProfitTable() {
 
 	return (
 		<div>
-			<div className="mb-4 flex items-center justify-between">
-				<h3 className="text-lg font-semibold">Monthly Car Profit Summary</h3>
+			<div className="mb-4 flex items-center justify-end gap-2">
+				{/* Year Selector */}
 				<Select
 					value={selectedYear}
 					onValueChange={(value) => setSelectedYear(value)}
@@ -107,10 +161,16 @@ export default function CarProfitTable() {
 						))}
 					</SelectContent>
 				</Select>
+
+				{/* Export Button */}
+				<Button variant="outline" onClick={exportToExcel}>
+					<DownloadIcon className="mr-2" />
+					Export as Excel
+				</Button>
 			</div>
 			<div className="overflow-hidden rounded-lg border">
 				<Table>
-					<TableHeader className="bg-gray-50 dark:bg-gray-800">
+					<TableHeader className="bg-muted sticky top-0 z-10">
 						{table.getHeaderGroups().map((headerGroup) => (
 							<TableRow key={headerGroup.id}>
 								{headerGroup.headers.map((header) => (
@@ -140,13 +200,15 @@ export default function CarProfitTable() {
 						))}
 
 						{/* Totals Row */}
-						{data.length > 0 && (
+						{filteredData.length > 0 && (
 							<TableRow className="bg-gray-50 dark:bg-gray-800 font-semibold border-t-2">
-								<TableCell className="font-bold">Grand Total</TableCell>
-								<TableCell className="font-bold text-right">
+								<TableCell className="font-bold text-lg">Grand Total</TableCell>
+
+								<TableCell className="font-bold text-right text-lg">
 									{totals.carsSold}
 								</TableCell>
-								<TableCell className="text-right font-bold text-green-600">
+
+								<TableCell className="text-right font-bold text-green-600 text-lg">
 									{totals.totalProfit.toLocaleString()} THB
 								</TableCell>
 							</TableRow>
