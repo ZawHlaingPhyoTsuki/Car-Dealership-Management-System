@@ -58,7 +58,9 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "price",
-		header: () => <Label className="text-lg">Price</Label>,
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Price" />
+		),
 		cell: ({ row }) => {
 			const price = Number.parseFloat(row.getValue("price"));
 			if (Number.isNaN(price)) return "-";

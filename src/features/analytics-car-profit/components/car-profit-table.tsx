@@ -59,16 +59,20 @@ export default function CarProfitTable() {
 	});
 
 	// Calculate totals for filtered data
-	const totals = filteredData.reduce(
-		(acc, item) => {
-			acc.carsSold += item.carsSold;
-			acc.totalProfit += item.totalProfit;
-			return acc;
-		},
-		{
-			carsSold: 0,
-			totalProfit: 0,
-		},
+	const totals = useMemo(
+		() =>
+			filteredData.reduce(
+				(acc, item) => {
+					acc.carsSold += item.carsSold;
+					acc.totalProfit += item.totalProfit;
+					return acc;
+				},
+				{
+					carsSold: 0,
+					totalProfit: 0,
+				},
+			),
+		[filteredData],
 	);
 
 	const exportToExcel = () => {
@@ -85,11 +89,21 @@ export default function CarProfitTable() {
 			totalProfit: row.original.totalProfit,
 		}));
 
+		// Calculate totals from the rows being exported
+		const exportTotals = rows.reduce(
+			(acc, row) => {
+				acc.carsSold += row.original.carsSold;
+				acc.totalProfit += row.original.totalProfit;
+				return acc;
+			},
+			{ carsSold: 0, totalProfit: 0 },
+		);
+
 		// Append TOTAL row
 		dataToExport.push({
 			month: "Grand Total",
-			carsSold: totals.carsSold,
-			totalProfit: totals.totalProfit,
+			carsSold: exportTotals.carsSold,
+			totalProfit: exportTotals.totalProfit,
 		});
 
 		// Create worksheet
@@ -214,14 +228,15 @@ export default function CarProfitTable() {
 							</TableRow>
 						)}
 
-						{data.length === 0 && (
+						{filteredData.length === 0 && (
 							<TableRow>
 								<TableCell
 									colSpan={columns.length}
 									className="h-24 text-center text-gray-500"
 								>
-									No car sales data available. Start by marking cars as "SOLD"
-									in the cars section.
+									{data.length === 0
+										? 'No car sales data available. Start by marking cars as "SOLD" in the cars section.'
+										: `No car sales data for ${selectedYear === "all" ? "the selected period" : selectedYear}.`}
 								</TableCell>
 							</TableRow>
 						)}

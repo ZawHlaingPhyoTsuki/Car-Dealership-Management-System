@@ -35,7 +35,6 @@ export async function getCarProfitSummary() {
 				month: string;
 				carsSold: number;
 				totalProfit: number;
-				cars: typeof soldCars;
 			}
 		> = {};
 
@@ -50,13 +49,11 @@ export async function getCarProfitSummary() {
 					month: monthName,
 					carsSold: 0,
 					totalProfit: 0,
-					cars: [],
 				};
 			}
 
 			monthlyProfits[monthKey].carsSold += 1;
 			monthlyProfits[monthKey].totalProfit += car.price;
-			monthlyProfits[monthKey].cars.push(car);
 		});
 
 		// Convert to array and sort by month (descending)
