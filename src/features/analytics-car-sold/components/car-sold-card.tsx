@@ -1,6 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { getMonthName, getYearName, profitFormatter } from "@/lib/utils";
+import { formatAmountInLakhs, getMonthName, getYearName } from "@/lib/utils";
 
 interface SoldAnalyticsCardProps {
 	label: string;
@@ -27,7 +27,7 @@ export default function SoldAnalyticsCard({
 				<CardTitle
 					className={`text-2xl font-semibold tabular-nums @[250px]/card:text-3xl ${amountColor}`}
 				>
-					{profitFormatter.format(amount)}
+					{suffix ? formatAmountInLakhs(amount) : `${amount}`}
 					{suffix && (
 						<span className="text-[20px] text-muted-foreground"> {suffix}</span>
 					)}

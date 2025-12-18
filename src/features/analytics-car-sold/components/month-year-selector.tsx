@@ -91,7 +91,7 @@ export function MonthYearSelector({
 								variant="ghost"
 								className={cn(
 									"h-9",
-									currentView.month === index && currentView.year === value.year
+									value.month === index && currentView.year === value.year
 										? "bg-primary text-primary-foreground hover:bg-primary/90"
 										: "hover:bg-accent",
 								)}

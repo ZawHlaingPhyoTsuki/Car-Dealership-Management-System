@@ -28,7 +28,7 @@ export const columns: ColumnDef<SoldCar>[] = [
 		accessorKey: "commission",
 		header: "Commission (lakhs)",
 		cell: ({ row }) =>
-			row.original.commission &&
+			row.original.commission !== null &&
 			row.original.commissionPct !== 0 &&
 			!!row.original.sharer
 				? formatAmountInLakhs(row.original.commission)
@@ -46,6 +46,9 @@ export const columns: ColumnDef<SoldCar>[] = [
 		cell: ({ row }) => {
 			const date = row.getValue("soldDate") as Date;
 			if (!date) return "_";
+			if (!date || !(date instanceof Date) || Number.isNaN(date.getTime())) {
+				return "_";
+			}
 			return format(date, "dd/MM/yyyy");
 		},
 	},

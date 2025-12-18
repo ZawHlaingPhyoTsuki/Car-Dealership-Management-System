@@ -187,11 +187,6 @@ export const expenseFormatter = new Intl.NumberFormat("en-US", {
 	maximumFractionDigits: 0,
 });
 
-export const profitFormatter = new Intl.NumberFormat("en-IN", {
-	minimumFractionDigits: 0,
-	maximumFractionDigits: 2,
-});
-
 export const months = [
 	"January",
 	"February",

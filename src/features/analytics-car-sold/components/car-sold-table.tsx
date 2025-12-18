@@ -18,6 +18,7 @@ import {
 	DownloadIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import * as XLSX from "xlsx";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -38,7 +39,7 @@ import {
 } from "@/components/ui/table";
 import { getMonthName, getYearName } from "@/lib/utils";
 import { useCarsSold } from "../queries/use-car-sold";
-import SoldAnalyticsCard from "./car-sold-cards";
+import SoldAnalyticsCard from "./car-sold-card";
 import { columns } from "./columns";
 import { MonthYearSelector } from "./month-year-selector";
 
@@ -79,11 +80,14 @@ export default function CarSoldTable() {
 		setSelectedDuration(duration);
 	};
 
-	// biome-ignore lint: false positive
 	const totals = useMemo(() => {
-		const filteredData = table
-			.getFilteredRowModel()
-			.rows.map((row) => row.original);
+		const filteredData = data.filter((car) => {
+			const d = new Date(car.soldDate);
+			return (
+				d.getMonth() === selectedDuration.month &&
+				d.getFullYear() === selectedDuration.year
+			);
+		});
 
 		// Calculate month values
 		const monthTotals = filteredData.reduce(
@@ -109,15 +113,16 @@ export default function CarSoldTable() {
 		return {
 			monthCars: monthTotals.monthCars,
 			monthRevenue: monthTotals.monthRevenue,
-			yearRevenue: yearRevenue,
+			yearRevenue,
 		};
 	}, [data, selectedDuration.year, selectedDuration.month]);
 
+	// biome-ignore lint: false positive
 	useEffect(() => {
 		if (data.length > 0) {
 			table.getColumn("soldDate")?.setFilterValue(selectedDuration);
 		}
-	}, [data, table, selectedDuration]);
+	}, [data, table, selectedDuration.month, selectedDuration.year]);
 
 	const exportToExcel = () => {
 		const selectedRows = table.getSelectedRowModel().rows;
@@ -126,7 +131,7 @@ export default function CarSoldTable() {
 			selectedRows.length > 0 ? selectedRows : table.getFilteredRowModel().rows;
 
 		if (rows.length === 0) {
-			alert("No data to export");
+			toast.error("No data to export");
 			return;
 		}
 
