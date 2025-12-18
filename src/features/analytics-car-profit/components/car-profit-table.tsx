@@ -35,7 +35,7 @@ export default function CarProfitTable() {
 	const years = useMemo(() => {
 		const yearSet = new Set<string>();
 		data.forEach((item) => {
-			const year = new Date(item.month).getFullYear();
+			const year = item.month.split(" ")[0]; // Extract year from "yyyy MMMM"
 			yearSet.add(year.toString());
 		});
 		return Array.from(yearSet).sort(
@@ -47,8 +47,8 @@ export default function CarProfitTable() {
 	const filteredData = useMemo(() => {
 		if (selectedYear === "all") return data;
 		return data.filter((item) => {
-			const itemYear = new Date(item.month).getFullYear();
-			return itemYear.toString() === selectedYear;
+			const itemYear = item.month.split(" ")[0];
+			return itemYear === selectedYear;
 		});
 	}, [data, selectedYear]);
 

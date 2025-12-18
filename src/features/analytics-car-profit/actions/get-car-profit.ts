@@ -60,11 +60,9 @@ export async function getCarProfitSummary() {
 		});
 
 		// Convert to array and sort by month (descending)
-		const result = Object.values(monthlyProfits).sort((a, b) => {
-			const dateA = new Date(a.month);
-			const dateB = new Date(b.month);
-			return dateB.getTime() - dateA.getTime();
-		});
+		const result = Object.entries(monthlyProfits)
+			.sort(([keyA], [keyB]) => keyB.localeCompare(keyA))
+			.map(([, value]) => value);
 
 		return result;
 	} catch (error) {

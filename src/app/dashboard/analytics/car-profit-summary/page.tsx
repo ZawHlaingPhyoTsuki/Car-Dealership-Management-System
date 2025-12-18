@@ -6,7 +6,7 @@ import {
 import type { Metadata } from "next";
 import ContentWrapper from "@/components/shared/content-wrapper";
 import CarProfitTable from "@/features/analytics-car-profit/components/car-profit-table";
-import { getEmployeesQueryOptions } from "@/features/employees/queries/use-employees";
+import { getCarProfitSummaryQueryOptions } from "@/features/analytics-car-profit/queries/use-car-profit";
 
 export const metadata: Metadata = {
 	title: "Car Profit Summary",
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default async function CarProfitSummaryPage() {
 	const queryClient = new QueryClient();
 
-	await queryClient.prefetchQuery(getEmployeesQueryOptions);
+	await queryClient.prefetchQuery(getCarProfitSummaryQueryOptions);
 
 	return (
 		<ContentWrapper
