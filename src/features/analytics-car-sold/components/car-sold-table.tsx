@@ -48,6 +48,16 @@ export type Duration = {
 	year: number;
 };
 
+type ExportSoldCarRow = {
+	"Car Name"?: string;
+	"Sale Price (MMK)"?: number;
+	Sharer?: string;
+	"Commission (%)"?: string;
+	"Commission (MMK)"?: number;
+	"Company Revenue (MMK)"?: number;
+	"Sold Date"?: string;
+};
+
 export default function CarSoldTable() {
 	const { data = [], isLoading, error } = useCarsSold();
 
@@ -135,7 +145,7 @@ export default function CarSoldTable() {
 			return;
 		}
 
-		const dataToExport = rows.map((row) => ({
+		const dataToExport: ExportSoldCarRow[] = rows.map((row) => ({
 			"Car Name": row.original.name,
 			"Sale Price (MMK)": row.original.salePrice,
 			Sharer: row.original.sharer,
@@ -143,21 +153,38 @@ export default function CarSoldTable() {
 			"Commission (MMK)": row.original.commission,
 			"Company Revenue (MMK)": row.original.companyRevenue,
 			"Sold Date": format(new Date(row.original.soldDate), "dd/MM/yyyy"),
-			Month: format(new Date(row.original.soldDate), "MMMM"),
-			Year: format(new Date(row.original.soldDate), "yyyy"),
 		}));
 
 		// Calculate comprehensive totals
-		// const exportTotals = rows.reduce(
-		// 	(acc, row) => {
-		// 		acc.totalSales += row.original.salePrice;
-		// 		acc.totalCommission += row.original.commission;
-		// 		acc.totalRevenue += row.original.companyRevenue;
-		// 		acc.carsCount += 1;
-		// 		return acc;
-		// 	},
-		// 	{ totalSales: 0, totalCommission: 0, totalRevenue: 0, carsCount: 0 },
-		// );
+		const exportTotals = rows.reduce(
+			(acc, row) => {
+				acc.totalSales += row.original.salePrice;
+				acc.totalCommission += row.original.commission;
+				acc.totalRevenue += row.original.companyRevenue;
+				acc.carsCount += 1;
+				return acc;
+			},
+			{ totalSales: 0, totalCommission: 0, totalRevenue: 0, carsCount: 0 },
+		);
+
+		dataToExport.push(
+			{
+				"Car Name": "TOTAL CARS",
+				"Sale Price (MMK)": exportTotals.carsCount,
+			},
+			{
+				"Car Name": "TOTAL SALES",
+				"Sale Price (MMK)": exportTotals.totalSales,
+			},
+			{
+				"Car Name": "TOTAL COMMISSION",
+				"Commission (MMK)": exportTotals.totalCommission,
+			},
+			{
+				"Car Name": "TOTAL COMPANY REVENUE",
+				"Company Revenue (MMK)": exportTotals.totalRevenue,
+			},
+		);
 
 		// Create worksheet
 		const worksheet = XLSX.utils.json_to_sheet(dataToExport);
