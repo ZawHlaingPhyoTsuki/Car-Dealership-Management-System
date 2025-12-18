@@ -18,23 +18,14 @@ import {
 	ChevronsLeft,
 	ChevronsRight,
 	DownloadIcon,
-	FileSpreadsheetIcon,
-	FileTextIcon,
 	X,
 } from "lucide-react";
-import Papa from "papaparse";
 import { useState } from "react";
 import type { DateRange } from "react-day-picker";
 import * as XLSX from "xlsx";
 import { DateRangePopover } from "@/components/shared/date-range-popover";
 import PopoverSelect from "@/components/shared/popover-select";
 import { Button } from "@/components/ui/button";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import {
 	Select,
@@ -108,33 +99,6 @@ export default function ExpensesTable() {
 	const startRow = currentPageIndex * pageSize + 1;
 	const endRow = Math.min((currentPageIndex + 1) * pageSize, totalRows);
 
-	const exportToCSV = () => {
-		const selectedRows = table.getSelectedRowModel().rows;
-
-		const rows =
-			selectedRows.length > 0 ? selectedRows : table.getFilteredRowModel().rows;
-
-		const dataToExport = rows.map((row) => mapExpenseForExport(row.original));
-
-		const csv = Papa.unparse(dataToExport, {
-			header: true,
-		});
-
-		const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-		const link = document.createElement("a");
-		const url = URL.createObjectURL(blob);
-
-		link.setAttribute("href", url);
-		link.setAttribute(
-			"download",
-			`expenses-export-${new Date().toISOString().split("T")[0]}.csv`,
-		);
-		link.style.visibility = "hidden";
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
-	};
-
 	const exportToExcel = () => {
 		const selectedRows = table.getSelectedRowModel().rows;
 
@@ -187,7 +151,7 @@ export default function ExpensesTable() {
 		<div className="w-full flex-col justify-start gap-6 mt-6">
 			<div className="flex items-center py-4">
 				{/* Filter */}
-				<div className="w-full flex items-end justify-between flex-wrap gap-3 py-6">
+				<div className="w-full flex items-end justify-between flex-wrap gap-3">
 					<div className="flex items-center gap-3">
 						{/* Date Range */}
 						<DateRangePopover value={dateRange} onChange={handleDateChange} />
@@ -255,24 +219,11 @@ export default function ExpensesTable() {
 						</Button>
 					</div>
 
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button variant="outline">
-								<DownloadIcon className="mr-2" />
-								Export
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end">
-							<DropdownMenuItem onClick={exportToCSV}>
-								<FileTextIcon className="mr-2 size-4" />
-								Export as CSV
-							</DropdownMenuItem>
-							<DropdownMenuItem onClick={exportToExcel}>
-								<FileSpreadsheetIcon className="mr-2 size-4" />
-								Export as Excel
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
+					{/* Export Button */}
+					<Button variant="outline" onClick={exportToExcel}>
+						<DownloadIcon className="mr-2" />
+						Export as Excel
+					</Button>
 				</div>
 			</div>
 

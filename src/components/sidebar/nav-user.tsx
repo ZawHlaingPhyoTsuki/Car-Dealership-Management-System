@@ -1,7 +1,7 @@
 "use client";
 
 import type { User } from "better-auth";
-import { Bell, CircleUserRound, EllipsisVertical, LogOut } from "lucide-react";
+import { CircleUserRound, EllipsisVertical, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -89,10 +89,6 @@ export function NavUser({ user }: { user: User }) {
 							>
 								<CircleUserRound />
 								Account
-							</DropdownMenuItem>
-							<DropdownMenuItem>
-								<Bell />
-								Notifications
 							</DropdownMenuItem>
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />

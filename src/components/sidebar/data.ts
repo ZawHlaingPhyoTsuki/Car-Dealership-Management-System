@@ -4,7 +4,6 @@ import {
 	FileSpreadsheet,
 	HandCoins,
 	LayoutDashboard,
-	Settings,
 	Users,
 } from "lucide-react";
 import { paths } from "@/config/paths";
@@ -30,7 +29,6 @@ export const navigationTitle = {
 
 export const data: {
 	navMain: NavItem[];
-	navSecondary: NavItem[];
 } = {
 	navMain: [
 		{
@@ -61,6 +59,10 @@ export const data: {
 			icon: ChartColumn,
 			items: [
 				{
+					title: navigationTitle.AnalyticsCarProfitSummary,
+					url: paths.dashboard.analytics.carProfitSummary.getHref(),
+				},
+				{
 					title: navigationTitle.AnalyticsAvailableCars,
 					url: paths.dashboard.analytics.availableCars.getHref(),
 				},
@@ -68,10 +70,7 @@ export const data: {
 					title: navigationTitle.AnalyticsSoldCars,
 					url: paths.dashboard.analytics.soldCars.getHref(),
 				},
-				{
-					title: navigationTitle.AnalyticsCarProfitSummary,
-					url: paths.dashboard.analytics.carProfitSummary.getHref(),
-				},
+
 				// {
 				// 	title: navigationTitle.AnalyticsSharersTotal,
 				// 	url: paths.dashboard.analytics.sharersTotal.getHref(),
@@ -82,13 +81,6 @@ export const data: {
 			title: navigationTitle.Dashboard,
 			url: paths.dashboard.root.getHref(),
 			icon: LayoutDashboard,
-		},
-	],
-	navSecondary: [
-		{
-			title: navigationTitle.Account,
-			url: paths.dashboard.account.getHref(),
-			icon: Settings,
 		},
 	],
 };
