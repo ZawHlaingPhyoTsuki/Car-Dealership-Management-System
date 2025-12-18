@@ -133,7 +133,7 @@ export default function CarSoldTable() {
 		const dataToExport = rows.map((row) => ({
 			"Car Name": row.original.name,
 			"Sale Price (MMK)": row.original.salePrice,
-			Sharerr: row.original.sharer,
+			Sharer: row.original.sharer,
 			"Commission (%)": `${row.original.commissionPct}%`,
 			"Commission (MMK)": row.original.commission,
 			"Company Revenue (MMK)": row.original.companyRevenue,
@@ -183,9 +183,7 @@ export default function CarSoldTable() {
 		XLSX.writeFile(workbook, fileName);
 	};
 
-	if (isLoading) {
-		return <div>Loading...</div>;
-	}
+	if (isLoading) return <div>Loading...</div>;
 	if (error) {
 		return (
 			<div className="p-6">
