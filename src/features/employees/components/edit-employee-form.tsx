@@ -1,9 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
 	Field,
 	FieldError,
@@ -17,7 +19,12 @@ import {
 	InputGroupAddon,
 	InputGroupInput,
 } from "@/components/ui/input-group";
-import { parseAmountInput, parsePercentageInput } from "@/lib/utils";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn, parseAmountInput, parsePercentageInput } from "@/lib/utils";
 import type { Employee } from "../actions/get-employees";
 import { useUpdateEmployee } from "../mutations/use-update-employee";
 import { UpdateEmployeeSchema, type UpdateEmployeeValues } from "../validation";
@@ -159,24 +166,37 @@ export default function EditEmployeeForm({
 						render={({ field, fieldState }) => (
 							<Field data-invalid={fieldState.invalid}>
 								<FieldLabel htmlFor="startDate">Start Date</FieldLabel>
-								<InputGroup>
-									<InputGroupInput
-										id="startDate"
-										type="date"
-										{...field}
-										value={
-											field.value
-												? format(new Date(field.value), "yyyy-MM-dd")
-												: ""
-										}
-										onChange={(e) => {
-											const dateValue = e.target.value;
-											field.onChange(
-												dateValue ? parseISO(dateValue) : undefined,
-											);
-										}}
-									/>
-								</InputGroup>
+								<FieldGroup>
+									<Popover>
+										<PopoverTrigger asChild>
+											<Button
+												variant="outline"
+												className={cn(
+													"w-full pl-3 text-left font-normal",
+													!field.value && "text-muted-foreground",
+												)}
+											>
+												{field.value ? (
+													format(field.value, "PPP")
+												) : (
+													<span>Pick a date</span>
+												)}
+												<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+											</Button>
+										</PopoverTrigger>
+										<PopoverContent className="w-auto p-0" align="start">
+											<Calendar
+												mode="single"
+												selected={field.value}
+												onSelect={field.onChange}
+												disabled={{
+													after: new Date(),
+													before: new Date("1900-01-01"),
+												}}
+											/>
+										</PopoverContent>
+									</Popover>
+								</FieldGroup>
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>
 								)}
