@@ -14,9 +14,6 @@ export const createCar = async (data: z.infer<typeof CreateCarSchema>) => {
 		const car = await prisma.car.create({
 			data: {
 				...validatedData,
-				licenseNumber: validatedData.licenseNumber || null,
-				color: validatedData.color || null,
-				notes: validatedData.notes || null,
 				soldAt:
 					validatedData.status === CarStatus.SOLD ? validatedData.soldAt : null,
 			},

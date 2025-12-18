@@ -18,7 +18,7 @@ export const updateCar = async (data: z.infer<typeof UpdateCarSchema>) => {
 				...updateData,
 				soldAt:
 					updateData.status === CarStatus.SOLD
-						? (updateData.soldAt ?? new Date()) // fallback ONLY if missing
+						? updateData.soldAt
 						: null,
 			},
 		});
