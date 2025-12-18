@@ -186,3 +186,56 @@ export const expenseFormatter = new Intl.NumberFormat("en-US", {
 	minimumFractionDigits: 0,
 	maximumFractionDigits: 0,
 });
+
+export const profitFormatter = new Intl.NumberFormat("en-IN", {
+	minimumFractionDigits: 0,
+	maximumFractionDigits: 2,
+});
+
+export const months = [
+	"January",
+	"February",
+	"March",
+	"April",
+	"May",
+	"June",
+	"July",
+	"August",
+	"September",
+	"October",
+	"November",
+	"December",
+];
+
+export const getMonthName = (month: number): string => {
+	if (month < 0 || month > 11) {
+		return "Invalid Month";
+	}
+
+	const currentMonth = new Date().getMonth();
+	if (month === currentMonth) {
+		return "This Month";
+	}
+	return months[month];
+};
+
+export const getYearName = (year: number): string => {
+	const currentYear = new Date().getFullYear();
+
+	if (year === currentYear) {
+		return "This Year";
+	}
+	if (year === currentYear - 1) {
+		return "Last Year";
+	}
+
+	return `In ${year}`;
+};
+
+export const formatAmountInLakhs = (amount: number): string => {
+	const lakhs = amount / 100000;
+	return new Intl.NumberFormat("en-IN", {
+		minimumFractionDigits: 0,
+		maximumFractionDigits: 2,
+	}).format(lakhs);
+};
