@@ -1,6 +1,7 @@
 "use server";
 
 import type * as z from "zod";
+import { CarStatus } from "@/app/generated/prisma/enums";
 import { requireAuth } from "@/lib/auth-guard";
 import prisma from "@/lib/prisma";
 import { UpdateCarSchema } from "../validation";
@@ -15,9 +16,10 @@ export const updateCar = async (data: z.infer<typeof UpdateCarSchema>) => {
 			where: { id },
 			data: {
 				...updateData,
-				...(updateData.status !== undefined && {
-					soldAt: updateData.status === "SOLD" ? new Date() : null,
-				}),
+				soldAt:
+					updateData.status === CarStatus.SOLD
+						? (updateData.soldAt ?? new Date()) // fallback ONLY if missing
+						: null,
 			},
 		});
 

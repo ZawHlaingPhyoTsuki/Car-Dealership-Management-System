@@ -1,9 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { CarStatus } from "@/app/generated/prisma/enums";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
 	Field,
 	FieldError,
@@ -17,6 +21,11 @@ import {
 	InputGroupAddon,
 	InputGroupInput,
 } from "@/components/ui/input-group";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
 import {
 	Select,
 	SelectContent,
@@ -44,14 +53,23 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 			licenseNumber: "",
 			notes: "",
 			status: CarStatus.AVAILABLE,
+			soldAt: null,
 		},
 	});
+
+	const status = form.watch("status");
 
 	const onSubmit = async (values: CreateCarValues) => {
 		await createCarMutation.mutateAsync(values);
 		form.reset();
 		onClose?.();
 	};
+
+	useEffect(() => {
+		if (status !== CarStatus.SOLD) {
+			form.setValue("soldAt", null);
+		}
+	}, [status, form]);
 
 	return (
 		<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -169,6 +187,49 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 							</Field>
 						)}
 					/>
+
+					{/* Sold Date – only show if SOLD */}
+					{status === CarStatus.SOLD && (
+						<Controller
+							name="soldAt"
+							control={form.control}
+							render={({ field, fieldState }) => (
+								<Field data-invalid={fieldState.invalid}>
+									<FieldLabel>
+										Sold Date <span className="text-red-500">*</span>
+									</FieldLabel>
+
+									<Popover>
+										<PopoverTrigger asChild>
+											<Button
+												variant="outline"
+												className="justify-start text-left font-normal w-full"
+											>
+												<CalendarIcon className="mr-2 h-4 w-4" />
+												{field.value
+													? format(field.value, "PPP")
+													: "Pick a date"}
+											</Button>
+										</PopoverTrigger>
+
+										<PopoverContent className="w-auto p-0" align="start">
+											<Calendar
+												mode="single"
+												selected={field.value ?? undefined}
+												onSelect={(date) => field.onChange(date ?? null)}
+												disabled={(date) => date > new Date()}
+												autoFocus
+											/>
+										</PopoverContent>
+									</Popover>
+
+									{fieldState.error && (
+										<FieldError>{fieldState.error.message}</FieldError>
+									)}
+								</Field>
+							)}
+						/>
+					)}
 				</FieldGroup>
 
 				{/* Notes */}
