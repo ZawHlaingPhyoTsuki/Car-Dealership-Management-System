@@ -111,6 +111,17 @@ export const columns: ColumnDef<Car>[] = [
 		},
 	},
 	{
+		accessorKey: "soldAt",
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Sold Date" />
+		),
+		cell: ({ row }) => {
+			const date = row.getValue("soldAt");
+			if (!date) return "-";
+			return new Date(date as Date).toLocaleDateString();
+		},
+	},
+	{
 		accessorKey: "createdAt",
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Added At" />

@@ -57,7 +57,6 @@ export const columns: ColumnDef<Employee>[] = [
 		header: () => <Label className="text-lg">Position</Label>,
 		cell: ({ row }) => row.original.position,
 	},
-
 	{
 		accessorKey: "startDate",
 		header: ({ column }) => (
