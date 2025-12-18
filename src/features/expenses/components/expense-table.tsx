@@ -23,8 +23,10 @@ import {
 import { useState } from "react";
 import type { DateRange } from "react-day-picker";
 import * as XLSX from "xlsx";
+import TableError from "@/components/errors/table-error";
 import { DateRangePopover } from "@/components/shared/date-range-popover";
 import PopoverSelect from "@/components/shared/popover-select";
+import TableLoading from "@/components/shared/table-loading";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
@@ -49,7 +51,7 @@ import { useExpenses } from "../queries/get-expenses";
 import { columns, NO_CATEGORY_FILTER } from "./columns";
 
 export default function ExpensesTable() {
-	const { data = [] } = useExpenses();
+	const { data = [], isLoading, error, refetch } = useExpenses();
 	const { data: categories = [] } = useExpenseCategories();
 	const { data: cars = [] } = useGetCars();
 
@@ -138,6 +140,9 @@ export default function ExpensesTable() {
 		setSelectedCategoryId(null);
 		setDateRange(undefined);
 	}
+
+	if (isLoading) return <TableLoading label="Getting Expenses..." />;
+	if (error) return <TableError label={"expenses"} onRetry={refetch} />;
 
 	const handleDateChange = (range?: DateRange) => {
 		setDateRange(range);

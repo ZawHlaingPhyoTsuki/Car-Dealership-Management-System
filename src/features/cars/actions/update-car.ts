@@ -16,10 +16,7 @@ export const updateCar = async (data: z.infer<typeof UpdateCarSchema>) => {
 			where: { id },
 			data: {
 				...updateData,
-				soldAt:
-					updateData.status === CarStatus.SOLD
-						? updateData.soldAt
-						: null,
+				soldAt: updateData.status === CarStatus.SOLD ? updateData.soldAt : null,
 			},
 		});
 
