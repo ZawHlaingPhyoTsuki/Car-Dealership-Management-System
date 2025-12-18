@@ -187,9 +187,10 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 												mode="single"
 												selected={field.value}
 												onSelect={field.onChange}
-												disabled={(date: Date) =>
-													date > new Date() || date < new Date("1900-01-01")
-												}
+												disabled={{
+													after: new Date(),
+													before: new Date("1900-01-01"),
+												}}
 											/>
 										</PopoverContent>
 									</Popover>
