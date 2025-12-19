@@ -37,20 +37,18 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
                 <NavMain items={data.navMain} />
             </SidebarContent>
             <SidebarFooter>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center">
                     <Image
                         alt="Banana Coder Avatar"
-                        src="/images/banana-coder.png"
-                        height={40}
-                        width={40}
+                        src="/images/banana-coder.jpg"
+                        height={48}
+                        width={48}
                         className="object-cover rounded-full"
                     />
                     <div>
-                        <p className="text-xs font-bold">
-                            Banana Coder{' '}
-                            <small className="text-muted-foreground">
-                                &copy; {new Date().getFullYear()}
-                            </small>
+                        <span className="text-sm text-muted-foreground">powered by</span>
+                        <p className="-mt-1 font-serif">
+                            Banana Coder <sup className="text-muted-foreground">&copy;</sup>
                         </p>
                     </div>
                 </div>
