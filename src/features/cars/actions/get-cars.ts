@@ -24,19 +24,9 @@ export async function getCars() {
 				shareholderPercentage: true,
 				investmentAmount: true,
 				soldAt: true,
-				paidMethod: true,
-				paidAmount: true,
 				notes: true,
 				createdAt: true,
 				updatedAt: true,
-				photos: {
-					select: {
-						id: true,
-						url: true,
-						alt: true,
-						order: true,
-					},
-				},
 				shareholder: {
 					select: {
 						id: true,

@@ -1,9 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { CarStatus, PaidMethod } from "@/app/generated/prisma/enums";
+import { CarStatus } from "@/app/generated/prisma/enums";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
 	Field,
 	FieldError,
@@ -17,6 +21,11 @@ import {
 	InputGroupAddon,
 	InputGroupInput,
 } from "@/components/ui/input-group";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
 import {
 	Select,
 	SelectContent,
@@ -38,22 +47,29 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 	const form = useForm<CreateCarValues>({
 		resolver: zodResolver(CreateCarSchema),
 		defaultValues: {
-			name: undefined,
+			name: "",
 			price: 0,
-			color: undefined,
-			licenseNumber: undefined,
-			notes: undefined,
+			color: "",
+			licenseNumber: "",
+			notes: "",
 			status: CarStatus.AVAILABLE,
-			paidMethod: undefined,
-			paidAmount: undefined,
+			soldAt: null,
 		},
 	});
+
+	const status = form.watch("status");
 
 	const onSubmit = async (values: CreateCarValues) => {
 		await createCarMutation.mutateAsync(values);
 		form.reset();
 		onClose?.();
 	};
+
+	useEffect(() => {
+		if (status !== CarStatus.SOLD) {
+			form.setValue("soldAt", null);
+		}
+	}, [status, form]);
 
 	return (
 		<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -172,71 +188,48 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 						)}
 					/>
 
-					{/* Paid Method */}
-					<Controller
-						name="paidMethod"
-						control={form.control}
-						render={({ field, fieldState }) => (
-							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="paidMethod">Paid Method</FieldLabel>
-								<Select
-									value={field.value ?? undefined}
-									onValueChange={(val) =>
-										field.onChange(val === "unselected" ? undefined : val)
-									}
-								>
-									<SelectTrigger
-										id="paidMethod"
-										aria-invalid={fieldState.invalid}
-									>
-										<SelectValue placeholder="Select paid method" />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value="unselected">None</SelectItem>
-										{Object.values(PaidMethod).map((method) => (
-											<SelectItem key={method} value={method}>
-												{method.replace(/_/g, " ")}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-								{fieldState.error && (
-									<FieldError>{fieldState.error.message}</FieldError>
-								)}
-							</Field>
-						)}
-					/>
+					{/* Sold Date – only show if SOLD */}
+					{status === CarStatus.SOLD && (
+						<Controller
+							name="soldAt"
+							control={form.control}
+							render={({ field, fieldState }) => (
+								<Field data-invalid={fieldState.invalid}>
+									<FieldLabel>
+										Sold Date <span className="text-red-500">*</span>
+									</FieldLabel>
 
-					{/* Paid Amount */}
-					<Controller
-						name="paidAmount"
-						control={form.control}
-						render={({ field, fieldState }) => (
-							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="paidAmount">Paid Amount</FieldLabel>
-								<InputGroup>
-									<InputGroupInput
-										id="paidAmount"
-										type="number"
-										min="0"
-										step="1"
-										placeholder="10000"
-										{...field}
-										onChange={(e) =>
-											field.onChange(
-												e.target.value ? parseFloat(e.target.value) : undefined,
-											)
-										}
-										value={field.value || ""}
-									/>
-									<InputGroupAddon>$</InputGroupAddon>
-								</InputGroup>
-								{fieldState.error && (
-									<FieldError>{fieldState.error.message}</FieldError>
-								)}
-							</Field>
-						)}
-					/>
+									<Popover>
+										<PopoverTrigger asChild>
+											<Button
+												variant="outline"
+												className="justify-start text-left font-normal w-full"
+											>
+												<CalendarIcon className="mr-2 h-4 w-4" />
+												{field.value
+													? format(field.value, "PPP")
+													: "Pick a date"}
+											</Button>
+										</PopoverTrigger>
+
+										<PopoverContent className="w-auto p-0" align="start">
+											<Calendar
+												mode="single"
+												selected={field.value ?? undefined}
+												onSelect={(date) => field.onChange(date ?? null)}
+												disabled={(date) => date > new Date()}
+												autoFocus
+											/>
+										</PopoverContent>
+									</Popover>
+
+									{fieldState.error && (
+										<FieldError>{fieldState.error.message}</FieldError>
+									)}
+								</Field>
+							)}
+						/>
+					)}
 				</FieldGroup>
 
 				{/* Notes */}
@@ -267,10 +260,13 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 				<Button
 					type="button"
 					variant="outline"
-					onClick={() => form.reset()}
+					onClick={() => {
+						form.reset();
+						onClose?.();
+					}}
 					disabled={createCarMutation.isPending || form.formState.isSubmitting}
 				>
-					Clear
+					Cancel
 				</Button>
 				<Button
 					type="submit"

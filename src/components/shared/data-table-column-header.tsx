@@ -1,14 +1,14 @@
 import type { Column } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff } from "lucide-react";
+import { ArrowDown, ArrowUp, ChevronsUpDown, X } from "lucide-react";
 import type * as React from "react";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 interface DataTableColumnHeaderProps<TData, TValue>
@@ -35,7 +35,7 @@ export function DataTableColumnHeader<TData, TValue>({
 						size="sm"
 						className="data-[state=open]:bg-accent -ml-3 h-8"
 					>
-						<span>{title}</span>
+						<Label className="text-lg">{title}</Label>
 						{column.getIsSorted() === "desc" ? (
 							<ArrowDown />
 						) : column.getIsSorted() === "asc" ? (
@@ -47,17 +47,17 @@ export function DataTableColumnHeader<TData, TValue>({
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="start">
 					<DropdownMenuItem onClick={() => column.toggleSorting(false)}>
-						<ArrowUp />
+						<ArrowUp className="mr-2 h-4 w-4" />
 						Asc
 					</DropdownMenuItem>
+
 					<DropdownMenuItem onClick={() => column.toggleSorting(true)}>
-						<ArrowDown />
+						<ArrowDown className="mr-2 h-4 w-4" />
 						Desc
 					</DropdownMenuItem>
-					<DropdownMenuSeparator />
-					<DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
-						<EyeOff />
-						Hide
+					<DropdownMenuItem onClick={() => column.clearSorting()}>
+						<X className="mr-2 h-4 w-4" />
+						Reset
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>

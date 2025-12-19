@@ -14,6 +14,14 @@ export const createEmployee = async (
 		const validatedData = CreateEmployeeSchema.parse(data);
 		return await prisma.employee.create({
 			data: validatedData,
+			select: {
+				id: true,
+				name: true,
+				position: true,
+				salary: true,
+				percentage: true,
+				startDate: true,
+			},
 		});
 	} catch (error) {
 		console.error("Failed to create employee:", error);

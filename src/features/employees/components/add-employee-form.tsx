@@ -1,8 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
 	Field,
 	FieldError,
@@ -16,7 +19,12 @@ import {
 	InputGroupAddon,
 	InputGroupInput,
 } from "@/components/ui/input-group";
-import { Textarea } from "@/components/ui/textarea";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import { useCreateEmployee } from "../mutations/use-create-employee";
 import { CreateEmployeeSchema, type CreateEmployeeValues } from "../validation";
 
@@ -31,11 +39,10 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 		resolver: zodResolver(CreateEmployeeSchema),
 		defaultValues: {
 			name: "",
-			email: "",
 			position: "",
-			phone: undefined,
-			address: undefined,
-			salary: undefined,
+			salary: 0,
+			percentage: 0,
+			startDate: new Date(),
 		},
 	});
 
@@ -58,30 +65,7 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 								<FieldLabel htmlFor="name">
 									Full Name <span className="text-red-500">*</span>
 								</FieldLabel>
-								<Input id="name" placeholder="John Doe" required {...field} />
-								{fieldState.error && (
-									<FieldError>{fieldState.error.message}</FieldError>
-								)}
-							</Field>
-						)}
-					/>
-
-					{/* Email */}
-					<Controller
-						name="email"
-						control={form.control}
-						render={({ field, fieldState }) => (
-							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="email">
-									Email Address <span className="text-red-500">*</span>
-								</FieldLabel>
-								<Input
-									id="email"
-									type="email"
-									placeholder="john.doe@company.com"
-									required
-									{...field}
-								/>
+								<Input id="name" placeholder="John Doe" {...field} />
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>
 								)}
@@ -95,13 +79,10 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 						control={form.control}
 						render={({ field, fieldState }) => (
 							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="position">
-									Position <span className="text-red-500">*</span>
-								</FieldLabel>
+								<FieldLabel htmlFor="position">Position</FieldLabel>
 								<Input
 									id="position"
 									placeholder="Software Engineer"
-									required
 									{...field}
 								/>
 								{fieldState.error && (
@@ -117,23 +98,20 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 						control={form.control}
 						render={({ field, fieldState }) => (
 							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="salary">
-									Salary <span className="text-red-500">*</span>
-								</FieldLabel>
+								<FieldLabel htmlFor="salary">Salary</FieldLabel>
 								<InputGroup>
 									<InputGroupInput
 										id="salary"
 										type="number"
 										step="1"
-										min="1"
+										min="0"
 										placeholder="50000"
-										required
 										{...field}
 										onChange={(e) => {
 											const value = e.target.value;
-											field.onChange(value === "" ? undefined : Number(value));
+											field.onChange(value === "" ? 0 : Number(value));
 										}}
-										value={field.value ?? ""}
+										value={field.value}
 									/>
 									<InputGroupAddon>
 										<span className="text-gray-500">Ks</span>
@@ -146,14 +124,77 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 						)}
 					/>
 
-					{/* Phone */}
+					{/* Percentage */}
 					<Controller
-						name="phone"
+						name="percentage"
 						control={form.control}
 						render={({ field, fieldState }) => (
 							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="phone">Phone Number</FieldLabel>
-								<Input id="phone" placeholder="+1 (555) 123-4567" {...field} />
+								<FieldLabel htmlFor="percentage">Percentage</FieldLabel>
+								<InputGroup>
+									<InputGroupInput
+										id="percentage"
+										type="number"
+										step="1"
+										min="0"
+										max="100"
+										placeholder="50"
+										{...field}
+										onChange={(e) => {
+											const value = e.target.value;
+											field.onChange(value === "" ? undefined : Number(value));
+										}}
+										value={field.value ?? ""}
+									/>
+									<InputGroupAddon>
+										<span className="text-gray-500">%</span>
+									</InputGroupAddon>
+								</InputGroup>
+								{fieldState.error && (
+									<FieldError>{fieldState.error.message}</FieldError>
+								)}
+							</Field>
+						)}
+					/>
+
+					{/* Start Date */}
+					<Controller
+						name="startDate"
+						control={form.control}
+						render={({ field, fieldState }) => (
+							<Field data-invalid={fieldState.invalid}>
+								<FieldLabel htmlFor="startDate">Start Date</FieldLabel>
+								<FieldGroup>
+									<Popover>
+										<PopoverTrigger asChild>
+											<Button
+												variant="outline"
+												className={cn(
+													"w-full pl-3 text-left font-normal",
+													!field.value && "text-muted-foreground",
+												)}
+											>
+												{field.value ? (
+													format(field.value, "PPP")
+												) : (
+													<span>Pick a date</span>
+												)}
+												<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+											</Button>
+										</PopoverTrigger>
+										<PopoverContent className="w-auto p-0" align="start">
+											<Calendar
+												mode="single"
+												selected={field.value}
+												onSelect={field.onChange}
+												disabled={{
+													after: new Date(),
+													before: new Date("1900-01-01"),
+												}}
+											/>
+										</PopoverContent>
+									</Popover>
+								</FieldGroup>
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>
 								)}
@@ -161,26 +202,6 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 						)}
 					/>
 				</FieldGroup>
-
-				{/* Address - Full width */}
-				<Controller
-					name="address"
-					control={form.control}
-					render={({ field, fieldState }) => (
-						<Field data-invalid={fieldState.invalid}>
-							<FieldLabel htmlFor="address">Address</FieldLabel>
-							<Textarea
-								id="address"
-								placeholder="123 Main St, City, State, ZIP Code"
-								rows={3}
-								{...field}
-							/>
-							{fieldState.error && (
-								<FieldError>{fieldState.error.message}</FieldError>
-							)}
-						</Field>
-					)}
-				/>
 			</FieldSet>
 
 			{/* Form Actions */}
@@ -188,12 +209,15 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 				<Button
 					type="button"
 					variant="outline"
-					onClick={() => form.reset()}
+					onClick={() => {
+						form.reset();
+						onClose?.();
+					}}
 					disabled={
 						createEmployeeMutation.isPending || form.formState.isSubmitting
 					}
 				>
-					Clear
+					Cancel
 				</Button>
 				<Button
 					type="submit"

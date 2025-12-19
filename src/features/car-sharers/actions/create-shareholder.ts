@@ -28,7 +28,7 @@ export const createShareholder = async (data: CreateCarSharerValues) => {
 			},
 		});
 	} catch (error) {
-		console.log(error);
+		console.error("Failed to create shareholder:", error);
 		throw new Error("Failed to create shareholder");
 	}
 };

@@ -1,11 +1,9 @@
 import {
 	Car,
 	ChartColumn,
-	CircleQuestionMark,
 	FileSpreadsheet,
 	HandCoins,
 	LayoutDashboard,
-	Settings,
 	Users,
 } from "lucide-react";
 import { paths } from "@/config/paths";
@@ -24,21 +22,31 @@ export const navigationTitle = {
 	AnalyticsAvailableCars: "Available Cars",
 	AnalyticsSoldCars: "Sold Cars",
 	AnalyticsCarProfitSummary: "Car Profit Summary",
-	AnalyticsSharersTotal: "Sharers Total",
+	// AnalyticsSharersTotal: "Sharers Total",
 
 	Account: "Account",
-	GetHelp: "Get Help",
 };
 
 export const data: {
 	navMain: NavItem[];
-	navSecondary: NavItem[];
 } = {
 	navMain: [
 		{
-			title: navigationTitle.Dashboard,
-			url: paths.dashboard.root.getHref(),
-			icon: LayoutDashboard,
+			title: navigationTitle.Expenses,
+			url: paths.dashboard.expenses.getHref(),
+			icon: FileSpreadsheet,
+		},
+
+		{
+			title: navigationTitle.Employees,
+			url: paths.dashboard.employees.getHref(),
+			icon: Users,
+		},
+
+		{
+			title: navigationTitle.CarSharersManagement,
+			url: paths.dashboard.carSharers.getHref(),
+			icon: HandCoins,
 		},
 		{
 			title: navigationTitle.CarsListing,
@@ -46,25 +54,14 @@ export const data: {
 			icon: Car,
 		},
 		{
-			title: navigationTitle.CarSharersManagement,
-			url: paths.dashboard.carSharers.getHref(),
-			icon: HandCoins,
-		},
-		{
-			title: navigationTitle.Expenses,
-			url: paths.dashboard.expenses.getHref(),
-			icon: FileSpreadsheet,
-		},
-		{
-			title: navigationTitle.Employees,
-			url: paths.dashboard.employees.getHref(),
-			icon: Users,
-		},
-		{
 			title: navigationTitle.Analytics,
 			url: "",
 			icon: ChartColumn,
 			items: [
+				{
+					title: navigationTitle.AnalyticsCarProfitSummary,
+					url: paths.dashboard.analytics.carProfitSummary.getHref(),
+				},
 				{
 					title: navigationTitle.AnalyticsAvailableCars,
 					url: paths.dashboard.analytics.availableCars.getHref(),
@@ -73,27 +70,17 @@ export const data: {
 					title: navigationTitle.AnalyticsSoldCars,
 					url: paths.dashboard.analytics.soldCars.getHref(),
 				},
-				{
-					title: navigationTitle.AnalyticsCarProfitSummary,
-					url: paths.dashboard.analytics.carProfitSummary.getHref(),
-				},
-				{
-					title: navigationTitle.AnalyticsSharersTotal,
-					url: paths.dashboard.analytics.sharersTotal.getHref(),
-				},
+
+				// {
+				// 	title: navigationTitle.AnalyticsSharersTotal,
+				// 	url: paths.dashboard.analytics.sharersTotal.getHref(),
+				// },
 			],
 		},
-	],
-	navSecondary: [
 		{
-			title: navigationTitle.Account,
-			url: paths.dashboard.account.getHref(),
-			icon: Settings,
-		},
-		{
-			title: navigationTitle.GetHelp,
-			url: paths.dashboard.help.getHref(),
-			icon: CircleQuestionMark,
+			title: navigationTitle.Dashboard,
+			url: paths.dashboard.root.getHref(),
+			icon: LayoutDashboard,
 		},
 	],
 };
@@ -114,10 +101,10 @@ export const titleMap = [
 		match: paths.dashboard.analytics.carProfitSummary.getHref(),
 		title: navigationTitle.AnalyticsCarProfitSummary,
 	},
-	{
-		match: paths.dashboard.analytics.sharersTotal.getHref(),
-		title: navigationTitle.AnalyticsSharersTotal,
-	},
+	// {
+	// 	match: paths.dashboard.analytics.sharersTotal.getHref(),
+	// 	title: navigationTitle.AnalyticsSharersTotal,
+	// },
 
 	// ------------------------
 	// MAIN PAGES (lower priority)
@@ -142,5 +129,4 @@ export const titleMap = [
 		match: paths.dashboard.account.getHref(),
 		title: navigationTitle.Account,
 	},
-	{ match: paths.dashboard.help.getHref(), title: navigationTitle.GetHelp },
 ];

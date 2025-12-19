@@ -1,10 +1,13 @@
 "use server";
 
+import * as z from "zod";
 import { requireAuth } from "@/lib/auth-guard";
 import prisma from "@/lib/prisma";
 
 export const deleteEmployee = async (id: string) => {
 	await requireAuth();
+
+	z.uuid().parse(id);
 
 	return await prisma.employee.update({
 		where: {
@@ -16,11 +19,9 @@ export const deleteEmployee = async (id: string) => {
 		select: {
 			id: true,
 			name: true,
-			email: true,
 			position: true,
-			phone: true,
-			address: true,
 			salary: true,
+			percentage: true,
 			startDate: true,
 		},
 	});

@@ -1,15 +1,18 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { CarStatus } from "@/app/generated/prisma/enums";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
 	Field,
 	FieldError,
 	FieldGroup,
 	FieldLabel,
-	FieldSeparator,
 	FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -18,6 +21,11 @@ import {
 	InputGroupAddon,
 	InputGroupInput,
 } from "@/components/ui/input-group";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
 import {
 	Select,
 	SelectContent,
@@ -44,19 +52,26 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 			id: car.id,
 			name: car.name,
 			price: car.price,
-			color: car.color ?? undefined,
-			licenseNumber: car.licenseNumber ?? undefined,
-			notes: car.notes ?? undefined,
+			color: car.color ?? "",
+			licenseNumber: car.licenseNumber ?? "",
+			notes: car.notes ?? "",
 			status: car.status as CarStatus,
-			paidMethod: car.paidMethod ?? undefined,
-			paidAmount: car.paidAmount ?? undefined,
+			soldAt: car.soldAt ?? null,
 		},
 	});
+
+	const status = form.watch("status");
 
 	const onSubmit = async (values: UpdateCarValues) => {
 		await updateCarMutation.mutateAsync(values);
 		onClose?.();
 	};
+
+	useEffect(() => {
+		if (status !== CarStatus.SOLD) {
+			form.setValue("soldAt", null);
+		}
+	}, [status, form]);
 
 	return (
 		<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -174,6 +189,49 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 							</Field>
 						)}
 					/>
+
+					{/* Sold Date – only show if SOLD */}
+					{status === CarStatus.SOLD && (
+						<Controller
+							name="soldAt"
+							control={form.control}
+							render={({ field, fieldState }) => (
+								<Field data-invalid={fieldState.invalid}>
+									<FieldLabel>
+										Sold Date <span className="text-red-500">*</span>
+									</FieldLabel>
+
+									<Popover>
+										<PopoverTrigger asChild>
+											<Button
+												variant="outline"
+												className="justify-start text-left font-normal w-full"
+											>
+												<CalendarIcon className="mr-2 h-4 w-4" />
+												{field.value
+													? format(field.value, "PPP")
+													: "Pick a date"}
+											</Button>
+										</PopoverTrigger>
+
+										<PopoverContent className="w-auto p-0" align="start">
+											<Calendar
+												mode="single"
+												selected={field.value ?? undefined}
+												onSelect={(date) => field.onChange(date ?? null)}
+												disabled={(date) => date > new Date()}
+												autoFocus
+											/>
+										</PopoverContent>
+									</Popover>
+
+									{fieldState.error && (
+										<FieldError>{fieldState.error.message}</FieldError>
+									)}
+								</Field>
+							)}
+						/>
+					)}
 				</FieldGroup>
 
 				{/* Notes */}
@@ -196,34 +254,6 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 						</Field>
 					)}
 				/>
-
-				<FieldSeparator />
-
-				<Controller
-					name="paidAmount"
-					control={form.control}
-					render={({ field, fieldState }) => (
-						<Field data-invalid={fieldState.invalid}>
-							<FieldLabel htmlFor="paidAmount">Paid Amount</FieldLabel>
-							<InputGroup>
-								<InputGroupInput
-									id="paidAmount"
-									type="number"
-									min="0"
-									step="1"
-									{...field}
-									onChange={(e) =>
-										field.onChange(
-											e.target.value ? parseFloat(e.target.value) : 0,
-										)
-									}
-									value={field.value ?? ""}
-								/>
-								<InputGroupAddon>Ks</InputGroupAddon>
-							</InputGroup>
-						</Field>
-					)}
-				/>
 			</FieldSet>
 
 			{/* Form Actions */}
@@ -231,7 +261,10 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 				<Button
 					type="button"
 					variant="outline"
-					onClick={() => onClose?.()}
+					onClick={() => {
+						form.reset();
+						onClose?.();
+					}}
 					disabled={updateCarMutation.isPending || form.formState.isSubmitting}
 				>
 					Cancel

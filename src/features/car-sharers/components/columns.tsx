@@ -2,8 +2,9 @@
 
 import type { ColumnDef } from "@tanstack/react-table";
 import { Edit, EllipsisVertical, Trash } from "lucide-react";
-import Image from "next/image";
 import { useState } from "react";
+import { DataTableColumnHeader } from "@/components/shared/data-table-column-header";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -28,46 +29,41 @@ import EditCarSharerDialog from "./edit-car-sharer-dialog";
 
 export const columns: ColumnDef<Car>[] = [
 	{
-		id: "no.",
-		header: "No.",
-		cell: ({ row }) => row.index + 1,
+		id: "no",
+		header: () => <Label className="text-lg">No.</Label>,
+		cell: ({ row, table }) => {
+			const { pageIndex, pageSize } = table.getState().pagination;
+			const filteredRows = table.getFilteredRowModel().rows;
+			const rowIndex = filteredRows.findIndex(
+				(filteredRow) => filteredRow.id === row.id,
+			);
+			return pageIndex * pageSize + rowIndex + 1;
+		},
 	},
 	{
 		accessorKey: "name",
-		header: "Name",
+		header: () => <Label className="text-lg">Car Name</Label>,
 		cell: ({ row }) => {
 			const car = row.original;
 
 			return (
-				<div className="flex items-center gap-3 min-w-0">
-					{car.photos.length > 0 ? (
-						<Image
-							src={car.photos[0].url}
-							alt={car.name}
-							width={50}
-							height={30}
-							className="rounded-md object-cover shrink-0"
-						/>
-					) : (
-						<div className="h-[50px] w-[50px] rounded-md bg-gray-100 flex items-center justify-center shrink-0">
-							<span className="text-xs text-gray-500">No image</span>
+				<div className="min-w-0">
+					<div className="font-medium truncate">{car.name}</div>
+
+					{car.licenseNumber && (
+						<div className="text-sm text-gray-500 truncate">
+							{car.licenseNumber}
 						</div>
 					)}
-
-					<div className="min-w-0">
-						<div className="font-medium truncate">{car.name}</div>
-
-						{car.color && (
-							<div className="text-sm text-gray-500 truncate">{car.color}</div>
-						)}
-					</div>
 				</div>
 			);
 		},
 	},
 	{
 		accessorKey: "price",
-		header: "Price",
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Price" />
+		),
 		cell: ({ row }) => {
 			const price = Number.parseFloat(row.getValue("price"));
 			if (Number.isNaN(price)) return "-";
@@ -75,16 +71,31 @@ export const columns: ColumnDef<Car>[] = [
 		},
 	},
 	{
-		accessorKey: "licenseNumber",
-		header: "License No.",
+		accessorKey: "status",
+		header: () => <Label className="text-lg">Status</Label>,
 		cell: ({ row }) => {
-			const value = row.getValue("licenseNumber");
-			return value || "-";
+			const status: string = row.getValue("status");
+			let variant:
+				| "default"
+				| "destructive"
+				| "outline"
+				| "secondary"
+				| "success"
+				| "warning" = "default";
+			if (status === "AVAILABLE") variant = "success";
+			if (status === "IN_MAINTENANCE") variant = "secondary";
+			if (status === "RESERVED") variant = "warning";
+			if (status === "SOLD") variant = "destructive";
+			return (
+				<Badge className="capitalize" variant={variant}>
+					{status.toLowerCase().replace(/_/g, " ")}
+				</Badge>
+			);
 		},
 	},
 	{
 		accessorKey: "7hrs-profit",
-		header: "7hrs Profit",
+		header: () => <Label className="text-lg">7hrs Profit</Label>,
 		cell: ({ row }) => {
 			const price = row.original.price;
 			const percentage = row.original.shareholderPercentage || 0;
@@ -100,7 +111,7 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "sharer-profit",
-		header: "Sharer Profit",
+		header: () => <Label className="text-lg">Sharer Profit</Label>,
 		cell: ({ row }) => {
 			const price = row.original.price;
 			const percentage = row.original.shareholderPercentage || 0;
@@ -118,14 +129,14 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "investmentAmount",
-		header: "Invested Amount",
+		header: () => <Label className="text-lg">Invested Amount</Label>,
 		cell: ({ row }) => {
 			const investmentAmount = Number.parseFloat(
 				row.getValue("investmentAmount"),
 			);
 			if (!investmentAmount) return "-";
 			return (
-				<div className="text-blue-600">
+				<div className="text-lg font-bold text-blue-600 ">
 					{formatInLakhsCrores(investmentAmount)}
 				</div>
 			);
@@ -133,7 +144,7 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "shareholderName",
-		header: "Sharer Name",
+		header: () => <Label className="text-lg">Sharer Name</Label>,
 		cell: ({ row }) => {
 			const shareholder = row.original.shareholder;
 			if (!shareholder) return "-";
@@ -167,7 +178,9 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "soldAt",
-		header: "Sold Date",
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Sold Date" />
+		),
 		cell: ({ row }) => {
 			const car = row.original;
 			if (car.status === "SOLD" && car.soldAt) {
@@ -178,7 +191,7 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "actions",
-		header: "Actions",
+		header: () => <Label className="text-lg">Actions</Label>,
 		cell: ({ row }) => <CarActions car={row.original} />,
 	},
 ];
