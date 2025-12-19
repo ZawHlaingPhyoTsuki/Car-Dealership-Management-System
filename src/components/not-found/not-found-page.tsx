@@ -32,11 +32,11 @@ function NotFoundPageClient() {
 				<div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
 					<Link
 						className={buttonVariants({ size: "lg" })}
-						href={paths.home.getHref()}
+						href={paths.dashboard.root.getHref()}
 						replace
 					>
 						<Home className="mr-2 h-4 w-4" />
-						Back to Homepage
+						Back to Dashboard
 					</Link>
 
 					<Button

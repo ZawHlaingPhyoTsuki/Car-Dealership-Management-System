@@ -16,7 +16,7 @@ export default async function AuthLayout({
 	});
 
 	if (session) {
-		redirect("/dashboard");
+		redirect(paths.dashboard.root.getHref());
 	}
 
 	return (
@@ -25,7 +25,7 @@ export default async function AuthLayout({
 				<div className="flex items-center justify-between">
 					<div className="flex justify-center gap-2 md:justify-start">
 						<Link
-							href={paths.home.getHref()}
+							href={paths.dashboard.root.getHref()}
 							className="flex items-center gap-2 font-medium text-2xl"
 						>
 							<Image
