@@ -31,7 +31,7 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "name",
-		header: () => <Label className="text-lg">Name</Label>,
+		header: () => <Label className="text-lg">Car Name</Label>,
 		cell: ({ row }) => {
 			const car = row.original;
 
