@@ -4,6 +4,7 @@ import type React from "react";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { SiteHeader } from "@/components/sidebar/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { paths } from "@/config/paths";
 import { auth } from "@/lib/auth";
 
 export default async function DashboardLayout({
@@ -16,7 +17,7 @@ export default async function DashboardLayout({
 	});
 
 	if (!session) {
-		return redirect("/login");
+		return redirect(paths.login.getHref());
 	}
 
 	return (

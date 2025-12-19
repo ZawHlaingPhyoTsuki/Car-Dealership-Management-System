@@ -1,8 +1,4 @@
 export const paths = {
-	home: {
-		getHref: () => "/",
-	},
-
 	login: {
 		getHref: () => "/login",
 	},
@@ -24,21 +20,9 @@ export const paths = {
 			getHref: () => "/dashboard/employees",
 		},
 		analytics: {
-			availableCars: {
-				getHref: () => "/dashboard/analytics/available-cars",
-			},
-			soldCars: {
-				getHref: () => "/dashboard/analytics/sold-cars",
-			},
 			carProfitSummary: {
 				getHref: () => "/dashboard/analytics/car-profit-summary",
 			},
-			// sharersTotal: {
-			// 	getHref: () => "/dashboard/analytics/sharers-total",
-			// },
-		},
-		account: {
-			getHref: () => "/dashboard/account",
 		},
 	},
 } as const;

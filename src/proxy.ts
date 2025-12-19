@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { paths } from "./config/paths";
 import { auth } from "./lib/auth";
 
 export default async function proxy(request: NextRequest) {
@@ -9,7 +10,7 @@ export default async function proxy(request: NextRequest) {
 
 	// If no session - redirect to login page
 	if (!session) {
-		const loginUrl = new URL("/login", request.url);
+		const loginUrl = new URL(paths.login.getHref(), request.url);
 		return NextResponse.redirect(loginUrl);
 	}
 
