@@ -5,10 +5,9 @@ import {
 	getCoreRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-import { DownloadIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 import * as XLSX from "xlsx";
-import { Button } from "@/components/ui/button";
+import { TableExportButton } from "@/components/shared/export-button";
 import {
 	Select,
 	SelectContent,
@@ -177,10 +176,11 @@ export default function CarProfitTable() {
 				</Select>
 
 				{/* Export Button */}
-				<Button variant="outline" onClick={exportToExcel}>
+				{/* <Button variant="outline" onClick={exportToExcel}>
 					<DownloadIcon className="mr-2" />
 					Export as Excel
-				</Button>
+				</Button> */}
+				<TableExportButton variant="outline" onClick={exportToExcel} />
 			</div>
 			<div className="overflow-hidden rounded-lg border">
 				<Table>
