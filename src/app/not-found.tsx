@@ -15,7 +15,7 @@ export default function NotFoundPage() {
 						404
 					</span>
 					<div className="absolute inset-0 flex items-center justify-center">
-						<span className="text-[150px] font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent leading-none">
+						<span className="text-[150px] font-bold bg-linear-to-r from-primary to-primary/70 bg-clip-text text-transparent leading-none">
 							404
 						</span>
 					</div>
@@ -33,7 +33,7 @@ export default function NotFoundPage() {
 				<div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
 					<Link
 						className={buttonVariants({ size: "lg" })}
-						href={paths.home.getHref()}
+						href={paths.dashboard.root.getHref()}
 						replace
 					>
 						<Home className="mr-2 h-4 w-4" />
