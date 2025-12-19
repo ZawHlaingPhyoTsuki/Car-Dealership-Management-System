@@ -4,7 +4,6 @@ import {
 	FileSpreadsheet,
 	HandCoins,
 	LayoutDashboard,
-	Settings,
 	Users,
 } from "lucide-react";
 import { paths } from "@/config/paths";
@@ -20,17 +19,11 @@ export const navigationTitle = {
 
 	// Analytics pages
 	Analytics: "Analytics",
-	AnalyticsAvailableCars: "Available Cars",
-	AnalyticsSoldCars: "Sold Cars",
 	AnalyticsCarProfitSummary: "Car Profit Summary",
-	// AnalyticsSharersTotal: "Sharers Total",
-
-	Account: "Account",
 };
 
 export const data: {
 	navMain: NavItem[];
-	navSecondary: NavItem[];
 } = {
 	navMain: [
 		{
@@ -61,34 +54,15 @@ export const data: {
 			icon: ChartColumn,
 			items: [
 				{
-					title: navigationTitle.AnalyticsAvailableCars,
-					url: paths.dashboard.analytics.availableCars.getHref(),
-				},
-				{
-					title: navigationTitle.AnalyticsSoldCars,
-					url: paths.dashboard.analytics.soldCars.getHref(),
-				},
-				{
 					title: navigationTitle.AnalyticsCarProfitSummary,
 					url: paths.dashboard.analytics.carProfitSummary.getHref(),
 				},
-				// {
-				// 	title: navigationTitle.AnalyticsSharersTotal,
-				// 	url: paths.dashboard.analytics.sharersTotal.getHref(),
-				// },
 			],
 		},
 		{
 			title: navigationTitle.Dashboard,
 			url: paths.dashboard.root.getHref(),
 			icon: LayoutDashboard,
-		},
-	],
-	navSecondary: [
-		{
-			title: navigationTitle.Account,
-			url: paths.dashboard.account.getHref(),
-			icon: Settings,
 		},
 	],
 };
@@ -98,21 +72,9 @@ export const titleMap = [
 	// ANALYTICS SUB-PAGES
 	// ------------------------
 	{
-		match: paths.dashboard.analytics.availableCars.getHref(),
-		title: navigationTitle.AnalyticsAvailableCars,
-	},
-	{
-		match: paths.dashboard.analytics.soldCars.getHref(),
-		title: navigationTitle.AnalyticsSoldCars,
-	},
-	{
 		match: paths.dashboard.analytics.carProfitSummary.getHref(),
 		title: navigationTitle.AnalyticsCarProfitSummary,
 	},
-	// {
-	// 	match: paths.dashboard.analytics.sharersTotal.getHref(),
-	// 	title: navigationTitle.AnalyticsSharersTotal,
-	// },
 
 	// ------------------------
 	// MAIN PAGES (lower priority)
@@ -132,9 +94,5 @@ export const titleMap = [
 	{
 		match: paths.dashboard.employees.getHref(),
 		title: navigationTitle.Employees,
-	},
-	{
-		match: paths.dashboard.account.getHref(),
-		title: navigationTitle.Account,
 	},
 ];

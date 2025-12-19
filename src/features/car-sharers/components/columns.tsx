@@ -3,6 +3,8 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { Edit, EllipsisVertical, Trash } from "lucide-react";
 import { useState } from "react";
+import { DataTableColumnHeader } from "@/components/shared/data-table-column-header";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -40,7 +42,7 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "name",
-		header: () => <Label className="text-lg">Name</Label>,
+		header: () => <Label className="text-lg">Car Name</Label>,
 		cell: ({ row }) => {
 			const car = row.original;
 
@@ -48,8 +50,10 @@ export const columns: ColumnDef<Car>[] = [
 				<div className="min-w-0">
 					<div className="font-medium truncate">{car.name}</div>
 
-					{car.color && (
-						<div className="text-sm text-gray-500 truncate">{car.color}</div>
+					{car.licenseNumber && (
+						<div className="text-sm text-gray-500 truncate">
+							{car.licenseNumber}
+						</div>
 					)}
 				</div>
 			);
@@ -57,7 +61,9 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "price",
-		header: () => <Label className="text-lg">Price</Label>,
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Price" />
+		),
 		cell: ({ row }) => {
 			const price = Number.parseFloat(row.getValue("price"));
 			if (Number.isNaN(price)) return "-";
@@ -65,11 +71,26 @@ export const columns: ColumnDef<Car>[] = [
 		},
 	},
 	{
-		accessorKey: "licenseNumber",
-		header: () => <Label className="text-lg">License No.</Label>,
+		accessorKey: "status",
+		header: () => <Label className="text-lg">Status</Label>,
 		cell: ({ row }) => {
-			const value = row.getValue("licenseNumber");
-			return value || "-";
+			const status: string = row.getValue("status");
+			let variant:
+				| "default"
+				| "destructive"
+				| "outline"
+				| "secondary"
+				| "success"
+				| "warning" = "default";
+			if (status === "AVAILABLE") variant = "success";
+			if (status === "IN_MAINTENANCE") variant = "secondary";
+			if (status === "RESERVED") variant = "warning";
+			if (status === "SOLD") variant = "destructive";
+			return (
+				<Badge className="capitalize" variant={variant}>
+					{status.toLowerCase().replace(/_/g, " ")}
+				</Badge>
+			);
 		},
 	},
 	{
@@ -157,7 +178,9 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "soldAt",
-		header: () => <Label className="text-lg">Sold Date</Label>,
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Sold Date" />
+		),
 		cell: ({ row }) => {
 			const car = row.original;
 			if (car.status === "SOLD" && car.soldAt) {

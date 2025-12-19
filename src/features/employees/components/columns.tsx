@@ -45,7 +45,11 @@ export const columns: ColumnDef<Employee>[] = [
 		cell: ({ row }) => {
 			const percentage = row.original.percentage;
 			if (percentage == null) return "-";
-			return <span className="text-sm text-purple-500">{percentage}%</span>;
+			return (
+				<span className="text-sm text-purple-800 dark:text-purple-500">
+					{percentage}%
+				</span>
+			);
 		},
 	},
 	{
@@ -53,7 +57,6 @@ export const columns: ColumnDef<Employee>[] = [
 		header: () => <Label className="text-lg">Position</Label>,
 		cell: ({ row }) => row.original.position,
 	},
-
 	{
 		accessorKey: "startDate",
 		header: ({ column }) => (

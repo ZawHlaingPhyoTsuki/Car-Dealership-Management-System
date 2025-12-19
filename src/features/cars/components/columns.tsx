@@ -31,7 +31,7 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "name",
-		header: () => <Label className="text-lg">Name</Label>,
+		header: () => <Label className="text-lg">Car Name</Label>,
 		cell: ({ row }) => {
 			const car = row.original;
 
@@ -108,6 +108,17 @@ export const columns: ColumnDef<Car>[] = [
 					</HoverCardContent>
 				</HoverCard>
 			);
+		},
+	},
+	{
+		accessorKey: "soldAt",
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Sold Date" />
+		),
+		cell: ({ row }) => {
+			const date = row.getValue("soldAt");
+			if (!date) return "-";
+			return new Date(date as Date).toLocaleDateString();
 		},
 	},
 	{

@@ -1,13 +1,12 @@
 "use client";
 
 import type { User } from "better-auth";
-import { Bell, CircleUserRound, EllipsisVertical, LogOut } from "lucide-react";
+import { EllipsisVertical, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
-	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
@@ -82,19 +81,6 @@ export function NavUser({ user }: { user: User }) {
 								</div>
 							</div>
 						</DropdownMenuLabel>
-						<DropdownMenuSeparator />
-						<DropdownMenuGroup>
-							<DropdownMenuItem
-								onClick={() => router.push(paths.dashboard.account.getHref())}
-							>
-								<CircleUserRound />
-								Account
-							</DropdownMenuItem>
-							<DropdownMenuItem>
-								<Bell />
-								Notifications
-							</DropdownMenuItem>
-						</DropdownMenuGroup>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem
 							onClick={() =>
