@@ -83,7 +83,9 @@ export default function CarSharerTable() {
 				"Car Price": row.original.price,
 				"Car License Number": row.original.licenseNumber,
 				"Car Status": row.original.status,
-				"Car Sold Date": row.original.soldAt,
+				"Car Sold Date": row.original.soldAt
+					? new Date(row.original.soldAt).toISOString().split("T")[0]
+					: "",
 				"Shareholder Percentage": row.original.shareholderPercentage,
 				"Investment Amount": row.original.investmentAmount,
 				"Shareholder Name": row.original.shareholder?.name,

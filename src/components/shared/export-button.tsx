@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 export interface TableExportButtonProp {
 	disabled?: boolean;
 	buttonText?: string;
-	onClick?: () => void;
+	onClick: () => void;
 	variant?:
 		| "default"
 		| "link"

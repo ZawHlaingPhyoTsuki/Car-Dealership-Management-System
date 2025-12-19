@@ -176,10 +176,6 @@ export default function CarProfitTable() {
 				</Select>
 
 				{/* Export Button */}
-				{/* <Button variant="outline" onClick={exportToExcel}>
-					<DownloadIcon className="mr-2" />
-					Export as Excel
-				</Button> */}
 				<TableExportButton variant="outline" onClick={exportToExcel} />
 			</div>
 			<div className="overflow-hidden rounded-lg border">

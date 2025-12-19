@@ -30,7 +30,6 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import DataTablePagination from "./data-table-pagination";
-import { TableExportButton } from "./export-button";
 
 export interface FilterConfig {
 	id: string;
@@ -135,11 +134,6 @@ export default function DataTable<TData, TValue>({
 						return null;
 					})}
 				</div>
-
-				<TableExportButton
-					variant="outline"
-					onClick={() => console.log("Export")}
-				/>
 			</div>
 
 			{/* Table */}

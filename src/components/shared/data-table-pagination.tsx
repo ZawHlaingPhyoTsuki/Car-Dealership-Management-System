@@ -55,7 +55,7 @@ export default function DataTablePagination({
 		<div className="flex items-center justify-between mt-4">
 			{/* Left */}
 			<div className="text-sm text-gray-500 whitespace-nowrap">
-				Showing {startRow} to {endRow} of {totalRows} rows
+				Showing {totalRows === 0 ? 0 : startRow} to {endRow} of {totalRows} rows
 			</div>
 
 			{/*  Right */}
@@ -75,9 +75,9 @@ export default function DataTablePagination({
 							<SelectValue placeholder={pageSize} />
 						</SelectTrigger>
 						<SelectContent side="top">
-							{[10, 20, 30, 40, 50].map((pageSize) => (
-								<SelectItem key={pageSize} value={`${pageSize}`}>
-									{pageSize}
+							{[10, 20, 30, 40, 50].map((size) => (
+								<SelectItem key={size} value={`${size}`}>
+									{size}
 								</SelectItem>
 							))}
 						</SelectContent>
