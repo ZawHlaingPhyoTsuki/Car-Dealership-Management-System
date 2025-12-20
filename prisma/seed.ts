@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/style/noNonNullAssertion: <any> */
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
@@ -18,8 +19,8 @@ async function main() {
 	// console.log("✅ All seed data cleared");
 
 	// ==================== ADMIN USER ====================
-	const adminEmail = process.env.SEED_ADMIN_EMAIL || "admin@example.com";
-	const adminPassword = process.env.SEED_ADMIN_PASSWORD || "admin123!";
+	const adminEmail = process.env.SEED_ADMIN_EMAIL!;
+	const adminPassword = process.env.SEED_ADMIN_PASSWORD!;
 
 	// Check if admin already exists
 	const existingAdmin = await prisma.user.findUnique({
