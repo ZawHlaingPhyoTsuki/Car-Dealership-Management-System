@@ -18,7 +18,6 @@ export async function getCars() {
 				id: true,
 				name: true,
 				licenseNumber: true,
-				color: true,
 				status: true,
 				price: true,
 				shareholderPercentage: true,
@@ -31,7 +30,6 @@ export async function getCars() {
 					select: {
 						id: true,
 						name: true,
-						email: true,
 						phone: true,
 						createdAt: true,
 					},

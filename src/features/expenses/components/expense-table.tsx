@@ -139,7 +139,7 @@ export default function ExpensesTable() {
 						<DateRangePopover value={dateRange} onChange={handleDateChange} />
 
 						{/* Reason Select */}
-						<div className="w-[200px]">
+						<div className="w-[150px] md:w-[200px]">
 							<PopoverSelect
 								value={selectedCategoryId}
 								onChange={(val) => {
@@ -166,7 +166,7 @@ export default function ExpensesTable() {
 						</div>
 
 						{/* Car Select */}
-						<div className="w-[200px]">
+						<div className="w-[150px] md:w-[200px]">
 							<PopoverSelect
 								value={selectedCarId}
 								onChange={(val) => {
@@ -180,7 +180,7 @@ export default function ExpensesTable() {
 								allowNone
 								matchTriggerWidth
 								getLabel={(car) =>
-									`${car.name} ${car.color ? `(${car.color})` : ""}`
+									`${car.name} ${car.licenseNumber ? `(${car.licenseNumber})` : ""}`
 								}
 								getValue={(car) => car.id}
 								getSubLabel={(car) => car.licenseNumber ?? "No Number"}
@@ -198,7 +198,9 @@ export default function ExpensesTable() {
 							}}
 							disabled={filtersCount === 0}
 						>
-							Reset {filtersCount > 0 && `(${filtersCount})`}
+							<span className="hidden md:block">
+								Reset {filtersCount > 0 && `(${filtersCount})`}
+							</span>
 							<X />
 						</Button>
 					</div>

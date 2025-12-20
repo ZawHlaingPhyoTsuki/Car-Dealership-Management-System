@@ -159,9 +159,6 @@ export const columns: ColumnDef<Car>[] = [
 						<div className="space-y-1">
 							<h4 className="text-sm font-semibold">{shareholder.name}</h4>
 							<p className="text-muted-foreground text-xs">
-								<span className="font-medium">Email:</span> {shareholder.email}
-							</p>
-							<p className="text-muted-foreground text-xs">
 								<span className="font-medium">Phone:</span> {shareholder.phone}
 							</p>
 							<div className="text-muted-foreground text-xs">

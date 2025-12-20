@@ -49,7 +49,6 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 		defaultValues: {
 			name: "",
 			price: 0,
-			color: "",
 			licenseNumber: "",
 			notes: "",
 			status: CarStatus.AVAILABLE,
@@ -121,21 +120,6 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 									/>
 									<InputGroupAddon>$</InputGroupAddon>
 								</InputGroup>
-								{fieldState.error && (
-									<FieldError>{fieldState.error.message}</FieldError>
-								)}
-							</Field>
-						)}
-					/>
-
-					{/* Color */}
-					<Controller
-						name="color"
-						control={form.control}
-						render={({ field, fieldState }) => (
-							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="color">Color</FieldLabel>
-								<Input id="color" placeholder="Silver" {...field} />
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>
 								)}

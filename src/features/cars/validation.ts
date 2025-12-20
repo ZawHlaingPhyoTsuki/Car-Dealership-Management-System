@@ -5,7 +5,6 @@ export const CreateCarSchema = z
 	.object({
 		name: z.string("Name is required").min(1, "Name is required"),
 		price: z.number().min(0, "Price must be at least 0"),
-		color: z.string().optional(),
 		licenseNumber: z.string().optional(),
 		status: z.enum(CarStatus),
 		notes: z.string().optional(),

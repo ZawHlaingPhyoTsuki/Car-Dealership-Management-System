@@ -89,7 +89,6 @@ export default function CarSharerTable() {
 				"Shareholder Percentage": row.original.shareholderPercentage,
 				"Investment Amount": row.original.investmentAmount,
 				"Shareholder Name": row.original.shareholder?.name,
-				"Shareholder Email": row.original.shareholder?.email,
 				"Shareholder Phone": row.original.shareholder?.phone,
 			};
 		});

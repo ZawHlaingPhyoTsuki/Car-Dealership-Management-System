@@ -72,7 +72,6 @@ model Shareholder {
   id    String  @id @default(uuid())
   name  String  @unique
   phone String?
-  email String? @unique
   notes String?
 
   cars Car[]
@@ -88,7 +87,6 @@ model Car {
   id            String    @id @default(uuid())
   name          String
   price         Int
-  color         String?
   licenseNumber String?
   notes         String?
   status        CarStatus @default(AVAILABLE)

@@ -82,7 +82,6 @@ export default function CarTable() {
 				"Car Name": row.original.name,
 				"Car Price": row.original.price,
 				"Car Status": row.original.status,
-				"Car Color": row.original.color,
 				"Car License Number": row.original.licenseNumber,
 				"Car Sold Date": row.original.soldAt,
 				"Car Notes": row.original.notes,

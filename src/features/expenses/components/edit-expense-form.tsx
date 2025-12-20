@@ -214,7 +214,7 @@ export default function EditExpenseForm({
 						isError={isErrorCars}
 						allowNone
 						matchTriggerWidth
-						getLabel={(car) => `${car.name} (${car.color})`}
+						getLabel={(car) => `${car.name} (${car.licenseNumber})`}
 						getValue={(car) => car.id}
 						getSubLabel={(car) => car.licenseNumber ?? "No Number"}
 					/>

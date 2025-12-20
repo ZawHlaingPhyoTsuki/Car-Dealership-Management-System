@@ -21,7 +21,8 @@ export default function AddExpenseCategoryDialog() {
 			<DialogTrigger asChild>
 				<Button variant="default">
 					<Plus className="h-4 w-4" />
-					Add Expense Reason
+					<span className="hidden md:block">Add Expense Reason</span>
+					<span className="md:hidden">Add Reason</span>
 				</Button>
 			</DialogTrigger>
 			<DialogContent>
