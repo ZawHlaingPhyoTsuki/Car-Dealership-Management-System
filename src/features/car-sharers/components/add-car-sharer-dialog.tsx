@@ -21,7 +21,7 @@ export default function AddCarSharerDialog() {
 			<DialogTrigger asChild>
 				<Button>
 					<Plus className="h-4 w-4" />
-					Add Car Shareholder
+					<span className="hidden md:block">Add Shareholder</span>
 				</Button>
 			</DialogTrigger>
 			<DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">

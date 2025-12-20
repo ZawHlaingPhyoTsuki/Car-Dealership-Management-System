@@ -38,10 +38,6 @@ export const columns: ColumnDef<Car>[] = [
 			return (
 				<div className="min-w-0">
 					<div className="font-medium truncate">{car.name}</div>
-
-					{car.color && (
-						<div className="text-sm text-gray-500 truncate">{car.color}</div>
-					)}
 				</div>
 			);
 		},

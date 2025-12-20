@@ -14,7 +14,6 @@ export const getShareholders = async () => {
 			select: {
 				id: true,
 				name: true,
-				email: true,
 				phone: true,
 			},
 			orderBy: {

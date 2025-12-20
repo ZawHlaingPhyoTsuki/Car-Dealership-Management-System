@@ -52,7 +52,6 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 			id: car.id,
 			name: car.name,
 			price: car.price,
-			color: car.color ?? "",
 			licenseNumber: car.licenseNumber ?? "",
 			notes: car.notes ?? "",
 			status: car.status as CarStatus,
@@ -123,21 +122,6 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 									/>
 									<InputGroupAddon>Ks</InputGroupAddon>
 								</InputGroup>
-								{fieldState.error && (
-									<FieldError>{fieldState.error.message}</FieldError>
-								)}
-							</Field>
-						)}
-					/>
-
-					{/* Color */}
-					<Controller
-						name="color"
-						control={form.control}
-						render={({ field, fieldState }) => (
-							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="color">Color</FieldLabel>
-								<Input id="color" placeholder="Silver" {...field} />
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>
 								)}

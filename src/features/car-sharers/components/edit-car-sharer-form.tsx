@@ -299,7 +299,7 @@ export default function EditCarSharerForm({
 						isLoading={isLoadingShareholders}
 						getValue={(sh) => sh.id}
 						getLabel={(sh) => sh.name}
-						getSubLabel={(sh) => sh.email ?? "No email"}
+						getSubLabel={(sh) => sh.phone ?? "No phone"}
 						onClear={resetShareholderPercentage}
 					/>
 				</FieldGroup>
