@@ -312,7 +312,8 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 								}
 								onChange={(e) => {
 									if (!shareholderId) return;
-									const val = parsePercentageInput(e.target.value);
+									const val = parsePercentageInput(e.target.value) ?? 0;
+
 									form.setValue("shareholderPercentage", 100 - val, {
 										shouldValidate: true,
 									});

@@ -24,7 +24,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn, parseAmountInput, parsePercentageInput } from "@/lib/utils";
+import { cn, parsePercentageInput } from "@/lib/utils";
 import type { Employee } from "../actions/get-employees";
 import { useUpdateEmployee } from "../mutations/use-update-employee";
 import { UpdateEmployeeSchema, type UpdateEmployeeValues } from "../validation";
@@ -45,15 +45,16 @@ export default function EditEmployeeForm({
 		defaultValues: {
 			id: employee.id,
 			name: employee.name,
-			position: employee.position,
-			salary: employee.salary,
+			position: employee.position ?? undefined,
+			salary: employee.salary ?? undefined,
 			percentage: employee.percentage,
 			startDate: employee.startDate,
 		},
 	});
 
-	const onSubmit = async (data: UpdateEmployeeValues) => {
-		await updateEmployeeMutation.mutateAsync(data);
+	const onSubmit = async (values: UpdateEmployeeValues) => {
+		await updateEmployeeMutation.mutateAsync(values);
+		form.reset();
 		onClose();
 	};
 
@@ -107,13 +108,14 @@ export default function EditEmployeeForm({
 										id="salary"
 										type="number"
 										step="1"
-										min="0"
+										// min="0"
 										placeholder="50000"
 										{...field}
 										onChange={(e) => {
-											field.onChange(parseAmountInput(e.target.value));
+											const value = e.target.value;
+											field.onChange(value === "" ? undefined : Number(value));
 										}}
-										value={field.value}
+										value={typeof field.value === "number" ? field.value : ""}
 									/>
 									<InputGroupAddon>
 										<span className="text-gray-500">Ks</span>
@@ -146,7 +148,7 @@ export default function EditEmployeeForm({
 											const val = parsePercentageInput(e.target.value);
 											field.onChange(val);
 										}}
-										value={field.value ?? ""}
+										value={typeof field.value === "number" ? field.value : ""}
 									/>
 									<InputGroupAddon>
 										<span className="text-gray-500">%</span>

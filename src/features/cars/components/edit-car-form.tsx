@@ -51,7 +51,7 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 		defaultValues: {
 			id: car.id,
 			name: car.name,
-			price: car.price,
+			price: car.price ?? undefined,
 			licenseNumber: car.licenseNumber ?? "",
 			notes: car.notes ?? "",
 			status: car.status as CarStatus,
@@ -115,7 +115,7 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 										{...field}
 										onChange={(e) =>
 											field.onChange(
-												e.target.value ? parseFloat(e.target.value) : 0,
+												e.target.value ? parseFloat(e.target.value) : undefined,
 											)
 										}
 										value={field.value ?? ""}
