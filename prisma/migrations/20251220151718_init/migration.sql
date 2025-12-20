@@ -1,12 +1,6 @@
 -- CreateEnum
 CREATE TYPE "CarStatus" AS ENUM ('AVAILABLE', 'IN_MAINTENANCE', 'RESERVED', 'SOLD');
 
--- CreateEnum
-CREATE TYPE "PaidMethod" AS ENUM ('CASH', 'SCAN');
-
--- CreateEnum
-CREATE TYPE "ExpenseCategory" AS ENUM ('REPAIRS', 'TRANSPORT', 'AUCTION_FEES', 'CLEANING_DETAILING', 'UTILITIES', 'RENT', 'SALARIES', 'MARKETING', 'OFFICE_SUPPLIES', 'OTHER');
-
 -- CreateTable
 CREATE TABLE "user" (
     "id" TEXT NOT NULL,
@@ -70,7 +64,6 @@ CREATE TABLE "shareholder" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "phone" TEXT,
-    "email" TEXT,
     "notes" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -83,17 +76,20 @@ CREATE TABLE "shareholder" (
 CREATE TABLE "car" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "price" INTEGER NOT NULL,
-    "color" TEXT,
+    "purchasedPrice" INTEGER NOT NULL DEFAULT 0,
+    "sellingPrice" INTEGER NOT NULL DEFAULT 0,
+    "companyInvestedAmount" INTEGER NOT NULL DEFAULT 0,
+    "shareholderInvestedAmount" INTEGER NOT NULL DEFAULT 0,
+    "totalExpenses" INTEGER NOT NULL DEFAULT 0,
+    "totalCost" INTEGER NOT NULL DEFAULT 0,
+    "profitAmount" INTEGER NOT NULL DEFAULT 0,
+    "companyProfitAmount" INTEGER NOT NULL DEFAULT 0,
+    "shareholderProfitAmount" INTEGER NOT NULL DEFAULT 0,
     "licenseNumber" TEXT,
     "notes" TEXT,
     "status" "CarStatus" NOT NULL DEFAULT 'AVAILABLE',
-    "paidMethod" "PaidMethod",
     "soldAt" TIMESTAMP(3),
-    "paidAmount" INTEGER,
     "shareholderId" TEXT,
-    "shareholderPercentage" INTEGER,
-    "investmentAmount" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
@@ -104,32 +100,41 @@ CREATE TABLE "car" (
 -- CreateTable
 CREATE TABLE "expense" (
     "id" TEXT NOT NULL,
-    "amount" INTEGER NOT NULL,
-    "notes" TEXT NOT NULL,
-    "category" "ExpenseCategory" NOT NULL DEFAULT 'OTHER',
+    "amount" INTEGER NOT NULL DEFAULT 0,
+    "notes" TEXT,
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "carId" TEXT,
     "paidToId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
+    "categoryId" TEXT,
 
     CONSTRAINT "expense_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "expense_category" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMP(3),
+
+    CONSTRAINT "expense_category_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "employee" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "position" TEXT NOT NULL,
-    "phone" TEXT,
-    "address" TEXT,
-    "salary" INTEGER NOT NULL,
-    "startDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "position" TEXT,
+    "salary" INTEGER NOT NULL DEFAULT 0,
+    "startDate" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
+    "percentage" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "employee_pkey" PRIMARY KEY ("id")
 );
@@ -138,12 +143,11 @@ CREATE TABLE "employee" (
 CREATE TABLE "photo" (
     "id" TEXT NOT NULL,
     "url" TEXT NOT NULL,
-    "publicId" TEXT,
-    "alt" TEXT,
-    "order" INTEGER NOT NULL DEFAULT 0,
-    "carId" TEXT,
+    "publicId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
+    "carId" TEXT,
 
     CONSTRAINT "photo_pkey" PRIMARY KEY ("id")
 );
@@ -167,16 +171,7 @@ CREATE INDEX "verification_identifier_idx" ON "verification"("identifier");
 CREATE UNIQUE INDEX "shareholder_name_key" ON "shareholder"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "shareholder_email_key" ON "shareholder"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "car_licenseNumber_key" ON "car"("licenseNumber");
-
--- CreateIndex
-CREATE UNIQUE INDEX "employee_email_key" ON "employee"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "photo_publicId_key" ON "photo"("publicId");
+CREATE UNIQUE INDEX "expense_category_name_key" ON "expense_category"("name");
 
 -- AddForeignKey
 ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -189,6 +184,9 @@ ALTER TABLE "car" ADD CONSTRAINT "car_shareholderId_fkey" FOREIGN KEY ("sharehol
 
 -- AddForeignKey
 ALTER TABLE "expense" ADD CONSTRAINT "expense_carId_fkey" FOREIGN KEY ("carId") REFERENCES "car"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "expense" ADD CONSTRAINT "expense_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "expense_category"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "expense" ADD CONSTRAINT "expense_paidToId_fkey" FOREIGN KEY ("paidToId") REFERENCES "employee"("id") ON DELETE SET NULL ON UPDATE CASCADE;
