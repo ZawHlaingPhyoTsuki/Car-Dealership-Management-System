@@ -4,7 +4,7 @@ import { CarStatus } from "@/app/generated/prisma/enums";
 export const CreateCarSchema = z
 	.object({
 		name: z.string("Name is required").min(1, "Name is required"),
-		price: z.number().min(0, "Price must be at least 0"),
+		price: z.number().min(1, "Price must be at least 1"),
 		licenseNumber: z.string().optional(),
 		status: z.enum(CarStatus),
 		notes: z.string().optional(),

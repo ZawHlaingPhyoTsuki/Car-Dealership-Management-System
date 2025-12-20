@@ -7,7 +7,7 @@ export const CreateExpenseSchema = z.object({
 		.uuidv4("Category Id must be a valid UUID")
 		.optional()
 		.nullable(),
-	amount: z.number().min(0, "Amount must be at least 0"),
+	amount: z.number().min(1, "Amount must be at least 1"),
 	carId: z.uuidv4("Car Id must be a valid UUID").optional().nullable(),
 	notes: z
 		.string()

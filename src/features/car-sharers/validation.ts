@@ -10,7 +10,7 @@ export type CreateCarSharerValues = z.infer<typeof CreateCarSharerSchema>;
 
 export const UpdateCarSharerSchema = z.object({
 	id: z.uuidv4("Invalid ID format"),
-	price: z.number().min(0, "Price must be at least 0"),
+	price: z.number().min(1, "Price must be at least 1"),
 	shareholderPercentage: z
 		.number()
 		.min(0, "Shareholder percentage must be at least 0")

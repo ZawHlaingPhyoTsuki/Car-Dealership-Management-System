@@ -47,7 +47,7 @@ export default function EditCarSharerForm({
 		resolver: zodResolver(UpdateCarSharerSchema),
 		defaultValues: {
 			id: car.id,
-			price: car.price,
+			price: car.price ?? undefined,
 			shareholderPercentage: car.shareholderPercentage ?? 0,
 			investmentAmount: car.investmentAmount ?? 0,
 			shareholderId: car.shareholder?.id ?? undefined,
@@ -140,7 +140,7 @@ export default function EditCarSharerForm({
 										: ""
 								}
 								onChange={(e) => {
-									const val = parsePercentageInput(e.target.value);
+									const val = parsePercentageInput(e.target.value) ?? 0;
 									form.setValue("shareholderPercentage", 100 - val, {
 										shouldValidate: true,
 									});
@@ -241,12 +241,8 @@ export default function EditCarSharerForm({
 										{...(price !== undefined && { max: price.toString() })}
 										// disabled={price === undefined}
 										onChange={(e) => {
-											field.onChange(
-												parseAmountInput(
-													e.target.value,
-													price !== undefined ? price : undefined,
-												),
-											);
+											const value = e.target.value;
+											field.onChange(value === "" ? undefined : Number(value));
 										}}
 										value={field.value ?? ""}
 									/>
@@ -273,9 +269,10 @@ export default function EditCarSharerForm({
 										min="0"
 										step="1"
 										{...field}
-										onChange={(e) =>
-											field.onChange(parseAmountInput(e.target.value))
-										}
+										onChange={(e) => {
+											const value = e.target.value;
+											field.onChange(value === "" ? undefined : Number(value));
+										}}
 										value={field.value ?? ""}
 									/>
 									<InputGroupAddon>Ks</InputGroupAddon>

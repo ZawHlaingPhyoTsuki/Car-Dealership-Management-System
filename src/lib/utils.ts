@@ -128,9 +128,12 @@ export const formatPercentage = (value: number): string => {
  * - parsePercentageInput("150") → 100
  * - parsePercentageInput("abc") → 0
  */
-export const parsePercentageInput = (value: string): number => {
-	const parsed = parseFloat(value);
-	if (Number.isNaN(parsed)) return 0;
+export const parsePercentageInput = (value: string): number | undefined => {
+	if (value === "") return undefined;
+
+	const parsed = Number(value);
+	if (Number.isNaN(parsed)) return undefined;
+
 	return Math.min(Math.max(parsed, 0), 100);
 };
 

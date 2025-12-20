@@ -40,8 +40,8 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 		defaultValues: {
 			name: "",
 			position: "",
-			salary: 0,
-			percentage: 0,
+			salary: undefined,
+			percentage: undefined,
 			startDate: new Date(),
 		},
 	});
@@ -109,9 +109,9 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 										{...field}
 										onChange={(e) => {
 											const value = e.target.value;
-											field.onChange(value === "" ? 0 : Number(value));
+											field.onChange(value === "" ? undefined : Number(value));
 										}}
-										value={field.value}
+										value={typeof field.value === "number" ? field.value : ""}
 									/>
 									<InputGroupAddon>
 										<span className="text-gray-500">Ks</span>
@@ -144,7 +144,7 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 											const value = e.target.value;
 											field.onChange(value === "" ? undefined : Number(value));
 										}}
-										value={field.value ?? ""}
+										value={typeof field.value === "number" ? field.value : ""}
 									/>
 									<InputGroupAddon>
 										<span className="text-gray-500">%</span>
