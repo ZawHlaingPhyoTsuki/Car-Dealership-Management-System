@@ -15,7 +15,7 @@ export default function ContentWrapper({
 }: ContentWrapperProps) {
 	return (
 		<div className="px-6 flex h-full flex-col">
-			<div className="mb-8 flex items-center justify-between">
+			<div className="mb-8 flex items-center justify-between gap-2">
 				<div>
 					<h1 className="text-3xl font-bold">{title}</h1>
 					{description ? (

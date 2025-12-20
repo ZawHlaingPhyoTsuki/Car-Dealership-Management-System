@@ -20,11 +20,11 @@ export function getAvatarFallbackName(name: string): string {
 /**
  * Formats amount in Myanmar Kyat (Ks) currency
  * @param amount - Amount in whole Kyat (integer)
- * @returns Formatted string with "Ks" prefix and thousand separators
- * @example formatKs(1000000) → "Ks 1,000,000"
+ * @returns Formatted string with "Ks" suffix and thousand separators
+ * @example formatKs(1000000) → "1,000,000 Ks"
  */
 export const formatKs = (amount: number): string => {
-	return `Ks ${amount.toLocaleString("en-US")}`;
+	return `${amount.toLocaleString("en-US")} Ks`;
 };
 
 /**
@@ -32,19 +32,19 @@ export const formatKs = (amount: number): string => {
  * @param amount - Amount in whole Kyat (integer)
  * @returns Formatted string in appropriate scale (crore, lakh, or basic Kyat)
  * @example
- * - formatInLakhsCrores(10000000) → "Ks 1.00 crore"
- * - formatInLakhsCrores(100000) → "Ks 1.00 lakh"
- * - formatInLakhsCrores(50000) → "Ks 50,000"
+ * - formatInLakhsCrores(10000000) → "1.00 crore Ks"
+ * - formatInLakhsCrores(100000) → "1.00 lakh Ks"
+ * - formatInLakhsCrores(50000) → "50,000 Ks"
  */
 export const formatInLakhsCrores = (amount: number): string => {
 	if (amount >= 10000000) {
 		// 1 crore = 10 million (10,000,000) Kyat
 		const crores = amount / 10000000;
-		return `Ks ${crores.toFixed(2)} crore`;
+		return `${crores.toFixed(2)} crore Ks`;
 	} else if (amount >= 100000) {
 		// 1 lakh = 100,000 Kyat
 		const lakhs = amount / 100000;
-		return `Ks ${lakhs.toFixed(2)} lakh`;
+		return `${lakhs.toFixed(2)} lakh Ks`;
 	} else {
 		return formatKs(amount);
 	}
@@ -173,16 +173,15 @@ export const calculatePercentageFromAmount = (
 	return roundToSixDecimals(percentage);
 };
 
-export const salaryFormatter = new Intl.NumberFormat("en-US", {
-	style: "currency",
-	currency: "USD",
-	minimumFractionDigits: 0,
-	maximumFractionDigits: 0,
-});
-
-export const expenseFormatter = new Intl.NumberFormat("en-US", {
-	style: "currency",
-	currency: "USD",
-	minimumFractionDigits: 0,
-	maximumFractionDigits: 0,
-});
+/**
+ * Checks if an amount is in lakhs (100,000 Kyat)
+ *
+ * @param amount - Amount to check
+ * @returns Boolean indicating if amount is in lakhs
+ * @example
+ * - isLakhs(100000) → true
+ * - isLakhs(50000) → false
+ */
+export const isLakhs = (amount: number): boolean => {
+	return amount >= 100000;
+};

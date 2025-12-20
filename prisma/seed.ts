@@ -3,15 +3,6 @@ import { CarStatus, type Prisma } from "@/app/generated/prisma/client";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 
-// Helper functions for unique values
-function generateUniqueEmails(count: number): string[] {
-	const emails = new Set<string>();
-	while (emails.size < count) {
-		emails.add(faker.internet.email().toLowerCase());
-	}
-	return Array.from(emails);
-}
-
 function generateUniquePhones(count: number): string[] {
 	const phones = new Set<string>();
 	while (phones.size < count) {
@@ -124,7 +115,6 @@ async function main() {
 
 	// ==================== SHAREHOLDERS ====================
 	console.log("👥 Creating shareholders...");
-	const shareholderEmails = generateUniqueEmails(100);
 	const shareholderPhones = generateUniquePhones(100);
 
 	const shareholdersData = Array.from(
@@ -133,7 +123,6 @@ async function main() {
 			({
 				name: faker.person.fullName(),
 				phone: shareholderPhones[i],
-				email: shareholderEmails[i],
 				notes: faker.datatype.boolean(0.3) ? faker.lorem.sentence() : null,
 				createdAt: faker.date.past({ years: 3 }),
 				updatedAt: faker.date.recent(),
@@ -215,18 +204,6 @@ async function main() {
 		"CX-5",
 		"RX 350",
 	];
-	const colors = [
-		"Red",
-		"Blue",
-		"Black",
-		"White",
-		"Silver",
-		"Gray",
-		"Green",
-		"Yellow",
-		"Orange",
-		"Purple",
-	];
 
 	// ==================== CARS ====================
 	console.log("🚗 Creating cars...");
@@ -256,7 +233,6 @@ async function main() {
 		carsData.push({
 			name: `${carMakes[i % carMakes.length]} ${carModels[i % carModels.length]} ${faker.number.int({ min: 2015, max: 2025 })}`,
 			price,
-			color: colors[i % colors.length],
 			licenseNumber: faker.datatype.boolean(0.9) ? licenseNumbers[i] : null,
 			notes: faker.datatype.boolean(0.4) ? faker.lorem.sentence() : null,
 			status: isSold

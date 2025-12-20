@@ -1,10 +1,8 @@
 "use client";
 
 import type { User } from "better-auth";
-import { LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import type * as React from "react";
 import { NavMain } from "@/components/sidebar/nav-main";
 import {
@@ -14,17 +12,14 @@ import {
 	SidebarHeader,
 } from "@/components/ui/sidebar";
 import { paths } from "@/config/paths";
-import { authClient } from "@/lib/auth-client";
-import { Button } from "../ui/button";
 import { data } from "./data";
+import NavLogout from "./nav-logout";
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 	user: User;
 }
 
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
-	const router = useRouter();
-
 	return (
 		<Sidebar collapsible="offcanvas" {...props}>
 			<SidebarHeader>
@@ -46,37 +41,8 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
 			<SidebarContent>
 				<NavMain items={data.navMain} />
 			</SidebarContent>
-			<SidebarFooter>
-				<div className="flex items-center opacity-80 mb-6">
-					<Image
-						alt="Banana Coder Avatar"
-						src="/images/banana-coder.jpg"
-						height={40}
-						width={40}
-						className="object-cover rounded-full"
-					/>
-					<div>
-						<span className="text-xs text-muted-foreground">powered by</span>
-						<p className="-mt-1 font-serif">
-							Banana Coder <sup className="text-muted-foreground">&copy;</sup>
-						</p>
-					</div>
-				</div>
-				<Button
-					variant="outline"
-					onClick={() =>
-						authClient.signOut({
-							fetchOptions: {
-								onSuccess: () => {
-									router.replace(paths.login.getHref());
-								},
-							},
-						})
-					}
-				>
-					<LogOut />
-					Logout
-				</Button>
+			<SidebarFooter className="mt-auto">
+				<NavLogout />
 			</SidebarFooter>
 		</Sidebar>
 	);
