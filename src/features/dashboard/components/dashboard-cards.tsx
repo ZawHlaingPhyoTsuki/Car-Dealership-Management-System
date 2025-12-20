@@ -99,7 +99,7 @@ export default function DashboardCards() {
 			<Card className="@container/card">
 				<CardHeader>
 					<CardDescription className="flex items-center gap-2">
-						<DollarSign className="w-4 h-4" /> Profit Overview
+						<DollarSign className="w-4 h-4" /> Revenue Overview
 					</CardDescription>
 					<CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
 						<span
@@ -183,9 +183,8 @@ export default function DashboardCards() {
 							)}
 							{safeData.totalExpensesDiff >= 0 ? "+" : "-"}
 							{isLakhs(Math.abs(safeData.totalExpensesDiff))
-								? formatLakhs(Math.abs(safeData.totalExpensesDiff))
-								: Math.abs(safeData.totalExpensesDiff)}{" "}
-							Ks
+								? `${formatLakhs(Math.abs(safeData.totalExpensesDiff))} lakhs`
+								: `${Math.abs(safeData.totalExpensesDiff)} Ks`}
 						</Badge>
 					</CardAction>
 				</CardHeader>

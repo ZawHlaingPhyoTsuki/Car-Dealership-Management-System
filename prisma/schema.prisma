@@ -95,7 +95,7 @@ model Car {
   createdAt             DateTime     @default(now())
   updatedAt             DateTime     @updatedAt
   deletedAt             DateTime?
-  shareholder           Shareholder? @relation(fields: [shareholderId], references: [id])
+  shareholder           Shareholder? @relation(fields: [shareholderId], references: [id], onDelete: SetNull)
   expenses              Expense[]
 
   @@map("car")
@@ -112,9 +112,9 @@ model Expense {
   updatedAt  DateTime         @updatedAt
   deletedAt  DateTime?
   categoryId String?
-  car        Car?             @relation(fields: [carId], references: [id])
-  category   ExpenseCategory? @relation(fields: [categoryId], references: [id])
-  paidTo     Employee?        @relation("EmployeeExpenses", fields: [paidToId], references: [id])
+  car        Car?             @relation(fields: [carId], references: [id], onDelete: SetNull)
+  category   ExpenseCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  paidTo     Employee?        @relation("EmployeeExpenses", fields: [paidToId], references: [id], onDelete: SetNull)
 
   @@map("expense")
 }
