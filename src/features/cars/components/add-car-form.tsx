@@ -3,9 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { CarStatus } from "@/app/generated/prisma/enums";
+import PopoverSelect from "@/components/shared/popover-select";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -13,6 +13,7 @@ import {
 	FieldError,
 	FieldGroup,
 	FieldLabel,
+	FieldSeparator,
 	FieldSet,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -34,6 +35,14 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useGetShareholders } from "@/features/car-sharers/queries/use-car-sharer";
+import {
+	calculatePercentageFromAmount,
+	companyProfitAndPercentageCalculator,
+	parseAmountInput,
+	parsePercentageInput,
+	shareholderProfitAndPercentageCalculator,
+} from "@/lib/utils";
 import { useCreateCar } from "../mutations/use-create-car";
 import { CreateCarSchema, type CreateCarValues } from "../validation";
 
@@ -43,6 +52,11 @@ interface AddCarFormProps {
 
 export default function AddCarForm({ onClose }: AddCarFormProps) {
 	const createCarMutation = useCreateCar();
+	const {
+		data: shareholders,
+		isLoading: isLoadingShareholders,
+		isError: isErrorShareholders,
+	} = useGetShareholders();
 
 	const form = useForm<CreateCarValues>({
 		resolver: zodResolver(CreateCarSchema),
@@ -53,10 +67,17 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 			notes: "",
 			status: CarStatus.AVAILABLE,
 			soldAt: null,
+
+			// Shareholder
+			shareholderPercentage: 0,
+			investmentAmount: 0,
+			shareholderId: null,
 		},
 	});
 
 	const status = form.watch("status");
+	const price = form.watch("price");
+	const shareholderPercentage = form.watch("shareholderPercentage");
 
 	const onSubmit = async (values: CreateCarValues) => {
 		await createCarMutation.mutateAsync(values);
@@ -64,11 +85,12 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 		onClose?.();
 	};
 
-	useEffect(() => {
-		if (status !== CarStatus.SOLD) {
-			form.setValue("soldAt", null);
+	const resetShareholderPercentage = () => {
+		const shareholderId = form.getValues("shareholderId");
+		if (!shareholderId) {
+			form.setValue("shareholderPercentage", 0);
 		}
-	}, [status, form]);
+	};
 
 	return (
 		<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -87,39 +109,6 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 									Car Name <span className="text-red-500">*</span>
 								</FieldLabel>
 								<Input id="name" placeholder="Toyota Camry 2023" {...field} />
-								{fieldState.error && (
-									<FieldError>{fieldState.error.message}</FieldError>
-								)}
-							</Field>
-						)}
-					/>
-
-					{/* Price */}
-					<Controller
-						name="price"
-						control={form.control}
-						render={({ field, fieldState }) => (
-							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="price">
-									Selling Price <span className="text-red-500">*</span>
-								</FieldLabel>
-								<InputGroup>
-									<InputGroupInput
-										id="price"
-										type="number"
-										min="0"
-										step="1"
-										placeholder="25000"
-										{...field}
-										onChange={(e) =>
-											field.onChange(
-												e.target.value ? parseFloat(e.target.value) : 0,
-											)
-										}
-										value={field.value || ""}
-									/>
-									<InputGroupAddon>$</InputGroupAddon>
-								</InputGroup>
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>
 								)}
@@ -236,7 +225,236 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 					)}
 				/>
 
-				<FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-4"></FieldGroup>
+				<FieldSeparator />
+
+				{/* Shareholder */}
+				<FieldGroup>
+					<PopoverSelect
+						control={form.control}
+						name="shareholderId"
+						label="Select Shareholder (Optional)"
+						selector="shareholder"
+						matchTriggerWidth
+						allowNone
+						items={shareholders ?? []}
+						isError={isErrorShareholders}
+						isLoading={isLoadingShareholders}
+						getValue={(sh) => sh.id}
+						getLabel={(sh) => sh.name}
+						getSubLabel={(sh) => sh.phone ?? "No phone"}
+						onClear={resetShareholderPercentage}
+					/>
+				</FieldGroup>
+
+				<FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-4">
+					{/* 7hrs Profit Amount */}
+					<Field>
+						<FieldLabel htmlFor="companyProfitAmount">
+							7hrs Profit Amount
+						</FieldLabel>
+						<InputGroup>
+							<InputGroupInput
+								id="companyProfitAmount"
+								type="number"
+								min="0"
+								max={price?.toString() ?? ""}
+								step="1"
+								value={
+									price && shareholderPercentage !== undefined
+										? companyProfitAndPercentageCalculator(
+												price,
+												shareholderPercentage,
+											).companyProfit
+										: ""
+								}
+								onChange={(e) => {
+									const val = parseAmountInput(e.target.value);
+									if (!price) return;
+									// Clamp value to price
+									const clampedVal = Math.min(Math.max(val, 0), price);
+									const newPercentage = calculatePercentageFromAmount(
+										price - clampedVal,
+										price,
+									);
+									form.setValue("shareholderPercentage", newPercentage, {
+										shouldValidate: true,
+									});
+								}}
+							/>
+							<InputGroupAddon>Ks</InputGroupAddon>
+						</InputGroup>
+					</Field>
+
+					{/* 7hrs Profit Percentage */}
+					<Field>
+						<FieldLabel htmlFor="companyProfitPercentage">
+							7hrs Profit Percentage (%)
+						</FieldLabel>
+						<InputGroup>
+							<InputGroupInput
+								id="companyProfitPercentage"
+								type="number"
+								min="0"
+								max="100"
+								step="1"
+								value={
+									shareholderPercentage !== undefined
+										? Math.round(
+												companyProfitAndPercentageCalculator(
+													0,
+													shareholderPercentage,
+												).companyPercentage,
+											)
+										: ""
+								}
+								onChange={(e) => {
+									const val = parsePercentageInput(e.target.value);
+									form.setValue("shareholderPercentage", 100 - val, {
+										shouldValidate: true,
+									});
+								}}
+							/>
+							<InputGroupAddon>%</InputGroupAddon>
+						</InputGroup>
+					</Field>
+
+					{/* Sharer Profit Amount */}
+					<Field>
+						<FieldLabel htmlFor="sharerProfitAmount">
+							Sharer Profit Amount
+						</FieldLabel>
+						<InputGroup>
+							<InputGroupInput
+								id="sharerProfitAmount"
+								type="number"
+								min="0"
+								max={price?.toString() ?? ""}
+								step="1"
+								value={
+									price && shareholderPercentage !== undefined
+										? shareholderProfitAndPercentageCalculator(
+												price,
+												shareholderPercentage,
+											).shareholderProfit
+										: ""
+								}
+								onChange={(e) => {
+									const val = parseAmountInput(e.target.value);
+									if (!price) return;
+									// Clamp value to price
+									const clampedVal = Math.min(Math.max(val, 0), price);
+									const newPercentage = calculatePercentageFromAmount(
+										clampedVal,
+										price,
+									);
+									form.setValue("shareholderPercentage", newPercentage, {
+										shouldValidate: true,
+									});
+								}}
+							/>
+							<InputGroupAddon>Ks</InputGroupAddon>
+						</InputGroup>
+					</Field>
+
+					{/* Sharer Profit Percentage */}
+					<Controller
+						name="shareholderPercentage"
+						control={form.control}
+						render={({ field, fieldState }) => (
+							<Field data-invalid={fieldState.invalid}>
+								<FieldLabel htmlFor="shareholderPercentage">
+									Sharer Profit Percentage (%)
+								</FieldLabel>
+								<InputGroup>
+									<InputGroupInput
+										id="shareholderPercentage"
+										type="number"
+										min="0"
+										max="100"
+										step="1"
+										{...field}
+										onChange={(e) => {
+											const val = parsePercentageInput(e.target.value);
+											field.onChange(val);
+										}}
+										value={
+											field.value !== undefined ? Math.round(field.value) : ""
+										}
+									/>
+									<InputGroupAddon>%</InputGroupAddon>
+								</InputGroup>
+								{fieldState.error && (
+									<FieldError>{fieldState.error.message}</FieldError>
+								)}
+							</Field>
+						)}
+					/>
+
+					{/* Investment Amount */}
+					<Controller
+						name="investmentAmount"
+						control={form.control}
+						render={({ field, fieldState }) => (
+							<Field data-invalid={fieldState.invalid}>
+								<FieldLabel htmlFor="investmentAmount">
+									Sharer Investment Amount
+								</FieldLabel>
+								<InputGroup>
+									<InputGroupInput
+										id="investmentAmount"
+										type="number"
+										step="1"
+										min="0"
+										{...field}
+										{...(price !== undefined && { max: price.toString() })}
+										// disabled={price === undefined}
+										onChange={(e) => {
+											field.onChange(
+												parseAmountInput(
+													e.target.value,
+													price !== undefined ? price : undefined,
+												),
+											);
+										}}
+										value={field.value ?? ""}
+									/>
+									<InputGroupAddon>Ks</InputGroupAddon>
+								</InputGroup>
+								{fieldState.error && (
+									<FieldError>{fieldState.error.message}</FieldError>
+								)}
+							</Field>
+						)}
+					/>
+
+					{/* Price */}
+					<Controller
+						name="price"
+						control={form.control}
+						render={({ field, fieldState }) => (
+							<Field data-invalid={fieldState.invalid}>
+								<FieldLabel htmlFor="price">Price</FieldLabel>
+								<InputGroup>
+									<InputGroupInput
+										id="price"
+										type="number"
+										min="0"
+										step="1"
+										{...field}
+										onChange={(e) =>
+											field.onChange(parseAmountInput(e.target.value))
+										}
+										value={field.value ?? ""}
+									/>
+									<InputGroupAddon>Ks</InputGroupAddon>
+								</InputGroup>
+								{fieldState.error && (
+									<FieldError>{fieldState.error.message}</FieldError>
+								)}
+							</Field>
+						)}
+					/>
+				</FieldGroup>
 			</FieldSet>
 
 			{/* Form Actions */}

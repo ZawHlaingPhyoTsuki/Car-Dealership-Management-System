@@ -6,6 +6,7 @@ import {
 	formatKs,
 	formatPercentage,
 	getAvatarFallbackName,
+	isLakhs,
 	parseAmountInput,
 	parsePercentageInput,
 	roundToSixDecimals,
@@ -21,28 +22,28 @@ describe("lib/utils", () => {
 	});
 
 	describe("formatKs", () => {
-		it("should format currency with Ks prefix and commas", () => {
-			expect(formatKs(100)).toBe("Ks 100");
-			expect(formatKs(1000)).toBe("Ks 1,000");
-			expect(formatKs(1000000)).toBe("Ks 1,000,000");
+		it("should format currency with Ks suffix and commas", () => {
+			expect(formatKs(100)).toBe("100 Ks");
+			expect(formatKs(1000)).toBe("1,000 Ks");
+			expect(formatKs(1000000)).toBe("1,000,000 Ks");
 		});
 	});
 
 	describe("formatInLakhsCrores", () => {
 		it("should format crores correctly", () => {
-			expect(formatInLakhsCrores(10000000)).toBe("Ks 1.00 crore");
-			expect(formatInLakhsCrores(15000000)).toBe("Ks 1.50 crore");
+			expect(formatInLakhsCrores(10000000)).toBe("1.00 crore Ks");
+			expect(formatInLakhsCrores(15000000)).toBe("1.50 crore Ks");
 		});
 
 		it("should format lakhs correctly", () => {
-			expect(formatInLakhsCrores(100000)).toBe("Ks 1.00 lakh");
-			expect(formatInLakhsCrores(150000)).toBe("Ks 1.50 lakh");
-			expect(formatInLakhsCrores(9999999)).toBe("Ks 100.00 lakh"); // < 1 crore
+			expect(formatInLakhsCrores(100000)).toBe("1.00 lakh Ks");
+			expect(formatInLakhsCrores(150000)).toBe("1.50 lakh Ks");
+			expect(formatInLakhsCrores(9999999)).toBe("100.00 lakh Ks"); // < 1 crore
 		});
 
 		it("should format standard Ks for small amounts", () => {
-			expect(formatInLakhsCrores(50000)).toBe("Ks 50,000");
-			expect(formatInLakhsCrores(99999)).toBe("Ks 99,999");
+			expect(formatInLakhsCrores(50000)).toBe("50,000 Ks");
+			expect(formatInLakhsCrores(99999)).toBe("99,999 Ks");
 		});
 	});
 
@@ -136,6 +137,18 @@ describe("lib/utils", () => {
 
 		it("should return 0 if price is 0", () => {
 			expect(calculatePercentageFromAmount(100, 0)).toBe(0);
+		});
+	});
+
+	describe("isLakhs", () => {
+		it("should return true for amounts >= 100,000", () => {
+			expect(isLakhs(100000)).toBe(true);
+			expect(isLakhs(150000)).toBe(true);
+		});
+
+		it("should return false for amounts < 100,000", () => {
+			expect(isLakhs(50000)).toBe(false);
+			expect(isLakhs(99999)).toBe(false);
 		});
 	});
 });
