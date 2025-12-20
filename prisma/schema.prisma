@@ -84,14 +84,14 @@ model Shareholder {
 model Car {
   id                    String       @id @default(uuid())
   name                  String
-  price                 Int
+  price                 Int?         @default(0)
   licenseNumber         String?
   notes                 String?
   status                CarStatus    @default(AVAILABLE)
   soldAt                DateTime?
   shareholderId         String?
-  shareholderPercentage Int?
-  investmentAmount      Int?
+  shareholderPercentage Int?         @default(0)
+  investmentAmount      Int?         @default(0)
   createdAt             DateTime     @default(now())
   updatedAt             DateTime     @updatedAt
   deletedAt             DateTime?
@@ -103,8 +103,8 @@ model Car {
 
 model Expense {
   id         String           @id @default(uuid())
-  amount     Int
-  notes      String
+  amount     Int?             @default(0)
+  notes      String?
   date       DateTime         @default(now())
   carId      String?
   paidToId   String?
@@ -133,13 +133,13 @@ model ExpenseCategory {
 model Employee {
   id         String    @id @default(uuid())
   name       String
-  position   String
-  salary     Int
+  position   String?
+  salary     Int?      @default(0)
   startDate  DateTime
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   deletedAt  DateTime?
-  percentage Int
+  percentage Int?      @default(0)
   expenses   Expense[] @relation("EmployeeExpenses")
 
   @@map("employee")

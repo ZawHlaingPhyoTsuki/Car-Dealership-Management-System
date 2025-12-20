@@ -78,6 +78,7 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 	const status = form.watch("status");
 	const price = form.watch("price");
 	const shareholderPercentage = form.watch("shareholderPercentage");
+	const shareholderId = form.watch("shareholderId");
 
 	const onSubmit = async (values: CreateCarValues) => {
 		await createCarMutation.mutateAsync(values);
@@ -232,7 +233,7 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 					<PopoverSelect
 						control={form.control}
 						name="shareholderId"
-						label="Select Shareholder (Optional)"
+						label="Select Shareholder"
 						selector="shareholder"
 						matchTriggerWidth
 						allowNone
@@ -260,7 +261,7 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 								max={price?.toString() ?? ""}
 								step="1"
 								value={
-									price && shareholderPercentage !== undefined
+									shareholderId && price && shareholderPercentage !== undefined
 										? companyProfitAndPercentageCalculator(
 												price,
 												shareholderPercentage,
@@ -268,6 +269,7 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 										: ""
 								}
 								onChange={(e) => {
+									if (!shareholderId) return;
 									const val = parseAmountInput(e.target.value);
 									if (!price) return;
 									// Clamp value to price
@@ -280,6 +282,7 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 										shouldValidate: true,
 									});
 								}}
+								disabled={!shareholderId}
 							/>
 							<InputGroupAddon>Ks</InputGroupAddon>
 						</InputGroup>
@@ -298,7 +301,7 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 								max="100"
 								step="1"
 								value={
-									shareholderPercentage !== undefined
+									shareholderId && shareholderPercentage !== undefined
 										? Math.round(
 												companyProfitAndPercentageCalculator(
 													0,
@@ -308,11 +311,13 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 										: ""
 								}
 								onChange={(e) => {
+									if (!shareholderId) return;
 									const val = parsePercentageInput(e.target.value);
 									form.setValue("shareholderPercentage", 100 - val, {
 										shouldValidate: true,
 									});
 								}}
+								disabled={!shareholderId}
 							/>
 							<InputGroupAddon>%</InputGroupAddon>
 						</InputGroup>
@@ -331,7 +336,7 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 								max={price?.toString() ?? ""}
 								step="1"
 								value={
-									price && shareholderPercentage !== undefined
+									shareholderId && price && shareholderPercentage !== undefined
 										? shareholderProfitAndPercentageCalculator(
 												price,
 												shareholderPercentage,
@@ -339,6 +344,7 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 										: ""
 								}
 								onChange={(e) => {
+									if (!shareholderId) return;
 									const val = parseAmountInput(e.target.value);
 									if (!price) return;
 									// Clamp value to price
@@ -351,6 +357,7 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 										shouldValidate: true,
 									});
 								}}
+								disabled={!shareholderId}
 							/>
 							<InputGroupAddon>Ks</InputGroupAddon>
 						</InputGroup>
@@ -374,12 +381,16 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 										step="1"
 										{...field}
 										onChange={(e) => {
+											if (!shareholderId) return;
 											const val = parsePercentageInput(e.target.value);
 											field.onChange(val);
 										}}
 										value={
-											field.value !== undefined ? Math.round(field.value) : ""
+											shareholderId && field.value !== undefined
+												? Math.round(field.value)
+												: ""
 										}
+										disabled={!shareholderId}
 									/>
 									<InputGroupAddon>%</InputGroupAddon>
 								</InputGroup>
@@ -407,8 +418,8 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 										min="0"
 										{...field}
 										{...(price !== undefined && { max: price.toString() })}
-										// disabled={price === undefined}
 										onChange={(e) => {
+											if (!shareholderId) return;
 											field.onChange(
 												parseAmountInput(
 													e.target.value,
@@ -416,7 +427,8 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 												),
 											);
 										}}
-										value={field.value ?? ""}
+										value={shareholderId ? (field.value ?? "") : ""}
+										disabled={!shareholderId}
 									/>
 									<InputGroupAddon>Ks</InputGroupAddon>
 								</InputGroup>

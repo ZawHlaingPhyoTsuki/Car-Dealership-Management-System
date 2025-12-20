@@ -90,8 +90,7 @@ export async function getDashboardStats() {
 	const totalExpensesCurrent = expensesCurrentMonth._sum.amount ?? 0;
 	const totalExpensesLast = expensesLastMonth._sum.amount ?? 0;
 	const profitCurrent = totalRevenueCurrent - totalExpensesCurrent;
-	const profitLast =
-		(revenueLastMonth._sum.price ?? 0) - (expensesLastMonth._sum.amount ?? 0);
+	const profitLast = totalRevenueLast - totalExpensesLast;
 
 	return {
 		// Current month stats

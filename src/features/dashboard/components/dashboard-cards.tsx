@@ -71,8 +71,8 @@ export default function DashboardCards() {
 								<TrendingDown className="text-red-500" />
 							)}
 							{safeData.carsSoldDiff >= 0 ? "+" : "-"}
-							{safeData.carsSoldDiff}{" "}
-							{safeData.carsSoldDiff > 1 ? "cars" : "car"}
+							{Math.abs(safeData.carsSoldDiff)}{" "}
+							{Math.abs(safeData.carsSoldDiff) !== 1 ? "cars" : "car"}
 						</Badge>
 					</CardAction>
 				</CardHeader>
@@ -121,9 +121,9 @@ export default function DashboardCards() {
 								<TrendingDown className="text-red-500" />
 							)}
 							{safeData.totalRevenueDiff >= 0 ? "+" : "-"}
-							{isLakhs(safeData.totalRevenueDiff)
-								? `${formatLakhs(safeData.totalRevenueDiff)} lakhs`
-								: `${safeData.totalRevenueDiff} Ks`}
+							{isLakhs(Math.abs(safeData.totalRevenueDiff))
+								? `${formatLakhs(Math.abs(safeData.totalRevenueDiff))} lakhs`
+								: `${Math.abs(safeData.totalRevenueDiff)} Ks`}
 						</Badge>
 					</CardAction>
 				</CardHeader>
@@ -131,14 +131,14 @@ export default function DashboardCards() {
 					<div className="line-clamp-1 flex gap-2 font-medium">
 						{safeData.totalRevenueDiff >= 0
 							? `Up ${
-									isLakhs(safeData.totalRevenueDiff)
-										? `${formatLakhs(safeData.totalRevenueDiff)} lakhs`
-										: `${safeData.totalRevenueDiff} Ks`
+									isLakhs(Math.abs(safeData.totalRevenueDiff))
+										? `${formatLakhs(Math.abs(safeData.totalRevenueDiff))} lakhs`
+										: `${Math.abs(safeData.totalRevenueDiff)} Ks`
 								} this month`
 							: `Down ${
-									isLakhs(safeData.totalRevenueDiff)
-										? `${formatLakhs(safeData.totalRevenueDiff)} lakhs`
-										: `${safeData.totalRevenueDiff} Ks`
+									isLakhs(Math.abs(safeData.totalRevenueDiff))
+										? `${formatLakhs(Math.abs(safeData.totalRevenueDiff))} lakhs`
+										: `${Math.abs(safeData.totalRevenueDiff)} Ks`
 								} this month`}{" "}
 						{safeData.totalRevenueDiff >= 0 ? (
 							<TrendingUp className="size-4 text-green-500" />
@@ -181,10 +181,10 @@ export default function DashboardCards() {
 							) : (
 								<TrendingUp className="text-red-500" />
 							)}
-							{safeData.totalExpensesDiff >= 0 ? "+" : ""}
-							{isLakhs(safeData.totalExpensesDiff)
-								? formatLakhs(safeData.totalExpensesDiff)
-								: safeData.totalExpensesDiff}{" "}
+							{safeData.totalExpensesDiff >= 0 ? "+" : "-"}
+							{isLakhs(Math.abs(safeData.totalExpensesDiff))
+								? formatLakhs(Math.abs(safeData.totalExpensesDiff))
+								: Math.abs(safeData.totalExpensesDiff)}{" "}
 							Ks
 						</Badge>
 					</CardAction>

@@ -1,4 +1,8 @@
-import { QueryClient } from "@tanstack/react-query";
+import {
+	dehydrate,
+	HydrationBoundary,
+	QueryClient,
+} from "@tanstack/react-query";
 import type { Metadata } from "next";
 import DashboardCards from "@/features/dashboard/components/dashboard-cards";
 import { getDashboardQueryOptions } from "@/features/dashboard/queries/use-dashboard";
@@ -14,8 +18,8 @@ export default async function DashboardPage() {
 	await queryClient.prefetchQuery(getDashboardQueryOptions);
 
 	return (
-		<div>
+		<HydrationBoundary state={dehydrate(queryClient)}>
 			<DashboardCards />
-		</div>
+		</HydrationBoundary>
 	);
 }
