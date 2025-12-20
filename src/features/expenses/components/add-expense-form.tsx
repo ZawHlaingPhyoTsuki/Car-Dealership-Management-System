@@ -192,7 +192,7 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 						matchTriggerWidth
 						getLabel={(emp) => emp.name}
 						getValue={(emp) => emp.id}
-						getSubLabel={(emp) => emp.position}
+						getSubLabel={(emp) => emp.position ?? ""}
 					/>
 
 					{/* Car */}

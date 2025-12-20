@@ -45,8 +45,8 @@ export default function EditEmployeeForm({
 		defaultValues: {
 			id: employee.id,
 			name: employee.name,
-			position: employee.position,
-			salary: employee.salary,
+			position: employee.position ?? undefined,
+			salary: employee.salary ?? undefined,
 			percentage: employee.percentage,
 			startDate: employee.startDate,
 		},

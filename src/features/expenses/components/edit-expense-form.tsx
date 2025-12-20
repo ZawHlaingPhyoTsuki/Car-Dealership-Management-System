@@ -71,7 +71,7 @@ export default function EditExpenseForm({
 				: undefined,
 			paidToId: expense.paidTo?.id ?? null,
 			categoryId: expense.category?.id ?? null,
-			amount: expense.amount,
+			amount: expense.amount ?? undefined,
 			carId: expense.car?.id ?? null,
 			notes: expense.notes ?? "",
 		},
@@ -200,7 +200,7 @@ export default function EditExpenseForm({
 						matchTriggerWidth
 						getLabel={(emp) => emp.name}
 						getValue={(emp) => emp.id}
-						getSubLabel={(emp) => emp.position}
+						getSubLabel={(emp) => emp.position ?? ""}
 					/>
 
 					{/* Car */}

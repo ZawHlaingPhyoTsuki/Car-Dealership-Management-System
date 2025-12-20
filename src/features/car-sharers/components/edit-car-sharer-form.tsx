@@ -47,7 +47,7 @@ export default function EditCarSharerForm({
 		resolver: zodResolver(UpdateCarSharerSchema),
 		defaultValues: {
 			id: car.id,
-			price: car.price,
+			price: car.price ?? undefined,
 			shareholderPercentage: car.shareholderPercentage ?? 0,
 			investmentAmount: car.investmentAmount ?? 0,
 			shareholderId: car.shareholder?.id ?? undefined,
