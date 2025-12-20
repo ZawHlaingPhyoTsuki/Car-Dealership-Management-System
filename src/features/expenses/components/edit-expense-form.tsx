@@ -157,7 +157,7 @@ export default function EditExpenseForm({
 														value === "" ? undefined : Number(value),
 													);
 												}}
-												value={field.value ?? 1}
+												value={field.value ?? ""}
 											/>
 											<InputGroupAddon>
 												<span className="text-gray-500">Ks</span>

@@ -61,7 +61,7 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 			date: new Date(),
 			paidToId: null,
 			categoryId: null,
-			amount: 0,
+			amount: undefined,
 			carId: null,
 			notes: "",
 		},
@@ -138,6 +138,7 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 											<InputGroupInput
 												id="amount"
 												type="number"
+												placeholder="50000"
 												step="1"
 												min="0"
 												{...field}
@@ -147,7 +148,7 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 														value === "" ? undefined : Number(value),
 													);
 												}}
-												value={field.value ?? 1}
+												value={field.value ?? ""}
 											/>
 
 											<InputGroupAddon>
