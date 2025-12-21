@@ -11,21 +11,15 @@ export async function getCars() {
 			where: {
 				deletedAt: null,
 			},
-			orderBy: {
-				createdAt: "desc",
-			},
-			select: {
-				id: true,
-				name: true,
-				licenseNumber: true,
-				status: true,
-				price: true,
-				shareholderPercentage: true,
-				investmentAmount: true,
-				soldAt: true,
-				notes: true,
-				createdAt: true,
-				updatedAt: true,
+			include: {
+				expenses: {
+					where: {
+						deletedAt: null,
+					},
+					select: {
+						amount: true,
+					},
+				},
 				shareholder: {
 					select: {
 						id: true,
@@ -35,8 +29,50 @@ export async function getCars() {
 					},
 				},
 			},
+			orderBy: {
+				createdAt: "desc",
+			},
 		});
-		return cars;
+
+		// Calculate derived fields for each car
+		return cars.map((car) => {
+			// Calculate total expenses from related expenses
+			const totalExpenses = car.expenses.reduce(
+				(sum, expense) => sum + expense.amount,
+				0,
+			);
+
+			// Calculate total cost
+			const totalCost = car.purchasedPrice + totalExpenses;
+
+			// Calculate profit amount (only if selling price is greater than 0)
+			const profitAmount =
+				car.sellingPrice > 0 ? car.sellingPrice - totalCost : 0;
+
+			return {
+				id: car.id,
+				name: car.name,
+				imageUrl: car.imageUrl,
+				purchasedPrice: car.purchasedPrice,
+				sellingPrice: car.sellingPrice,
+				companyInvestedAmount: car.companyInvestedAmount,
+				shareholderInvestedAmount: car.shareholderInvestedAmount,
+				companyProfitAmount: car.companyProfitAmount,
+				shareholderProfitAmount: car.shareholderProfitAmount,
+				licenseNumber: car.licenseNumber,
+				notes: car.notes,
+				status: car.status,
+				soldAt: car.soldAt,
+				shareholderId: car.shareholderId,
+				shareholder: car.shareholder,
+				createdAt: car.createdAt,
+
+				// Calculated fields
+				totalExpenses,
+				totalCost,
+				profitAmount,
+			};
+		});
 	} catch (error) {
 		console.error("Failed to fetch cars:", error);
 		throw new Error("Failed to fetch cars");

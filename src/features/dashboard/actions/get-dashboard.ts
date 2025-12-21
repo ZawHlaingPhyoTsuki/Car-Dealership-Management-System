@@ -9,106 +9,59 @@ export async function getDashboardStats() {
 	const lastMonthStart = startOfMonth(subMonths(new Date(), 1));
 	const lastMonthEnd = endOfMonth(subMonths(new Date(), 1));
 
-	// Cars sold this month
-	const carsSoldCurrentMonth = await prisma.car.count({
-		where: {
-			status: "SOLD",
-			soldAt: {
-				gte: currentMonthStart,
-				lte: currentMonthEnd,
+	const [currentMonthCars, lastMonthCars] = await Promise.all([
+		prisma.car.findMany({
+			where: {
+				status: "SOLD",
+				soldAt: { gte: currentMonthStart, lte: currentMonthEnd },
 			},
-		},
-	});
-
-	// Cars sold last month
-	const carsSoldLastMonth = await prisma.car.count({
-		where: {
-			status: "SOLD",
-			soldAt: {
-				gte: lastMonthStart,
-				lte: lastMonthEnd,
+			select: { purchasedPrice: true, sellingPrice: true },
+		}),
+		prisma.car.findMany({
+			where: {
+				status: "SOLD",
+				soldAt: { gte: lastMonthStart, lte: lastMonthEnd },
 			},
-		},
-	});
+			select: { purchasedPrice: true, sellingPrice: true },
+		}),
+	]);
 
-	// Revenue current month
-	const revenueCurrentMonth = await prisma.car.aggregate({
-		_sum: {
-			price: true,
-		},
-		where: {
-			status: "SOLD",
-			soldAt: {
-				gte: currentMonthStart,
-				lte: currentMonthEnd,
-			},
-		},
-	});
+	// Calculate selling price and profit for current month
+	const totalSellingPriceCurrent = currentMonthCars.reduce(
+		(sum, car) => sum + (car.sellingPrice || 0),
+		0,
+	);
+	const totalPurchasedPriceCurrent = currentMonthCars.reduce(
+		(sum, car) => sum + (car.purchasedPrice || 0),
+		0,
+	);
 
-	// Revenue last month
-	const revenueLastMonth = await prisma.car.aggregate({
-		_sum: {
-			price: true,
-		},
-		where: {
-			status: "SOLD",
-			soldAt: {
-				gte: lastMonthStart,
-				lte: lastMonthEnd,
-			},
-		},
-	});
-
-	// Expenses current month
-	const expensesCurrentMonth = await prisma.expense.aggregate({
-		_sum: {
-			amount: true,
-		},
-		where: {
-			date: {
-				gte: currentMonthStart,
-				lte: currentMonthEnd,
-			},
-		},
-	});
-
-	// Expenses last month
-	const expensesLastMonth = await prisma.expense.aggregate({
-		_sum: {
-			amount: true,
-		},
-		where: {
-			date: {
-				gte: lastMonthStart,
-				lte: lastMonthEnd,
-			},
-		},
-	});
-
-	const totalRevenueCurrent = revenueCurrentMonth._sum.price ?? 0;
-	const totalRevenueLast = revenueLastMonth._sum.price ?? 0;
-	const totalExpensesCurrent = expensesCurrentMonth._sum.amount ?? 0;
-	const totalExpensesLast = expensesLastMonth._sum.amount ?? 0;
-	const profitCurrent = totalRevenueCurrent - totalExpensesCurrent;
-	const profitLast = totalRevenueLast - totalExpensesLast;
+	// Calculate revenue and profit for last month
+	const totalSellingPriceLastMonth = lastMonthCars.reduce(
+		(sum, car) => sum + (car.sellingPrice || 0),
+		0,
+	);
+	const totalPurchasedPriceLastMonth = lastMonthCars.reduce(
+		(sum, car) => sum + (car.purchasedPrice || 0),
+		0,
+	);
 
 	return {
 		// Current month stats
-		carsSoldCurrentMonth,
-		totalRevenueCurrent,
-		totalExpensesCurrent,
-		profitCurrent,
+		carsSoldCurrentMonth: currentMonthCars.length,
+		totalSellingPriceCurrent,
+		totalPurchasedPriceCurrent,
 
 		// Last month stats
-		carsSoldLastMonth,
-		totalRevenueLast,
-		totalExpensesLast,
-		profitLast,
+		carsSoldLastMonth: lastMonthCars.length,
+		totalSellingPriceLastMonth,
+		totalPurchasedPriceLastMonth,
 
-		// Diff
-		carsSoldDiff: carsSoldCurrentMonth - carsSoldLastMonth,
-		totalRevenueDiff: totalRevenueCurrent - totalRevenueLast,
-		totalExpensesDiff: totalExpensesCurrent - totalExpensesLast,
-		profitDiff: profitCurrent - profitLast,
+		// Diffs
+		carsSoldDiff: currentMonthCars.length - lastMonthCars.length,
+		totalSellingPriceDiff:
+			totalSellingPriceCurrent - totalSellingPriceLastMonth,
+		totalPurchasedPriceDiff:
+			totalPurchasedPriceCurrent - totalPurchasedPriceLastMonth,
 	};
 }

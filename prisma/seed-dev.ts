@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/style/noNonNullAssertion: <!> */
 import { faker } from "@faker-js/faker";
 import { CarStatus, type Prisma } from "@/app/generated/prisma/client";
 import { auth } from "@/lib/auth";
@@ -14,44 +15,70 @@ function generateUniquePhones(count: number): string[] {
 function generateUniqueLicenseNumbers(count: number): string[] {
 	const licenses = new Set<string>();
 	while (licenses.size < count) {
-		licenses.add(faker.vehicle.vrm()); // Vehicle Registration Mark (license plate)
+		licenses.add(faker.vehicle.vrm());
 	}
 	return Array.from(licenses);
 }
 
+// Helper function to calculate car totals
+function calculateCarTotals(
+	purchasedPrice: number,
+	expenses: Array<{ amount: number }>,
+	sellingPrice: number,
+	companyInvestedAmount: number,
+	shareholderInvestedAmount: number,
+) {
+	const totalExpenses = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+	const totalCost = purchasedPrice + totalExpenses;
+	const profitAmount = sellingPrice > 0 ? sellingPrice - totalCost : 0;
+
+	let companyProfitAmount = 0;
+	let shareholderProfitAmount = 0;
+
+	if (profitAmount > 0) {
+		const totalInvestment = companyInvestedAmount + shareholderInvestedAmount;
+		if (totalInvestment > 0) {
+			const companyShare = companyInvestedAmount / totalInvestment;
+			companyProfitAmount = Math.round(profitAmount * companyShare);
+			shareholderProfitAmount = profitAmount - companyProfitAmount; // Adjust for rounding
+		} else {
+			// If no investment, profit goes to company
+			companyProfitAmount = profitAmount;
+		}
+	}
+
+	return {
+		totalExpenses,
+		totalCost,
+		profitAmount,
+		companyProfitAmount,
+		shareholderProfitAmount,
+	};
+}
+
 async function main() {
-	console.log("🌱 Starting database seeding...");
+	console.log("🌱 Seeding database...");
 
 	if (
 		process.env.NODE_ENV === "production" &&
 		process.env.ALLOW_PROD_SEED !== "true"
 	) {
-		throw new Error(
-			"Refusing to run seed in production without ALLOW_PROD_SEED=true",
-		);
+		throw new Error("❌ Production seeding is disabled");
 	}
 
-	// Clear existing seed data in non-production
-	if (process.env.NODE_ENV !== "production") {
-		console.log("🧹 Clearing existing seed data...");
+	// ================= CLEAR DATA =================
+	// Note: Photo model no longer exists, so we don't need to delete it
+	await prisma.expense.deleteMany();
+	await prisma.expenseCategory.deleteMany();
+	await prisma.car.deleteMany();
+	await prisma.shareholder.deleteMany();
+	await prisma.employee.deleteMany();
 
-		// Delete in correct order to respect foreign key constraints
-		await prisma.verification.deleteMany();
-		await prisma.session.deleteMany();
-		await prisma.account.deleteMany();
-		await prisma.expense.deleteMany();
-		await prisma.expenseCategory.deleteMany();
-		await prisma.car.deleteMany();
-		await prisma.shareholder.deleteMany();
-		await prisma.employee.deleteMany();
-		await prisma.user.deleteMany();
-
-		console.log("✅ All seed data cleared");
-	}
+	console.log("🧹 Database cleared");
 
 	// ==================== ADMIN USER ====================
-	const adminEmail = process.env.SEED_ADMIN_EMAIL || "admin@example.com";
-	const adminPassword = process.env.SEED_ADMIN_PASSWORD || "admin123!";
+	const adminEmail = process.env.SEED_ADMIN_EMAIL!;
+	const adminPassword = process.env.SEED_ADMIN_PASSWORD!;
 
 	// Check if admin already exists
 	const existingAdmin = await prisma.user.findUnique({
@@ -76,17 +103,12 @@ async function main() {
 
 			console.log("✅ Admin user created");
 		} catch (error) {
-			console.log("⚠️ Admin creation error:", error);
-			throw error;
+			console.error("❌ Failed to create admin user", error);
 		}
-	} else {
-		console.log("✅ Admin user already exists");
 	}
 
-	// ==================== EXPENSE CATEGORIES ====================
-	console.log("📊 Creating expense categories...");
-
-	const expenseCategoryNames = [
+	// ================= EXPENSE CATEGORIES =================
+	const categories = [
 		"Fuel",
 		"Maintenance",
 		"Insurance",
@@ -94,214 +116,171 @@ async function main() {
 		"Cleaning",
 		"Repairs",
 		"Parking",
-		"Tolls",
-		"Utilities",
-		"Office",
 	];
 
-	// Create expense categories first
 	await prisma.expenseCategory.createMany({
-		data: expenseCategoryNames.map((name) => ({
-			name,
-			createdAt: new Date(),
-			updatedAt: new Date(),
-		})),
+		data: categories.map((name) => ({ name })),
 		skipDuplicates: true,
 	});
 
-	// Get category IDs for later use
 	const expenseCategories = await prisma.expenseCategory.findMany();
-	console.log(`✅ ${expenseCategories.length} expense categories created`);
 
-	// ==================== SHAREHOLDERS ====================
-	console.log("👥 Creating shareholders...");
-	const shareholderPhones = generateUniquePhones(100);
-
-	const shareholdersData = Array.from(
-		{ length: 100 },
-		(_, i) =>
-			({
-				name: faker.person.fullName(),
-				phone: shareholderPhones[i],
-				notes: faker.datatype.boolean(0.3) ? faker.lorem.sentence() : null,
-				createdAt: faker.date.past({ years: 3 }),
-				updatedAt: faker.date.recent(),
-			}) as Prisma.ShareholderCreateInput,
-	);
+	// ================= SHAREHOLDERS =================
+	const shareholderPhones = generateUniquePhones(30);
 
 	await prisma.shareholder.createMany({
-		data: shareholdersData,
-		skipDuplicates: true,
+		data: shareholderPhones.map((phone) => ({
+			name: faker.person.fullName(),
+			phone,
+			notes: faker.datatype.boolean(0.3) ? faker.lorem.sentence() : null,
+		})),
 	});
-	console.log(`✅ ${shareholdersData.length} shareholders created`);
 
-	// Get shareholder IDs for later use
 	const shareholders = await prisma.shareholder.findMany();
-	const shareholderIds = shareholders.map((s) => s.id);
 
-	// ==================== EMPLOYEES ====================
-	console.log("👔 Creating employees...");
-
-	const employeesData = Array.from(
-		{ length: 100 },
-		(_, _i) =>
-			({
-				name: faker.person.fullName(),
-				position: faker.person.jobTitle(),
-				percentage: faker.number.int({ min: 1, max: 100 }),
-				salary: faker.number.int({ min: 20000, max: 150000 }),
-				startDate: faker.date.past({ years: 5 }),
-				createdAt: faker.date.past({ years: 5 }),
-				updatedAt: faker.date.recent(),
-				deletedAt: faker.datatype.boolean(0.1) ? faker.date.recent() : null,
-			}) as Prisma.EmployeeCreateInput,
-	);
-
+	// ================= EMPLOYEES =================
 	await prisma.employee.createMany({
-		data: employeesData,
-		skipDuplicates: true,
+		data: Array.from({ length: 20 }).map(() => ({
+			name: faker.person.fullName(),
+			position: faker.person.jobTitle(),
+			salary: faker.number.int({ min: 50000, max: 300000 }),
+			percentage: faker.number.int({ min: 0, max: 100 }),
+			startDate: faker.date.past({ years: 5 }),
+		})),
 	});
-	console.log(`✅ ${employeesData.length} employees created`);
 
-	// Get employee IDs for expenses
 	const employees = await prisma.employee.findMany();
-	const employeeIds = employees.map((e) => e.id);
 
-	// ==================== CARS ====================
-	console.log("🚗 Creating cars...");
-	const licenseNumbers = generateUniqueLicenseNumbers(100);
-	const carMakes = [
-		"Toyota",
-		"Honda",
-		"Ford",
-		"BMW",
-		"Mercedes",
-		"Audi",
-		"Tesla",
-		"Nissan",
-		"Hyundai",
-		"Kia",
-		"Volkswagen",
-		"Chevrolet",
-		"Subaru",
-		"Mazda",
-		"Lexus",
-	];
-	const carModels = [
-		"Camry",
-		"Accord",
-		"Mustang",
-		"3 Series",
-		"C-Class",
-		"A4",
-		"Model 3",
-		"Altima",
-		"Elantra",
-		"Soul",
-		"Golf",
-		"Malibu",
-		"Outback",
-		"CX-5",
-		"RX 350",
-	];
+	// ================= CARS (without calculated fields) =================
+	const licenseNumbers = generateUniqueLicenseNumbers(40);
 
-	// ==================== CARS ====================
-	console.log("🚗 Creating cars...");
+	const cars: Prisma.CarCreateManyInput[] = [];
 
-	const carsData: Prisma.CarCreateManyInput[] = [];
+	for (let i = 0; i < 40; i++) {
+		const purchasedPrice = faker.number.int({
+			min: 5_000_000,
+			max: 50_000_000,
+		});
 
-	for (let i = 0; i < 100; i++) {
-		const isSold = faker.datatype.boolean(0.3);
-		const createdAt = faker.date.past({ years: 2 });
+		const isSold = faker.datatype.boolean(0.4);
 
-		const price = isSold
-			? faker.number.int({ min: 5500, max: 85000 })
-			: faker.number.int({ min: 5000, max: 80000 });
+		// Only set selling price if car is sold
+		const sellingPrice = isSold
+			? faker.number.int({
+					min: purchasedPrice + 1_000_000,
+					max: purchasedPrice + 10_000_000,
+				})
+			: 0;
 
-		// Determine if car has shareholder (60% of cars)
-		const hasShareholder = faker.datatype.boolean(0.6);
-		let shareholderId: string | null = null;
-		let shareholderPercentage: number | null = null;
-		let investmentAmount: number | null = null;
+		const hasShareholder = faker.datatype.boolean(0.5);
+		const shareholder = hasShareholder
+			? faker.helpers.arrayElement(shareholders)
+			: null;
 
-		if (hasShareholder && shareholderIds.length > 0) {
-			shareholderId = faker.helpers.arrayElement(shareholderIds);
-			shareholderPercentage = faker.number.int({ min: 10, max: 100 });
-			investmentAmount = Math.round(price * (shareholderPercentage / 100));
-		}
+		const shareholderInvestedAmount = hasShareholder
+			? Math.floor(purchasedPrice * 0.4)
+			: 0;
 
-		carsData.push({
-			name: `${carMakes[i % carMakes.length]} ${carModels[i % carModels.length]} ${faker.number.int({ min: 2015, max: 2025 })}`,
-			price,
+		const companyInvestedAmount = hasShareholder
+			? purchasedPrice - Math.floor(purchasedPrice * 0.4)
+			: purchasedPrice;
+
+		// Randomly decide if car should have an image
+		const hasImage = faker.datatype.boolean(0.7);
+
+		cars.push({
+			name: faker.vehicle.vehicle(),
+			imageUrl: hasImage ? faker.image.url({ width: 1024, height: 768 }) : null,
+			imagePublicId: hasImage ? faker.string.uuid() : null,
+			purchasedPrice,
+			sellingPrice: sellingPrice,
+			shareholderInvestedAmount,
+			companyInvestedAmount,
+			// Note: companyProfitAmount and shareholderProfitAmount are now calculated fields
+			// We'll update these after creating expenses
+			companyProfitAmount: 0,
+			shareholderProfitAmount: 0,
 			licenseNumber: faker.datatype.boolean(0.9) ? licenseNumbers[i] : null,
-			notes: faker.datatype.boolean(0.4) ? faker.lorem.sentence() : null,
-			status: isSold
-				? CarStatus.SOLD
-				: faker.helpers.arrayElement([
-						CarStatus.AVAILABLE,
-						CarStatus.AVAILABLE,
-						CarStatus.AVAILABLE,
-						CarStatus.IN_MAINTENANCE,
-						CarStatus.RESERVED,
-					]),
-			soldAt: isSold ? faker.date.past({ years: 2 }) : null,
-			shareholderId,
-			shareholderPercentage,
-			investmentAmount,
-			createdAt,
-			updatedAt: faker.date.recent(),
-			deletedAt: faker.datatype.boolean(0.05) ? faker.date.recent() : null,
+			status: isSold ? CarStatus.SOLD : CarStatus.AVAILABLE,
+			soldAt: isSold ? faker.date.past({ years: 1 }) : null,
+			shareholderId: shareholder?.id ?? null,
 		});
 	}
 
-	await prisma.car.createMany({
-		data: carsData,
-		skipDuplicates: true,
-	});
+	await prisma.car.createMany({ data: cars });
+	const createdCars = await prisma.car.findMany();
 
-	console.log(`✅ ${carsData.length} cars created`);
+	// ================= EXPENSES =================
+	// We'll create expenses and immediately calculate totals
+	const expensePromises = [];
 
-	// Get car IDs for expenses
-	const cars = await prisma.car.findMany();
-	const carIds = cars.map((c) => c.id);
+	for (let i = 0; i < 80; i++) {
+		const car = faker.datatype.boolean(0.7)
+			? faker.helpers.arrayElement(createdCars)
+			: null;
 
-	// ==================== EXPENSES ====================
-	console.log("💰 Creating expenses...");
-
-	// Create expenses with employee relationships
-	const expensesData = Array.from({ length: 100 }, (_, _i) => {
-		const isCarExpense = faker.datatype.boolean(0.6); // 60% are car-specific
-		const hasPaidTo = faker.datatype.boolean(0.4); // 40% paid to employees
-
-		return {
-			amount: faker.number.int({ min: 50, max: 10000 }),
+		const expenseData: Prisma.ExpenseCreateInput = {
+			amount: faker.number.int({ min: 50_000, max: 2_000_000 }),
 			notes: faker.lorem.sentence(),
-			categoryId: faker.helpers.arrayElement(expenseCategories).id,
 			date: faker.date.past({ years: 1 }),
-			carId: isCarExpense ? faker.helpers.arrayElement(carIds) : null,
-			paidToId: hasPaidTo ? faker.helpers.arrayElement(employeeIds) : null,
-			createdAt: faker.date.past({ years: 1 }),
-			updatedAt: faker.date.recent(),
-			deletedAt: faker.datatype.boolean(0.05) ? faker.date.recent() : null,
+			category: {
+				connect: { id: faker.helpers.arrayElement(expenseCategories).id },
+			},
+			paidTo: faker.datatype.boolean(0.4)
+				? {
+						connect: { id: faker.helpers.arrayElement(employees).id },
+					}
+				: undefined,
 		};
+
+		if (car) {
+			expenseData.car = { connect: { id: car.id } };
+		}
+
+		expensePromises.push(prisma.expense.create({ data: expenseData }));
+	}
+
+	await Promise.all(expensePromises);
+
+	// ================= UPDATE CAR PROFIT CALCULATIONS =================
+	console.log("🔢 Updating car profit calculations...");
+
+	// Get all cars with their expenses
+	const carsWithExpenses = await prisma.car.findMany({
+		include: {
+			expenses: true,
+		},
 	});
 
-	await prisma.expense.createMany({
-		data: expensesData,
-		skipDuplicates: true,
-	});
-	console.log(`✅ ${expensesData.length} expenses created`);
+	// Update each car with calculated profit amounts
+	const updatePromises = carsWithExpenses.map(async (car) => {
+		const { companyProfitAmount, shareholderProfitAmount } = calculateCarTotals(
+			car.purchasedPrice,
+			car.expenses,
+			car.sellingPrice,
+			car.companyInvestedAmount,
+			car.shareholderInvestedAmount,
+		);
 
-	console.log("🎉 Seeding completed successfully!");
+		// Only update if the car is sold
+		if (car.status === CarStatus.SOLD && car.sellingPrice > 0) {
+			return prisma.car.update({
+				where: { id: car.id },
+				data: {
+					companyProfitAmount,
+					shareholderProfitAmount,
+				},
+			});
+		}
+
+		return Promise.resolve();
+	});
+
+	await Promise.all(updatePromises);
+
+	console.log("✅ Seeding completed successfully");
 }
 
 main()
-	.then(async () => {
-		await prisma.$disconnect();
-		process.exit(0);
-	})
-	.catch(async (e) => {
-		console.error("❌ Seeding error:", e);
-		await prisma.$disconnect();
-		process.exit(1);
-	});
+	.catch(console.error)
+	.finally(() => prisma.$disconnect());

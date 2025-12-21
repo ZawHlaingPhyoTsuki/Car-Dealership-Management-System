@@ -79,10 +79,12 @@ export default function CarTable() {
 
 		const dataToExport = rows.map((row) => {
 			return {
-				"Car Name": row.original.name,
-				"Car Price": row.original.price,
-				"Car Status": row.original.status,
+				"Car Model": row.original.name,
 				"Car License Number": row.original.licenseNumber,
+				"Car Purchased Price": row.original.purchasedPrice,
+				"Car Total Expenses": row.original.totalExpenses,
+				"Car Total Cost": row.original.totalCost,
+				"Car Status": row.original.status,
 				"Car Sold Date": row.original.soldAt,
 				"Car Notes": row.original.notes,
 			};

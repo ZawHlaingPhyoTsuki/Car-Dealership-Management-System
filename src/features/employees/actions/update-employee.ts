@@ -1,20 +1,16 @@
 "use server";
 
-import * as z from "zod";
 import { requireAuth } from "@/lib/auth-guard";
 import prisma from "@/lib/prisma";
-import { UpdateEmployeeSchema } from "../validation";
+import { UpdateEmployeeSchema, type UpdateEmployeeValues } from "../validation";
 
-export const updateEmployee = async (
-	data: z.infer<typeof UpdateEmployeeSchema>,
-) => {
+export const updateEmployee = async (data: UpdateEmployeeValues) => {
 	await requireAuth();
 
 	try {
 		const { id, name, position, salary, percentage, startDate } =
-			UpdateEmployeeSchema.parse({
-				...data,
-			});
+			UpdateEmployeeSchema.parse(data);
+
 		return await prisma.employee.update({
 			where: {
 				id,
@@ -37,12 +33,6 @@ export const updateEmployee = async (
 		});
 	} catch (error) {
 		console.error("Failed to update employee:", error);
-		// Re-throw validation errors with details
-		if (error instanceof z.ZodError) {
-			throw new Error(
-				`Validation failed: ${error.issues.map((e) => e.message).join(", ")}`,
-			);
-		}
-		throw error;
+		throw new Error("Failed to update employee");
 	}
 };

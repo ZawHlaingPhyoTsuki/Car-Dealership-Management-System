@@ -27,7 +27,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useGetCars } from "@/features/cars/queries/use-cars";
 import { useEmployees } from "@/features/employees/queries/use-employees";
-import { cn } from "@/lib/utils";
+import { cn, normalizeNumberInput } from "@/lib/utils";
 import { useCreateExpense } from "../mutations/use-create-expense";
 import { useExpenseCategories } from "../queries/get-expense-category";
 import { CreateExpenseSchema, type CreateExpenseValues } from "../validation";
@@ -130,7 +130,7 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 							name="amount"
 							render={({ field, fieldState }) => (
 								<Field>
-									<FieldLabel>
+									<FieldLabel htmlFor="amount">
 										Amount <span className="text-red-500">*</span>
 									</FieldLabel>
 									<FieldGroup>
@@ -138,17 +138,16 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 											<InputGroupInput
 												id="amount"
 												type="number"
-												placeholder="50000"
 												step="1"
-												min="0"
 												{...field}
+												value={
+													field.value === null || field.value === undefined
+														? ""
+														: field.value.toString()
+												}
 												onChange={(e) => {
-													const value = e.target.value;
-													field.onChange(
-														value === "" ? undefined : Number(value),
-													);
+													field.onChange(normalizeNumberInput(e.target.value));
 												}}
-												value={field.value ?? ""}
 											/>
 
 											<InputGroupAddon>
@@ -200,15 +199,15 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 						control={form.control}
 						selector={"car"}
 						name={"carId"}
-						label={"Car (Optional)"}
+						label={"Car"}
 						items={cars}
 						isLoading={isLoadingCars}
 						isError={isErrorCars}
 						allowNone
 						matchTriggerWidth
-						getLabel={(car) => `${car.name} (${car.licenseNumber})`}
+						getLabel={(car) => car.name}
 						getValue={(car) => car.id}
-						getSubLabel={(car) => car.licenseNumber ?? "No Number"}
+						getSubLabel={(car) => car.licenseNumber ?? "No License Number"}
 					/>
 
 					{/* Note*/}
@@ -217,12 +216,18 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 						name="notes"
 						render={({ field, fieldState }) => (
 							<Field>
-								<FieldLabel>Note (Optional)</FieldLabel>
+								<FieldLabel htmlFor="notes">Note (Optional)</FieldLabel>
 								<FieldGroup>
 									<Textarea
+										id="notes"
 										placeholder="Additional notes about this expense..."
 										className="max-h-[100px] resize-y"
 										{...field}
+										value={field.value ?? ""}
+										onChange={(e) => {
+											const value = e.target.value;
+											field.onChange(value === "" ? null : value);
+										}}
 									/>
 								</FieldGroup>
 								{fieldState.error && (

@@ -7,7 +7,7 @@ export const useDeleteCar = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (id: string) => deleteCar(id),
+		mutationFn: deleteCar,
 		onSuccess: () => {
 			toast.success("Car deleted successfully");
 			queryClient.invalidateQueries({

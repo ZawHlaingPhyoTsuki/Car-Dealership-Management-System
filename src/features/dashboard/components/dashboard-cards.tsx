@@ -8,20 +8,20 @@ import {
 	TrendingUp,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import {
-	Card,
-	CardAction,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
 import { isLakhs } from "@/lib/utils";
 import { useDashboardStats } from "../queries/use-dashboard";
+import DashboardCard, { type DashboardCardProps } from "./dashboard-card";
 
 // Format currency in lakhs
 function formatLakhs(amount: number): string {
 	return (amount / 100000).toFixed(2);
+}
+
+function formatCurrency(amount: number): string {
+	if (isLakhs(amount)) {
+		return `${formatLakhs(amount)} lakhs`;
+	}
+	return `${amount} Ks`;
 }
 
 export default function DashboardCards() {
@@ -30,182 +30,154 @@ export default function DashboardCards() {
 	if (isLoading) return <div>Loading...</div>;
 
 	const safeData = data || {
+		// Current month stats
 		carsSoldCurrentMonth: 0,
-		totalRevenueCurrent: 0,
-		totalExpensesCurrent: 0,
-		profitCurrent: 0,
+		totalSellingPriceCurrent: 0,
+		totalPurchasedPriceCurrent: 0,
 
+		// Last month stats
 		carsSoldLastMonth: 0,
-		totalRevenueLast: 0,
-		totalExpensesLast: 0,
-		profitLast: 0,
+		totalSellingPriceLastMonth: 0,
+		totalPurchasedPriceLastMonth: 0,
 
+		// Diffs
 		carsSoldDiff: 0,
-		totalRevenueDiff: 0,
-		totalExpensesDiff: 0,
-		profitDiff: 0,
+		totalSellingPriceDiff: 0,
+		totalPurchasedPriceDiff: 0,
 	};
+
+	const cards: (DashboardCardProps & { id: string })[] = [
+		// Cars Sold Card
+		{
+			id: "cars-sold",
+			description: "Car Sales",
+			icon: CarFront,
+			value: (
+				<span
+					className={`${safeData.carsSoldDiff >= 0 ? "text-green-500" : "text-red-500"}`}
+				>
+					{safeData.carsSoldCurrentMonth}
+				</span>
+			),
+			badge: (
+				<Badge variant="outline">
+					{safeData.carsSoldDiff >= 0 ? (
+						<TrendingUp className="text-green-500" />
+					) : (
+						<TrendingDown className="text-red-500" />
+					)}
+					{safeData.carsSoldDiff >= 0 ? "+" : "-"}
+					{Math.abs(safeData.carsSoldDiff)}{" "}
+					{Math.abs(safeData.carsSoldDiff) !== 1 ? "cars" : "car"}
+				</Badge>
+			),
+			footerTitle: (
+				<>
+					{safeData.carsSoldDiff >= 0
+						? "Selling up this month"
+						: "Selling down this month"}
+					{safeData.carsSoldDiff >= 0 ? (
+						<TrendingUp className="size-4 text-green-500" />
+					) : (
+						<TrendingDown className="size-4 text-red-500" />
+					)}
+				</>
+			),
+			footerSubtitle: "Total cars sold this month",
+		},
+		// Car Selling Price Card
+		{
+			id: "selling-price",
+			description: "Car Selling Price Overview",
+			icon: DollarSign,
+			value: (
+				<>
+					<span
+						className={`${safeData.totalSellingPriceDiff >= 0 ? "text-green-500" : "text-red-500"}`}
+					>
+						{formatCurrency(safeData.totalSellingPriceCurrent)}
+					</span>
+				</>
+			),
+			badge: (
+				<Badge variant="outline">
+					{safeData.totalSellingPriceDiff >= 0 ? (
+						<TrendingUp className="text-green-500" />
+					) : (
+						<TrendingDown className="text-red-500" />
+					)}
+					{safeData.totalSellingPriceDiff >= 0 ? "+" : "-"}
+					{formatCurrency(Math.abs(safeData.totalSellingPriceDiff))}
+				</Badge>
+			),
+			footerTitle: (
+				<>
+					{safeData.totalSellingPriceDiff >= 0
+						? `Up ${formatCurrency(Math.abs(safeData.totalSellingPriceDiff))} this month`
+						: `Down ${formatCurrency(Math.abs(safeData.totalSellingPriceDiff))} this month`}{" "}
+					{safeData.totalSellingPriceDiff >= 0 ? (
+						<TrendingUp className="size-4 text-green-500" />
+					) : (
+						<TrendingDown className="size-4 text-red-500" />
+					)}
+				</>
+			),
+			footerSubtitle: "Total car selling price this month",
+		},
+		// Total Car Purchased Price Card
+		{
+			id: "purchased-price",
+			description: "Car Purchased Price Overview",
+			icon: BanknoteArrowUp,
+			value: (
+				<>
+					<span
+						className={`${safeData.totalPurchasedPriceDiff <= 0 ? "text-green-500" : "text-red-500"}`}
+					>
+						{formatCurrency(safeData.totalPurchasedPriceCurrent)}
+					</span>
+				</>
+			),
+			badge: (
+				<Badge variant="outline">
+					{safeData.totalPurchasedPriceDiff <= 0 ? (
+						<TrendingDown className="text-green-500" />
+					) : (
+						<TrendingUp className="text-red-500" />
+					)}
+					{safeData.totalPurchasedPriceDiff <= 0 ? "-" : "+"}
+					{formatCurrency(Math.abs(safeData.totalPurchasedPriceDiff))}
+				</Badge>
+			),
+			footerTitle: (
+				<>
+					{safeData.totalPurchasedPriceDiff <= 0
+						? "Good cost management"
+						: "Costs trending higher"}{" "}
+					{safeData.totalPurchasedPriceDiff <= 0 ? (
+						<TrendingDown className="size-4 text-green-500" />
+					) : (
+						<TrendingUp className="size-4 text-red-500" />
+					)}
+				</>
+			),
+			footerSubtitle: "Total car purchased price this month",
+		},
+	];
 
 	return (
 		<div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-3">
-			{/* Cars Sold Card */}
-			<Card className="@container/card">
-				<CardHeader>
-					<CardDescription className="flex items-center gap-2">
-						<CarFront className="w-4 h-4" />
-						Car Sales
-					</CardDescription>
-
-					<CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-						<span
-							className={`${safeData.carsSoldDiff >= 0 ? "text-green-500" : "text-red-500"}`}
-						>
-							{safeData.carsSoldCurrentMonth}
-						</span>
-					</CardTitle>
-					<CardAction>
-						<Badge variant="outline">
-							{safeData.carsSoldDiff >= 0 ? (
-								<TrendingUp className="text-green-500" />
-							) : (
-								<TrendingDown className="text-red-500" />
-							)}
-							{safeData.carsSoldDiff >= 0 ? "+" : "-"}
-							{Math.abs(safeData.carsSoldDiff)}{" "}
-							{Math.abs(safeData.carsSoldDiff) !== 1 ? "cars" : "car"}
-						</Badge>
-					</CardAction>
-				</CardHeader>
-				<CardFooter className="flex-col items-start gap-1.5 text-sm">
-					<div className="line-clamp-1 flex gap-2 font-medium">
-						{safeData.carsSoldDiff >= 0
-							? "Selling up this month"
-							: "Selling down this month"}
-						{safeData.carsSoldDiff >= 0 ? (
-							<TrendingUp className="size-4 text-green-500" />
-						) : (
-							<TrendingDown className="size-4 text-red-500" />
-						)}
-					</div>
-					<div className="text-muted-foreground">
-						{safeData.carsSoldDiff >= 0
-							? "More sales than last month"
-							: "Fewer sales than last month"}
-					</div>
-				</CardFooter>
-			</Card>
-
-			{/* Revenue Card */}
-			<Card className="@container/card">
-				<CardHeader>
-					<CardDescription className="flex items-center gap-2">
-						<DollarSign className="w-4 h-4" /> Revenue Overview
-					</CardDescription>
-					<CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-						<span
-							className={`${safeData.totalRevenueDiff >= 0 ? "text-green-500" : "text-red-500"}`}
-						>
-							{isLakhs(safeData.totalRevenueCurrent)
-								? formatLakhs(safeData.totalRevenueCurrent)
-								: safeData.totalRevenueCurrent}
-						</span>{" "}
-						<span className="text-xl text-muted-foreground">
-							{isLakhs(safeData.totalRevenueCurrent) ? "lakhs" : "Ks"}
-						</span>
-					</CardTitle>
-					<CardAction>
-						<Badge variant="outline">
-							{safeData.totalRevenueDiff >= 0 ? (
-								<TrendingUp className="text-green-500" />
-							) : (
-								<TrendingDown className="text-red-500" />
-							)}
-							{safeData.totalRevenueDiff >= 0 ? "+" : "-"}
-							{isLakhs(Math.abs(safeData.totalRevenueDiff))
-								? `${formatLakhs(Math.abs(safeData.totalRevenueDiff))} lakhs`
-								: `${Math.abs(safeData.totalRevenueDiff)} Ks`}
-						</Badge>
-					</CardAction>
-				</CardHeader>
-				<CardFooter className="flex-col items-start gap-1.5 text-sm">
-					<div className="line-clamp-1 flex gap-2 font-medium">
-						{safeData.totalRevenueDiff >= 0
-							? `Up ${
-									isLakhs(Math.abs(safeData.totalRevenueDiff))
-										? `${formatLakhs(Math.abs(safeData.totalRevenueDiff))} lakhs`
-										: `${Math.abs(safeData.totalRevenueDiff)} Ks`
-								} this month`
-							: `Down ${
-									isLakhs(Math.abs(safeData.totalRevenueDiff))
-										? `${formatLakhs(Math.abs(safeData.totalRevenueDiff))} lakhs`
-										: `${Math.abs(safeData.totalRevenueDiff)} Ks`
-								} this month`}{" "}
-						{safeData.totalRevenueDiff >= 0 ? (
-							<TrendingUp className="size-4 text-green-500" />
-						) : (
-							<TrendingDown className="size-4 text-red-500" />
-						)}
-					</div>
-					<div className="text-muted-foreground">
-						{safeData.totalRevenueDiff >= 0
-							? "Did a great job"
-							: "Needs improvement"}
-					</div>
-				</CardFooter>
-			</Card>
-
-			{/* Expenses Card */}
-			<Card className="@container/card">
-				<CardHeader>
-					<CardDescription className="flex items-center gap-2">
-						<BanknoteArrowUp className="w-4 h-4" /> Total Expenses
-					</CardDescription>
-					<CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-						<span
-							className={`${safeData.totalExpensesDiff <= 0 ? "text-green-500" : "text-red-500"}`}
-						>
-							{isLakhs(safeData.totalExpensesCurrent)
-								? formatLakhs(safeData.totalExpensesCurrent)
-								: safeData.totalExpensesCurrent}
-						</span>{" "}
-						{isLakhs(safeData.totalExpensesCurrent) ? (
-							<span className="text-xl text-muted-foreground">lakhs</span>
-						) : (
-							<span className="text-xl text-muted-foreground">Ks</span>
-						)}
-					</CardTitle>
-					<CardAction>
-						<Badge variant="outline">
-							{safeData.totalExpensesDiff <= 0 ? (
-								<TrendingDown className="text-green-500" />
-							) : (
-								<TrendingUp className="text-red-500" />
-							)}
-							{safeData.totalExpensesDiff >= 0 ? "+" : "-"}
-							{isLakhs(Math.abs(safeData.totalExpensesDiff))
-								? `${formatLakhs(Math.abs(safeData.totalExpensesDiff))} lakhs`
-								: `${Math.abs(safeData.totalExpensesDiff)} Ks`}
-						</Badge>
-					</CardAction>
-				</CardHeader>
-				<CardFooter className="flex-col items-start gap-1.5 text-sm">
-					<div className="line-clamp-1 flex gap-2 font-medium">
-						{safeData.totalExpensesDiff <= 0
-							? "Good spending"
-							: "Higher spending"}{" "}
-						{safeData.totalExpensesDiff <= 0 ? (
-							<TrendingDown className="size-4 text-green-500" />
-						) : (
-							<TrendingUp className="size-4 text-red-500" />
-						)}
-					</div>
-					<div className="text-muted-foreground">
-						{safeData.totalExpensesDiff <= 0
-							? "Less than last month"
-							: "More than last month"}
-					</div>
-				</CardFooter>
-			</Card>
+			{cards.map((card) => (
+				<DashboardCard
+					key={card.id}
+					description={card.description}
+					icon={card.icon}
+					value={card.value}
+					badge={card.badge}
+					footerTitle={card.footerTitle}
+					footerSubtitle={card.footerSubtitle}
+				/>
+			))}
 		</div>
 	);
 }

@@ -1,33 +1,32 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { Edit, EllipsisVertical, Trash } from "lucide-react";
-import { useState } from "react";
+import Image from "next/image";
 import { DataTableColumnHeader } from "@/components/shared/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
 	HoverCard,
 	HoverCardContent,
 	HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { Label } from "@/components/ui/label";
-import { formatInLakhsCrores } from "@/lib/utils";
+import { formatNumberSafe } from "@/lib/utils";
 import type { Car } from "../actions/get-cars";
-import DeleteCarDialog from "./delete-car-dialog";
-import EditCarDialog from "./edit-car-dialog";
+import { CarActions } from "./car-actions";
 
 export const columns: ColumnDef<Car>[] = [
 	{
-		id: "no.",
+		id: "no",
 		header: () => <Label className="text-lg">No.</Label>,
-		cell: ({ row }) => row.index + 1,
+		cell: ({ row, table }) => {
+			const { pageIndex, pageSize } = table.getState().pagination;
+			const filteredRows = table.getFilteredRowModel().rows;
+			const rowIndex = filteredRows.findIndex(
+				(filteredRow) => filteredRow.id === row.id,
+			);
+			return pageIndex * pageSize + rowIndex + 1;
+		},
 	},
 	{
 		accessorKey: "name",
@@ -36,22 +35,57 @@ export const columns: ColumnDef<Car>[] = [
 			const car = row.original;
 
 			return (
-				<div className="min-w-0">
-					<div className="font-medium truncate">{car.name}</div>
+				<div className="flex items-center gap-2 min-w-0">
+					<Image
+						src={car.imageUrl || "/placeholder.png"}
+						alt={car.imageUrl ? `${car.name} image` : "No image available"}
+						width={50}
+						height={50}
+					/>
+					<div className="flex flex-col">
+						<div
+							className={`font-medium truncate ${car.shareholderId ? "text-amber-500" : "text-green-500"}`}
+						>
+							{car.name}
+						</div>
+						{car.licenseNumber && (
+							<div className="text-xs text-muted-foreground">
+								{car.licenseNumber}
+							</div>
+						)}
+					</div>
 				</div>
 			);
 		},
 	},
 	{
-		accessorKey: "price",
+		accessorKey: "purchasedPrice",
 		header: ({ column }) => (
-			<DataTableColumnHeader column={column} title="Price" />
+			<DataTableColumnHeader column={column} title="Purchased Price" />
 		),
 		cell: ({ row }) => {
-			const price = Number.parseFloat(row.getValue("price"));
-			if (Number.isNaN(price)) return "-";
-			const formatted = formatInLakhsCrores(price);
-			return formatted;
+			const purchasedPrice = row.getValue<number>("purchasedPrice");
+			return formatNumberSafe(purchasedPrice);
+		},
+	},
+	{
+		accessorKey: "totalExpenses",
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Total Expenses" />
+		),
+		cell: ({ row }) => {
+			const totalExpenses = row.getValue<number>("totalExpenses");
+			return formatNumberSafe(totalExpenses);
+		},
+	},
+	{
+		accessorKey: "totalCost",
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Total Cost" />
+		),
+		cell: ({ row }) => {
+			const totalCost = row.getValue<number>("totalCost");
+			return formatNumberSafe(totalCost);
 		},
 	},
 	{
@@ -78,11 +112,35 @@ export const columns: ColumnDef<Car>[] = [
 		},
 	},
 	{
-		accessorKey: "licenseNumber",
-		header: () => <Label className="text-lg">License No.</Label>,
+		accessorKey: "shareholderName",
+		header: () => <Label className="text-lg">Sharer Name</Label>,
 		cell: ({ row }) => {
-			const value = row.getValue("licenseNumber");
-			return value || "-";
+			const shareholder = row.original.shareholder;
+			if (!shareholder) return "-";
+			return (
+				<HoverCard>
+					<HoverCardTrigger asChild>
+						<Button variant="link" className="px-0">
+							{shareholder.name}
+						</Button>
+					</HoverCardTrigger>
+					<HoverCardContent>
+						<div className="space-y-1">
+							<h4 className="text-sm font-semibold">{shareholder.name}</h4>
+							<p className="text-muted-foreground text-xs">
+								<span className="font-medium">Phone:</span>{" "}
+								{shareholder.phone || "N/A"}
+							</p>
+							<div className="text-muted-foreground text-xs">
+								<span className="font-medium">Joined:</span>
+								{shareholder.createdAt
+									? new Date(shareholder.createdAt).toLocaleDateString()
+									: "N/A"}
+							</div>
+						</div>
+					</HoverCardContent>
+				</HoverCard>
+			);
 		},
 	},
 	{
@@ -118,63 +176,8 @@ export const columns: ColumnDef<Car>[] = [
 		},
 	},
 	{
-		accessorKey: "createdAt",
-		header: ({ column }) => (
-			<DataTableColumnHeader column={column} title="Added At" />
-		),
-		cell: ({ row }) => {
-			const date = row.getValue("createdAt");
-			if (!date) return "-";
-			return new Date(date as Date).toLocaleDateString();
-		},
-	},
-	{
-		accessorKey: "actions",
+		id: "actions",
 		header: () => <Label className="text-lg">Actions</Label>,
 		cell: ({ row }) => <CarActions car={row.original} />,
 	},
 ];
-
-function CarActions({ car }: { car: Car }) {
-	const [showEditDialog, setShowEditDialog] = useState(false);
-	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-
-	return (
-		<>
-			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
-					<Button variant="ghost" className="h-8 w-8 p-0">
-						<span className="sr-only">Open menu</span>
-						<EllipsisVertical className="h-4 w-4" />
-					</Button>
-				</DropdownMenuTrigger>
-				<DropdownMenuContent align="end">
-					<DropdownMenuItem onClick={() => setShowEditDialog(true)}>
-						<Edit className="mr-2 h-4 w-4" />
-						Edit
-					</DropdownMenuItem>
-					<DropdownMenuItem
-						onClick={() => setShowDeleteDialog(true)}
-						variant="destructive"
-					>
-						<Trash className="mr-2 h-4 w-4" />
-						Delete
-					</DropdownMenuItem>
-				</DropdownMenuContent>
-			</DropdownMenu>
-
-			<EditCarDialog
-				car={car}
-				open={showEditDialog}
-				onOpenChange={setShowEditDialog}
-			/>
-
-			<DeleteCarDialog
-				id={car.id}
-				name={car.name}
-				open={showDeleteDialog}
-				onOpenChange={setShowDeleteDialog}
-			/>
-		</>
-	);
-}

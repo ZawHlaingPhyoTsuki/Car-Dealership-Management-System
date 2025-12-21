@@ -13,19 +13,12 @@ import {
 } from "@tanstack/react-table";
 import { useState } from "react";
 import * as XLSX from "xlsx";
-import { CarStatus } from "@/app/generated/prisma/enums";
 import TableError from "@/components/errors/table-error";
 import DataTablePagination from "@/components/shared/data-table-pagination";
 import { TableExportButton } from "@/components/shared/export-button";
 import TableLoading from "@/components/shared/table-loading";
 import { Input } from "@/components/ui/input";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
+
 import {
 	Table,
 	TableBody,
@@ -64,13 +57,6 @@ export default function CarSharerTable() {
 		onPaginationChange: setPagination,
 	});
 
-	const options = [
-		{ label: "Available", value: CarStatus.AVAILABLE },
-		{ label: "In Maintenance", value: CarStatus.IN_MAINTENANCE },
-		{ label: "Reserved", value: CarStatus.RESERVED },
-		{ label: "Sold", value: CarStatus.SOLD },
-	];
-
 	const exportToExcel = () => {
 		const selectedRows = table.getSelectedRowModel().rows;
 
@@ -79,17 +65,20 @@ export default function CarSharerTable() {
 
 		const dataToExport = rows.map((row) => {
 			return {
-				"Car Name": row.original.name,
-				"Car Price": row.original.price,
-				"Car License Number": row.original.licenseNumber,
+				"Car Model": row.original.name,
+				"License Number": row.original.licenseNumber,
+				"Purchased Price": row.original.purchasedPrice,
+				"Selling Price": row.original.sellingPrice,
+				"7hr Buy Amount": row.original.companyInvestedAmount,
+				"Shareholder Buy Amount": row.original.shareholderInvestedAmount,
+				"Profit Amount": row.original.profitAmount,
+				"7hr Profit": row.original.companyProfitAmount,
+				"Shareholder Profit": row.original.shareholderProfitAmount,
+
 				"Car Status": row.original.status,
 				"Car Sold Date": row.original.soldAt
 					? new Date(row.original.soldAt).toISOString().split("T")[0]
 					: "",
-				"Shareholder Percentage": row.original.shareholderPercentage,
-				"Investment Amount": row.original.investmentAmount,
-				"Shareholder Name": row.original.shareholder?.name,
-				"Shareholder Phone": row.original.shareholder?.phone,
 			};
 		});
 
@@ -137,27 +126,6 @@ export default function CarSharerTable() {
 						}
 						className="max-w-sm mr-4"
 					/>
-					<Select
-						key={"status"}
-						value={table.getColumn("status")?.getFilterValue() as string}
-						onValueChange={(value) => {
-							table
-								.getColumn("status")
-								?.setFilterValue(value === "all" ? "" : value);
-						}}
-					>
-						<SelectTrigger className="w-[180px] mr-4">
-							<SelectValue placeholder="Filter by status" />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectItem value="all">All</SelectItem>
-							{options.map((option) => (
-								<SelectItem key={option.value} value={option.value}>
-									{option.label}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
 				</div>
 
 				<TableExportButton variant="outline" onClick={exportToExcel} />

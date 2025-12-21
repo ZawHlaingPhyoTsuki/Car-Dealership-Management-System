@@ -23,6 +23,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { formatNumberSafe } from "@/lib/utils";
 import { useCarProfitSummary } from "../queries/use-car-profit";
 import { columns } from "./columns";
 
@@ -34,7 +35,7 @@ export default function CarProfitTable() {
 	const years = useMemo(() => {
 		const yearSet = new Set<string>();
 		data.forEach((item) => {
-			const year = item.month.split(" ")[0]; // Extract year from "yyyy MMMM"
+			const year = item.month.split(" ")[0];
 			yearSet.add(year.toString());
 		});
 		return Array.from(yearSet).sort(
@@ -63,12 +64,12 @@ export default function CarProfitTable() {
 			filteredData.reduce(
 				(acc, item) => {
 					acc.carsSold += item.carsSold;
-					acc.totalProfit += item.totalProfit;
+					acc.totalSellingPrice += item.totalSellingPrice;
 					return acc;
 				},
 				{
 					carsSold: 0,
-					totalProfit: 0,
+					totalSellingPrice: 0,
 				},
 			),
 		[filteredData],
@@ -85,24 +86,24 @@ export default function CarProfitTable() {
 		const dataToExport = rows.map((row) => ({
 			month: row.original.month,
 			carsSold: row.original.carsSold,
-			totalProfit: row.original.totalProfit,
+			totalSellingPrice: row.original.totalSellingPrice,
 		}));
 
 		// Calculate totals from the rows being exported
 		const exportTotals = rows.reduce(
 			(acc, row) => {
 				acc.carsSold += row.original.carsSold;
-				acc.totalProfit += row.original.totalProfit;
+				acc.totalSellingPrice += row.original.totalSellingPrice;
 				return acc;
 			},
-			{ carsSold: 0, totalProfit: 0 },
+			{ carsSold: 0, totalSellingPrice: 0 },
 		);
 
 		// Append TOTAL row
 		dataToExport.push({
 			month: "Grand Total",
 			carsSold: exportTotals.carsSold,
-			totalProfit: exportTotals.totalProfit,
+			totalSellingPrice: exportTotals.totalSellingPrice,
 		});
 
 		// Create worksheet
@@ -119,7 +120,7 @@ export default function CarProfitTable() {
 				),
 			);
 
-			return { wch: maxLength + 2 }; // +2 padding
+			return { wch: maxLength + 2 };
 		});
 
 		worksheet["!cols"] = colWidths;
@@ -218,8 +219,10 @@ export default function CarProfitTable() {
 									{totals.carsSold}
 								</TableCell>
 
-								<TableCell className="text-right font-bold text-green-600 text-lg">
-									{totals.totalProfit.toLocaleString()} THB
+								<TableCell
+									className={`font-bold text-right text-lg ${totals.totalSellingPrice < 0 ? "text-red-600" : "text-green-600"}`}
+								>
+									{formatNumberSafe(totals.totalSellingPrice)} Ks
 								</TableCell>
 							</TableRow>
 						)}
@@ -247,12 +250,9 @@ export default function CarProfitTable() {
 				<ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
 					<li>
 						•{" "}
-						<strong>
-							Total Profit = Sum of all car selling prices in that month
-						</strong>
+						<strong>Total Selling Price = Sum of all car selling prices</strong>
 					</li>
 					<li>• Only includes cars marked as "SOLD" with a sale date</li>
-					<li>• Profit shown is gross revenue from car sales</li>
 				</ul>
 			</div>
 		</div>

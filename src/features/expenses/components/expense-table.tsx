@@ -31,7 +31,6 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { useGetCars } from "@/features/cars/queries/use-cars";
-import { mapExpenseForExport } from "../map-expense-for-export";
 import { useExpenseCategories } from "../queries/get-expense-category";
 import { useExpenses } from "../queries/get-expenses";
 import { columns, NO_CATEGORY_FILTER } from "./columns";
@@ -83,7 +82,19 @@ export default function ExpensesTable() {
 		const rows =
 			selectedRows.length > 0 ? selectedRows : table.getFilteredRowModel().rows;
 
-		const dataToExport = rows.map((row) => mapExpenseForExport(row.original));
+		const dataToExport = rows.map((row) => {
+			return {
+				Date: row.original.date
+					? new Date(row.original.date).toISOString().split("T")[0]
+					: "",
+				Amount: row.original.amount,
+				Notes: row.original.notes ?? "",
+				Category: row.original.category?.name ?? "",
+				Employee: row.original.paidTo?.name ?? "",
+				Car: row.original.car?.name ?? "",
+				"Car License": row.original.car?.licenseNumber ?? "",
+			};
+		});
 
 		if (dataToExport.length === 0) return;
 
@@ -190,19 +201,21 @@ export default function ExpensesTable() {
 						</div>
 
 						{/* Clear Filters Button */}
-						<Button
-							variant="ghost"
-							onClick={() => {
-								table.resetColumnFilters();
-								resetFilters();
-							}}
-							disabled={filtersCount === 0}
-						>
-							<span className="hidden md:block">
-								Reset {filtersCount > 0 && `(${filtersCount})`}
-							</span>
-							<X />
-						</Button>
+						{filtersCount > 0 && (
+							<Button
+								variant="ghost"
+								onClick={() => {
+									table.resetColumnFilters();
+									resetFilters();
+								}}
+								disabled={filtersCount === 0}
+							>
+								<span className="hidden md:block">
+									Reset {filtersCount > 0 && `(${filtersCount})`}
+								</span>
+								<X />
+							</Button>
+						)}
 					</div>
 
 					{/* Export Button */}

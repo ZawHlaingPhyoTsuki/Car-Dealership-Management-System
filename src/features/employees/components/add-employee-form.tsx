@@ -24,7 +24,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { cn, normalizeNumberInput } from "@/lib/utils";
 import { useCreateEmployee } from "../mutations/use-create-employee";
 import { CreateEmployeeSchema, type CreateEmployeeValues } from "../validation";
 
@@ -39,7 +39,7 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 		resolver: zodResolver(CreateEmployeeSchema),
 		defaultValues: {
 			name: "",
-			position: "",
+			position: null,
 			salary: undefined,
 			percentage: undefined,
 			startDate: new Date(),
@@ -63,7 +63,7 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 						render={({ field, fieldState }) => (
 							<Field data-invalid={fieldState.invalid}>
 								<FieldLabel htmlFor="name">
-									Full Name <span className="text-red-500">*</span>
+									Employee Name <span className="text-red-500">*</span>
 								</FieldLabel>
 								<Input id="name" placeholder="John Doe" {...field} />
 								{fieldState.error && (
@@ -81,9 +81,14 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 							<Field data-invalid={fieldState.invalid}>
 								<FieldLabel htmlFor="position">Position</FieldLabel>
 								<Input
-									id="position"
-									placeholder="Software Engineer"
 									{...field}
+									id="position"
+									placeholder="Staff"
+									value={field.value ?? ""}
+									onChange={(e) => {
+										const value = e.target.value;
+										field.onChange(value === "" ? null : value);
+									}}
 								/>
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>
@@ -102,16 +107,17 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 								<InputGroup>
 									<InputGroupInput
 										id="salary"
-										type="number"
-										step="1"
-										min="0"
-										placeholder="50000"
+										type="text"
+										inputMode="numeric"
 										{...field}
+										value={
+											field.value === undefined || field.value === null
+												? ""
+												: field.value.toString()
+										}
 										onChange={(e) => {
-											const value = e.target.value;
-											field.onChange(value === "" ? undefined : Number(value));
+											field.onChange(normalizeNumberInput(e.target.value));
 										}}
-										value={typeof field.value === "number" ? field.value : ""}
 									/>
 									<InputGroupAddon>
 										<span className="text-gray-500">Ks</span>
@@ -134,17 +140,17 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 								<InputGroup>
 									<InputGroupInput
 										id="percentage"
-										type="number"
-										step="1"
-										min="0"
-										max="100"
-										placeholder="50"
+										type="text"
+										inputMode="numeric"
 										{...field}
+										value={
+											field.value === undefined || field.value === null
+												? ""
+												: field.value.toString()
+										}
 										onChange={(e) => {
-											const value = e.target.value;
-											field.onChange(value === "" ? undefined : Number(value));
+											field.onChange(normalizeNumberInput(e.target.value));
 										}}
-										value={typeof field.value === "number" ? field.value : ""}
 									/>
 									<InputGroupAddon>
 										<span className="text-gray-500">%</span>

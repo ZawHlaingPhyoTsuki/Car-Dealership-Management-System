@@ -64,16 +64,12 @@ export default function EditExpenseForm({
 		resolver: zodResolver(UpdateExpenseSchema),
 		defaultValues: {
 			id: expense.id,
-			date: expense.date
-				? typeof expense.date === "string"
-					? new Date(expense.date)
-					: expense.date
-				: undefined,
+			date: expense.date,
 			paidToId: expense.paidTo?.id ?? null,
 			categoryId: expense.category?.id ?? null,
-			amount: expense.amount ?? undefined,
+			amount: expense.amount,
 			carId: expense.car?.id ?? null,
-			notes: expense.notes ?? "",
+			notes: expense.notes,
 		},
 	});
 
@@ -225,12 +221,18 @@ export default function EditExpenseForm({
 						name="notes"
 						render={({ field, fieldState }) => (
 							<Field>
-								<FieldLabel>Note (Optional)</FieldLabel>
+								<FieldLabel htmlFor="notes">Note (Optional)</FieldLabel>
 								<FieldGroup>
 									<Textarea
+										id="notes"
 										placeholder="Additional notes about this expense..."
 										className="max-h-[100px] resize-y"
 										{...field}
+										value={field.value ?? ""}
+										onChange={(e) => {
+											const value = e.target.value;
+											field.onChange(value === "" ? null : value);
+										}}
 									/>
 								</FieldGroup>
 								{fieldState.error && (

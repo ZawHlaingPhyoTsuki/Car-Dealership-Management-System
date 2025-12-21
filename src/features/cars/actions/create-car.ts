@@ -1,57 +1,45 @@
 "use server";
 
-import type * as z from "zod";
-import { Prisma } from "@/app/generated/prisma/client";
-import { CarStatus } from "@/app/generated/prisma/enums";
+import { CarStatus, type Prisma } from "@/app/generated/prisma/client";
 import { requireAuth } from "@/lib/auth-guard";
 import prisma from "@/lib/prisma";
-import { CreateCarSchema } from "../validation";
+import { CreateCarSchema, type CreateCarValues } from "../validation";
 
-export const createCar = async (data: z.infer<typeof CreateCarSchema>) => {
+export async function createCar(values: CreateCarValues) {
 	await requireAuth();
+
 	try {
-		const { shareholderId, ...validatedData } = CreateCarSchema.parse(data);
+		const { shareholderId, ...validatedData } = CreateCarSchema.parse(values);
 
-		console.log("Creating car with data:", {
-			...validatedData,
-			shareholderId,
-		});
-
-		const createData = {
+		const createData: Prisma.CarCreateInput = {
 			name: validatedData.name,
-			price: validatedData.price,
-			licenseNumber: validatedData.licenseNumber || null,
-			notes: validatedData.notes || null,
 			status: validatedData.status,
+
+			purchasedPrice: validatedData.purchasedPrice,
+			sellingPrice: validatedData.sellingPrice,
+			companyInvestedAmount: validatedData.companyInvestedAmount,
+			shareholderInvestedAmount: validatedData.shareholderInvestedAmount,
+
+			companyProfitAmount: validatedData.companyProfitAmount,
+			shareholderProfitAmount: validatedData.shareholderProfitAmount,
+
+			licenseNumber: validatedData.licenseNumber || null,
 			soldAt:
 				validatedData.status === CarStatus.SOLD ? validatedData.soldAt : null,
-		} as Prisma.CarCreateInput;
-
-		if (shareholderId) {
-			createData.shareholder = { connect: { id: shareholderId } };
-
-			if (validatedData.shareholderPercentage !== undefined) {
-				createData.shareholderPercentage = validatedData.shareholderPercentage;
-			}
-
-			if (validatedData.investmentAmount !== undefined) {
-				createData.investmentAmount = validatedData.investmentAmount;
-			}
-		}
+			notes: validatedData.notes || null,
+		};
 
 		const car = await prisma.car.create({
-			data: createData,
+			data: {
+				...createData,
+				shareholder: shareholderId
+					? { connect: { id: shareholderId } }
+					: undefined,
+			},
 		});
-
 		return car;
 	} catch (error) {
 		console.error("Failed to create car:", error);
-
-		// Log the full error for debugging
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			console.error("Prisma error details:", error.meta);
-		}
-
 		throw new Error("Failed to create car");
 	}
-};
+}
