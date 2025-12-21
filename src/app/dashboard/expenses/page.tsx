@@ -31,7 +31,7 @@ export default async function Page() {
 			title="Expense Management"
 			description="Manage your expenses on cars and employees"
 			addButton={
-				<div className="flex justify-end gap-2">
+				<div className="flex flex-col md:flex-row justify-end gap-2">
 					<AddExpenseCategoryDialog />
 					<AddExpenseDialog />
 				</div>

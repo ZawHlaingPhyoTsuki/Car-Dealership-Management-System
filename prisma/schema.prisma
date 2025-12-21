@@ -15,8 +15,8 @@ model User {
   image         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  sessions      Session[]
   accounts      Account[]
+  sessions      Session[]
 
   @@map("user")
 }
@@ -41,7 +41,6 @@ model Account {
   accountId             String
   providerId            String
   userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
   idToken               String?
@@ -51,6 +50,7 @@ model Account {
   password              String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("account")
@@ -69,42 +69,92 @@ model Verification {
 }
 
 model Shareholder {
-  id    String  @id @default(uuid())
-  name  String  @unique
-  phone String?
-  email String? @unique
-  notes String?
-
-  cars Car[]
-
+  id        String    @id @default(uuid())
+  name      String    @unique
+  phone     String?
+  notes     String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+  cars      Car[]
 
   @@map("shareholder")
 }
 
 model Car {
-  id            String    @id @default(uuid())
+  id            String  @id @default(uuid())
   name          String
-  price         Int
-  color         String?
+  imageUrl      String?
+  imagePublicId String?
+
+  purchasedPrice            Int @default(0)
+  sellingPrice              Int @default(0)
+  companyInvestedAmount     Int @default(0)
+  shareholderInvestedAmount Int @default(0)
+
+  // totalExpenses           Int @default(0) // expenses of a car
+  // totalCost               Int @default(0) // purchasedPrice + totalExpenses of a car
+  // profitAmount            Int @default(0) // Selling - totalCost (purchasedPrice + expenses)
+  companyProfitAmount     Int @default(0) // profitAmount - shareholderProfitAmount
+  shareholderProfitAmount Int @default(0) // profitAmount - companyProfitAmount
+
   licenseNumber String?
   notes         String?
   status        CarStatus @default(AVAILABLE)
   soldAt        DateTime?
 
-  expenses              Expense[]
-  shareholderId         String?
-  shareholder           Shareholder? @relation(fields: [shareholderId], references: [id], onDelete: SetNull)
-  shareholderPercentage Int?
-  investmentAmount      Int?
+  shareholderId String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  deletedAt     DateTime?
+  shareholder   Shareholder? @relation(fields: [shareholderId], references: [id], onDelete: SetNull)
+  expenses      Expense[]
 
+  @@map("car")
+}
+
+model Expense {
+  id         String           @id @default(uuid())
+  amount     Int              @default(0)
+  notes      String?
+  date       DateTime         @default(now())
+  carId      String?
+  paidToId   String?
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  deletedAt  DateTime?
+  categoryId String?
+  car        Car?             @relation(fields: [carId], references: [id], onDelete: SetNull)
+  category   ExpenseCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  paidTo     Employee?        @relation("EmployeeExpenses", fields: [paidToId], references: [id], onDelete: SetNull)
+
+  @@map("expense")
+}
+
+model ExpenseCategory {
+  id        String    @id @default(uuid())
+  name      String    @unique
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+  expenses  Expense[]
 
-  @@map("car")
+  @@map("expense_category")
+}
+
+model Employee {
+  id         String    @id @default(uuid())
+  name       String
+  position   String?
+  salary     Int       @default(0)
+  startDate  DateTime
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+  percentage Int       @default(0)
+  expenses   Expense[] @relation("EmployeeExpenses")
+
+  @@map("employee")
 }
 
 enum CarStatus {
@@ -112,56 +162,4 @@ enum CarStatus {
   IN_MAINTENANCE
   RESERVED
   SOLD
-}
-
-model Expense {
-  id         String           @id @default(uuid())
-  amount     Int
-  notes      String
-  category   ExpenseCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  categoryId String?
-  date       DateTime         @default(now())
-
-  // Optional: Link to car if this expense is car-specific
-  carId String?
-  car   Car?    @relation(fields: [carId], references: [id], onDelete: SetNull)
-
-  paidTo   Employee? @relation("EmployeeExpenses", fields: [paidToId], references: [id], onDelete: SetNull)
-  paidToId String?
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-
-  @@map("expense")
-}
-
-model ExpenseCategory {
-  id       String    @id @default(uuid())
-  name     String    @unique
-  expenses Expense[]
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-
-  @@map("expense_category")
-}
-
-model Employee {
-  id       String @id @default(uuid())
-  name     String
-  position String
-
-  percentage Int
-  salary     Int
-  startDate  DateTime
-
-  expenses Expense[] @relation("EmployeeExpenses")
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-
-  @@map("employee")
 }

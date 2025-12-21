@@ -24,7 +24,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn, parseAmountInput, parsePercentageInput } from "@/lib/utils";
+import { cn, normalizeNumberInput } from "@/lib/utils";
 import type { Employee } from "../actions/get-employees";
 import { useUpdateEmployee } from "../mutations/use-update-employee";
 import { UpdateEmployeeSchema, type UpdateEmployeeValues } from "../validation";
@@ -45,15 +45,16 @@ export default function EditEmployeeForm({
 		defaultValues: {
 			id: employee.id,
 			name: employee.name,
-			position: employee.position,
-			salary: employee.salary,
+			position: employee.position ?? undefined,
+			salary: employee.salary ?? undefined,
 			percentage: employee.percentage,
 			startDate: employee.startDate,
 		},
 	});
 
-	const onSubmit = async (data: UpdateEmployeeValues) => {
-		await updateEmployeeMutation.mutateAsync(data);
+	const onSubmit = async (values: UpdateEmployeeValues) => {
+		await updateEmployeeMutation.mutateAsync(values);
+		form.reset();
 		onClose();
 	};
 
@@ -87,6 +88,11 @@ export default function EditEmployeeForm({
 									id="position"
 									placeholder="Software Engineer"
 									{...field}
+									value={field.value ?? ""}
+									onChange={(e) => {
+										const value = e.target.value;
+										field.onChange(value === "" ? null : value);
+									}}
 								/>
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>
@@ -105,15 +111,17 @@ export default function EditEmployeeForm({
 								<InputGroup>
 									<InputGroupInput
 										id="salary"
-										type="number"
-										step="1"
-										min="0"
-										placeholder="50000"
+										type="text"
+										inputMode="numeric"
 										{...field}
+										value={
+											field.value === undefined || field.value === null
+												? ""
+												: field.value.toString()
+										}
 										onChange={(e) => {
-											field.onChange(parseAmountInput(e.target.value));
+											field.onChange(normalizeNumberInput(e.target.value));
 										}}
-										value={field.value}
 									/>
 									<InputGroupAddon>
 										<span className="text-gray-500">Ks</span>
@@ -136,17 +144,17 @@ export default function EditEmployeeForm({
 								<InputGroup>
 									<InputGroupInput
 										id="percentage"
-										type="number"
-										step="1"
-										min="0"
-										max="100"
-										placeholder="50"
+										type="text"
+										inputMode="numeric"
 										{...field}
+										value={
+											field.value === undefined || field.value === null
+												? ""
+												: field.value.toString()
+										}
 										onChange={(e) => {
-											const val = parsePercentageInput(e.target.value);
-											field.onChange(val);
+											field.onChange(normalizeNumberInput(e.target.value));
 										}}
-										value={field.value ?? ""}
 									/>
 									<InputGroupAddon>
 										<span className="text-gray-500">%</span>

@@ -7,9 +7,9 @@ import prisma from "@/lib/prisma";
 export const deleteCar = async (id: string) => {
 	await requireAuth();
 
-	z.uuid().parse(id);
-
 	try {
+		z.uuidv4().parse(id);
+
 		const car = await prisma.car.update({
 			where: { id },
 			data: {

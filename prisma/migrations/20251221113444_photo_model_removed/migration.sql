@@ -7,5 +7,9 @@
 -- DropForeignKey
 ALTER TABLE "photo" DROP CONSTRAINT "photo_carId_fkey";
 
+-- AlterTable
+ALTER TABLE "car" ADD COLUMN     "imagePublicId" TEXT,
+ADD COLUMN     "imageUrl" TEXT;
+
 -- DropTable
 DROP TABLE "photo";

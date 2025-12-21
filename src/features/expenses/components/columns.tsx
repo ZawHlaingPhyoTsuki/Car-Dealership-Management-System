@@ -17,7 +17,7 @@ import {
 	HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { Label } from "@/components/ui/label";
-import { formatInLakhsCrores } from "@/lib/utils";
+import { formatNumberSafe } from "@/lib/utils";
 import type { Expense } from "../actions/get-expenses";
 import { DeleteExpenseDialog } from "./delete-expense-dialog";
 import EditExpenseDialog from "./edit-expense-dialog";
@@ -44,10 +44,8 @@ export const columns: ColumnDef<Expense>[] = [
 			<DataTableColumnHeader column={column} title="Amount" />
 		),
 		cell: ({ row }) => {
-			const amount = Number.parseFloat(row.getValue("amount"));
-			if (Number.isNaN(amount)) return "_";
-			const formatted = formatInLakhsCrores(amount);
-			return formatted;
+			const amount = row.getValue<number>("amount");
+			return formatNumberSafe(amount);
 		},
 	},
 	{

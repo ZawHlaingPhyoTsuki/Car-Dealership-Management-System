@@ -1,4 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
+import { formatNumberSafe } from "@/lib/utils";
 import type { CarProfitSummary } from "../actions/get-car-profit";
 
 export const columns: ColumnDef<CarProfitSummary>[] = [
@@ -18,13 +19,13 @@ export const columns: ColumnDef<CarProfitSummary>[] = [
 		},
 	},
 	{
-		accessorKey: "totalProfit",
-		header: () => <div className="text-lg text-right">Total Profit</div>,
+		accessorKey: "totalSellingPrice",
+		header: () => <div className="text-lg text-right">Total Selling Price</div>,
 		cell: ({ row }) => {
-			const profit = row.original.totalProfit;
+			const revenue = row.original.totalSellingPrice;
 			return (
-				<div className="text-right font-bold text-lg text-green-600">
-					{profit.toLocaleString()} THB
+				<div className="text-right font-medium text-lg text-green-600">
+					{formatNumberSafe(revenue)} Ks
 				</div>
 			);
 		},

@@ -12,7 +12,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
-import { formatInLakhsCrores } from "@/lib/utils";
+import { formatNumberSafe } from "@/lib/utils";
 import type { Employee } from "../actions/get-employees";
 import { DeleteEmployeeDialog } from "./delete-employee-dialog";
 import EditEmployeeDialog from "./edit-employee-dialog";
@@ -36,7 +36,7 @@ export const columns: ColumnDef<Employee>[] = [
 		),
 		cell: ({ row }) => {
 			const salary = row.original.salary;
-			return formatInLakhsCrores(salary);
+			return formatNumberSafe(salary);
 		},
 	},
 	{
@@ -53,9 +53,10 @@ export const columns: ColumnDef<Employee>[] = [
 		},
 	},
 	{
-		accessorKey: "position",
+		id: "position",
+		accessorFn: (row) => row.position ?? "",
 		header: () => <Label className="text-lg">Position</Label>,
-		cell: ({ row }) => row.original.position,
+		cell: ({ row }) => row.original.position ?? "-",
 	},
 	{
 		accessorKey: "startDate",

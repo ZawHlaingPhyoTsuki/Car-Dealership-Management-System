@@ -15,14 +15,12 @@ export const createShareholder = async (data: CreateCarSharerValues) => {
 		return await prisma.shareholder.create({
 			data: {
 				name: validatedData.name,
-				email: validatedData.email,
 				phone: validatedData.phone,
 				notes: validatedData.notes,
 			},
 			select: {
 				id: true,
 				name: true,
-				email: true,
 				phone: true,
 				notes: true,
 			},

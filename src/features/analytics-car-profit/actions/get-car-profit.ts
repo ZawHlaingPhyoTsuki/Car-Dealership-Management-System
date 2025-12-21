@@ -20,7 +20,7 @@ export async function getCarProfitSummary() {
 			select: {
 				id: true,
 				name: true,
-				price: true,
+				sellingPrice: true,
 				soldAt: true,
 			},
 			orderBy: {
@@ -34,7 +34,7 @@ export async function getCarProfitSummary() {
 			{
 				month: string;
 				carsSold: number;
-				totalProfit: number;
+				totalSellingPrice: number;
 			}
 		> = {};
 
@@ -48,12 +48,12 @@ export async function getCarProfitSummary() {
 				monthlyProfits[monthKey] = {
 					month: monthName,
 					carsSold: 0,
-					totalProfit: 0,
+					totalSellingPrice: 0, // Sum of selling prices
 				};
 			}
 
 			monthlyProfits[monthKey].carsSold += 1;
-			monthlyProfits[monthKey].totalProfit += car.price;
+			monthlyProfits[monthKey].totalSellingPrice += car.sellingPrice || 0;
 		});
 
 		// Convert to array and sort by month (descending)

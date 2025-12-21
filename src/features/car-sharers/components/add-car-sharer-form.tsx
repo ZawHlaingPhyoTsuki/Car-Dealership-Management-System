@@ -29,7 +29,6 @@ export default function AddCarSharerForm({ onClose }: AddCarFormProps) {
 		resolver: zodResolver(CreateCarSharerSchema),
 		defaultValues: {
 			name: "",
-			email: "",
 			phone: "",
 			notes: "",
 		},
@@ -50,33 +49,11 @@ export default function AddCarSharerForm({ onClose }: AddCarFormProps) {
 						name="name"
 						control={form.control}
 						render={({ field, fieldState }) => (
-							<Field
-								data-invalid={fieldState.invalid}
-								className="md:col-span-2"
-							>
+							<Field data-invalid={fieldState.invalid}>
 								<FieldLabel htmlFor="name">
 									Shareholder Name <span className="text-red-500">*</span>
 								</FieldLabel>
 								<Input id="name" placeholder="John Doe" {...field} />
-								{fieldState.error && (
-									<FieldError>{fieldState.error.message}</FieldError>
-								)}
-							</Field>
-						)}
-					/>
-
-					{/* Email */}
-					<Controller
-						name="email"
-						control={form.control}
-						render={({ field, fieldState }) => (
-							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor="email">Email</FieldLabel>
-								<Input
-									id="email"
-									placeholder="john.doe@example.com"
-									{...field}
-								/>
 								{fieldState.error && (
 									<FieldError>{fieldState.error.message}</FieldError>
 								)}

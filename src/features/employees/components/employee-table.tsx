@@ -26,8 +26,8 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { columns } from "@/features/employees/components/columns";
-import { useEmployees } from "@/features/employees/queries/use-employees";
+import { useEmployees } from "../queries/use-employees";
+import { columns } from "./columns";
 
 export function EmployeeTable() {
 	const { data = [], isLoading, error, refetch } = useEmployees();
@@ -113,6 +113,17 @@ export function EmployeeTable() {
 						value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
 						onChange={(event) =>
 							table.getColumn("name")?.setFilterValue(event.target.value)
+						}
+						className="max-w-sm mr-4"
+					/>
+					<Input
+						key="position"
+						placeholder="Filter by position..."
+						value={
+							(table.getColumn("position")?.getFilterValue() as string) ?? ""
+						}
+						onChange={(event) =>
+							table.getColumn("position")?.setFilterValue(event.target.value)
 						}
 						className="max-w-sm mr-4"
 					/>
