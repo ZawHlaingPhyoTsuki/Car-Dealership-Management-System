@@ -188,3 +188,40 @@ export const calculatePercentageFromAmount = (
 export const isLakhs = (amount: number): boolean => {
 	return amount >= 100000;
 };
+
+// V2
+
+/*
+ * Formats a number with thousand separators and returns a safe string.
+ * If the input is not a number, returns the fallback value.
+ *
+ * @param value - The number to format (optional, defaults to undefined)
+ * @param fallback - The value to return if the input is not a number (optional, defaults to "-")
+ * @returns A formatted string with thousand separators or the fallback value
+ * @example
+ * - formatNumberSafe(1234567) → "1,234,567"
+ * - formatNumberSafe(undefined) → "-"
+ * - formatNumberSafe(null) → "-"
+ * - formatNumberSafe("abc") → "-"
+ */
+export function formatNumberSafe(
+	value?: number | null,
+	fallback = "-",
+): string {
+	if (typeof value !== "number") return fallback;
+	return new Intl.NumberFormat("en-US").format(value);
+}
+
+export function normalizeNumberInput(value: string): number | undefined {
+	if (value === "") return undefined;
+
+	// Remove all non-digits
+	const digits = value.replace(/\D/g, "");
+
+	// Remove leading zeros but keep single "0"
+	const cleaned = digits.replace(/^0+(?=\d)/, "");
+
+	// Convert to number
+	const num = cleaned === "" ? 0 : parseInt(cleaned, 10);
+	return Number.isNaN(num) ? undefined : num;
+}

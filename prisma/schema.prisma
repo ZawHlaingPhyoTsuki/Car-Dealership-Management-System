@@ -90,9 +90,9 @@ model Car {
   companyInvestedAmount     Int @default(0)
   shareholderInvestedAmount Int @default(0)
 
-  totalExpenses           Int @default(0) // expenses of a car
-  totalCost               Int @default(0) // purchasedPrice + totalExpenses of a car
-  profitAmount            Int @default(0) // Selling - totalCost (purchasedPrice + expenses)
+  // totalExpenses           Int @default(0) // expenses of a car
+  // totalCost               Int @default(0) // purchasedPrice + totalExpenses of a car
+  // profitAmount            Int @default(0) // Selling - totalCost (purchasedPrice + expenses)
   companyProfitAmount     Int @default(0) // profitAmount - shareholderProfitAmount
   shareholderProfitAmount Int @default(0) // profitAmount - companyProfitAmount
 
