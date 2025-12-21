@@ -76,11 +76,12 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 		onClose?.();
 	};
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <useEffect>
 	useEffect(() => {
 		if (status !== CarStatus.SOLD) {
 			form.setValue("soldAt", null);
 		}
-	}, [status, form.setValue]);
+	}, [status]);
 
 	return (
 		<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

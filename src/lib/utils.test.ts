@@ -30,7 +30,7 @@ describe("lib/utils", () => {
 			expect(formatNumberSafe(null, "N/A")).toBe("N/A");
 		});
 
-		it("should return fallback for non-number values", () => {
+		it("should return fallback for NaN", () => {
 			expect(formatNumberSafe(NaN)).toBe("-");
 		});
 	});
