@@ -67,9 +67,9 @@ async function main() {
 	}
 
 	// ================= CLEAR DATA =================
+	// Note: Photo model no longer exists, so we don't need to delete it
 	await prisma.expense.deleteMany();
 	await prisma.expenseCategory.deleteMany();
-	await prisma.photo.deleteMany();
 	await prisma.car.deleteMany();
 	await prisma.shareholder.deleteMany();
 	await prisma.employee.deleteMany();
@@ -185,8 +185,13 @@ async function main() {
 			? purchasedPrice - Math.floor(purchasedPrice * 0.4)
 			: purchasedPrice;
 
+		// Randomly decide if car should have an image
+		const hasImage = faker.datatype.boolean(0.7);
+
 		cars.push({
 			name: faker.vehicle.vehicle(),
+			imageUrl: hasImage ? faker.image.url({ width: 1024, height: 768 }) : null,
+			imagePublicId: hasImage ? faker.string.uuid() : null,
 			purchasedPrice,
 			sellingPrice: sellingPrice,
 			shareholderInvestedAmount,
@@ -272,27 +277,6 @@ async function main() {
 	});
 
 	await Promise.all(updatePromises);
-
-	// ================= PHOTOS (Optional) =================
-	console.log("📸 Creating car photos...");
-
-	const photoPromises = createdCars.map(async (car) => {
-		const photoCount = faker.number.int({ min: 0, max: 5 });
-
-		for (let j = 0; j < photoCount; j++) {
-			await prisma.photo.create({
-				data: {
-					url: faker.image.url({ width: 1024, height: 768 }),
-					publicId: faker.string.uuid(),
-					car: {
-						connect: { id: car.id },
-					},
-				},
-			});
-		}
-	});
-
-	await Promise.all(photoPromises);
 
 	console.log("✅ Seeding completed successfully");
 }

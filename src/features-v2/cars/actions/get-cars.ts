@@ -28,16 +28,6 @@ export async function getCars() {
 						createdAt: true,
 					},
 				},
-				photos: {
-					where: {
-						deletedAt: null,
-					},
-					select: {
-						id: true,
-						url: true,
-					},
-					take: 1, // Just get first photo for thumbnail
-				},
 			},
 			orderBy: {
 				createdAt: "desc",
@@ -62,6 +52,7 @@ export async function getCars() {
 			return {
 				id: car.id,
 				name: car.name,
+				imageUrl: car.imageUrl,
 				purchasedPrice: car.purchasedPrice,
 				sellingPrice: car.sellingPrice,
 				companyInvestedAmount: car.companyInvestedAmount,
@@ -74,7 +65,6 @@ export async function getCars() {
 				soldAt: car.soldAt,
 				shareholderId: car.shareholderId,
 				shareholder: car.shareholder,
-				photos: car.photos,
 				createdAt: car.createdAt,
 
 				// Calculated fields

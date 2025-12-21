@@ -39,7 +39,7 @@ export const columns: ColumnDef<Car>[] = [
 			return (
 				<div className="flex items-center gap-2 min-w-0">
 					<Image
-						src="/placeholder.png"
+						src={car.imageUrl || "/placeholder.png"}
 						alt="placeholder"
 						width={50}
 						height={50}

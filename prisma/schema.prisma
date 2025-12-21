@@ -82,8 +82,10 @@ model Shareholder {
 }
 
 model Car {
-  id   String @id @default(uuid())
-  name String
+  id            String  @id @default(uuid())
+  name          String
+  imageUrl      String?
+  imagePublicId String?
 
   purchasedPrice            Int @default(0)
   sellingPrice              Int @default(0)
@@ -107,7 +109,6 @@ model Car {
   deletedAt     DateTime?
   shareholder   Shareholder? @relation(fields: [shareholderId], references: [id], onDelete: SetNull)
   expenses      Expense[]
-  photos        Photo[]
 
   @@map("car")
 }
@@ -161,19 +162,4 @@ enum CarStatus {
   IN_MAINTENANCE
   RESERVED
   SOLD
-}
-
-model Photo {
-  id       String @id @default(uuid())
-  url      String
-  publicId String
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-
-  carId String?
-  car   Car?    @relation(fields: [carId], references: [id], onDelete: SetNull)
-
-  @@map("photo")
 }
