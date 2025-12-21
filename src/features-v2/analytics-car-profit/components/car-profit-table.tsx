@@ -23,9 +23,9 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { formatNumberSafe } from "@/lib/utils";
 import { useCarProfitSummary } from "../queries/use-car-profit";
 import { columns } from "./columns";
-import { formatNumberSafe } from "@/lib/utils";
 
 export default function CarProfitTable() {
 	const { data = [], isLoading, error } = useCarProfitSummary();
