@@ -12,10 +12,10 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
-import DeleteCarDialog from "@/features/cars/components/delete-car-dialog";
 import type { Car } from "@/features-v2/cars/actions/get-cars";
+import DeleteCarDialog from "@/features-v2/cars/components/delete-car-dialog";
+import EditCarDialog from "@/features-v2/cars/components/edit-car-dialog";
 import { formatNumberSafe } from "@/lib/utils";
-import EditCarSharerDialog from "./edit-car-sharer-dialog";
 
 export const columns: ColumnDef<Car>[] = [
 	{
@@ -165,7 +165,7 @@ function CarActions({ car }: { car: Car }) {
 				</DropdownMenuContent>
 			</DropdownMenu>
 
-			<EditCarSharerDialog
+			<EditCarDialog
 				car={car}
 				open={showEditDialog}
 				onOpenChange={setShowEditDialog}

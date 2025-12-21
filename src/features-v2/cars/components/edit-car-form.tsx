@@ -61,6 +61,8 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 			sellingPrice: car.sellingPrice,
 			companyInvestedAmount: car.companyInvestedAmount,
 			shareholderInvestedAmount: car.shareholderInvestedAmount,
+			companyProfitAmount: car.companyProfitAmount,
+			shareholderProfitAmount: car.shareholderProfitAmount,
 			licenseNumber: car.licenseNumber,
 			soldAt: car.soldAt,
 			notes: car.notes,
@@ -133,8 +135,11 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 							control={form.control}
 							render={({ field, fieldState }) => (
 								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel>Purchased Price</FieldLabel>
+									<FieldLabel htmlFor="purchasedPrice">
+										Purchased Price
+									</FieldLabel>
 									<Input
+										id="purchasedPrice"
 										type="number"
 										min={0}
 										{...field}
@@ -160,8 +165,9 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 							control={form.control}
 							render={({ field, fieldState }) => (
 								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel>Selling Price</FieldLabel>
+									<FieldLabel htmlFor="sellingPrice">Selling Price</FieldLabel>
 									<Input
+										id="sellingPrice"
 										type="number"
 										min={0}
 										{...field}
@@ -187,8 +193,11 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 							control={form.control}
 							render={({ field, fieldState }) => (
 								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel>Company Invested Amount</FieldLabel>
+									<FieldLabel htmlFor="companyInvestedAmount">
+										Company Invested Amount
+									</FieldLabel>
 									<Input
+										id="companyInvestedAmount"
 										type="number"
 										min={0}
 										{...field}
@@ -214,8 +223,11 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 							control={form.control}
 							render={({ field, fieldState }) => (
 								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel>Shareholder Invested Amount</FieldLabel>
+									<FieldLabel htmlFor="shareholderInvestedAmount">
+										Sharer Buy Amount
+									</FieldLabel>
 									<Input
+										id="shareholderInvestedAmount"
 										type="number"
 										min={0}
 										{...field}
@@ -241,8 +253,11 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 							control={form.control}
 							render={({ field, fieldState }) => (
 								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel>Company Profit Amount</FieldLabel>
+									<FieldLabel htmlFor="companyProfitAmount">
+										Company Profit Amount
+									</FieldLabel>
 									<Input
+										id="companyProfitAmount"
 										type="number"
 										min={0}
 										{...field}
@@ -268,8 +283,11 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 							control={form.control}
 							render={({ field, fieldState }) => (
 								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel>Shareholder Profit Amount</FieldLabel>
+									<FieldLabel htmlFor="shareholderProfitAmount">
+										Shareholder Profit Amount
+									</FieldLabel>
 									<Input
+										id="shareholderProfitAmount"
 										type="number"
 										min={0}
 										{...field}
@@ -295,8 +313,11 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 							control={form.control}
 							render={({ field, fieldState }) => (
 								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel>License Number</FieldLabel>
+									<FieldLabel htmlFor="licenseNumber">
+										License Number
+									</FieldLabel>
 									<Input
+										id="licenseNumber"
 										{...field}
 										value={field.value ?? ""}
 										onChange={(e) => {

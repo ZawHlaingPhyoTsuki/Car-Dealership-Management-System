@@ -25,8 +25,8 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
-import { useGetCars } from "@/features/cars/queries/use-cars";
-import { useEmployees } from "@/features/employees/queries/use-employees";
+import { useGetCars } from "@/features-v2/cars/queries/use-cars";
+import { useEmployees } from "@/features-v2/employees/queries/use-employees";
 import { cn, normalizeNumberInput } from "@/lib/utils";
 import { useCreateExpense } from "../mutations/use-create-expense";
 import { useExpenseCategories } from "../queries/get-expense-category";

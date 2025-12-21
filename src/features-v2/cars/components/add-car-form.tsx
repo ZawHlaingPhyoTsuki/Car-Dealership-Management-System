@@ -58,6 +58,8 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 			sellingPrice: 0,
 			companyInvestedAmount: 0,
 			shareholderInvestedAmount: 0,
+			companyProfitAmount: 0,
+			shareholderProfitAmount: 0,
 			licenseNumber: "",
 			soldAt: null,
 			notes: "",
@@ -249,7 +251,7 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 							render={({ field, fieldState }) => (
 								<Field data-invalid={fieldState.invalid}>
 									<FieldLabel htmlFor="companyProfitAmount">
-										Company Profit Amount
+										7hr Profit Amount
 									</FieldLabel>
 									<Input
 										type="number"
