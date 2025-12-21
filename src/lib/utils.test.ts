@@ -20,6 +20,15 @@ describe("lib/utils", () => {
 			expect(formatNumberSafe(1000)).toBe("1,000");
 			expect(formatNumberSafe(1000000)).toBe("1,000,000");
 		});
+
+		it("should return fallback for non-number values", () => {
+			expect(formatNumberSafe(null)).toBe("-");
+			expect(formatNumberSafe(undefined)).toBe("-");
+		});
+
+		it("should use custom fallback when provided", () => {
+			expect(formatNumberSafe(null, "N/A")).toBe("N/A");
+		});
 	});
 
 	describe("normalizeNumberInput", () => {
@@ -27,6 +36,14 @@ describe("lib/utils", () => {
 			expect(normalizeNumberInput("123abc")).toBe(123);
 			expect(normalizeNumberInput("00123")).toBe(123);
 			expect(normalizeNumberInput("")).toBe(undefined);
+		});
+
+		it("should return 0 for strings with only non-digits", () => {
+			expect(normalizeNumberInput("abc")).toBe(0);
+		});
+
+		it("should handle single zero", () => {
+			expect(normalizeNumberInput("0")).toBe(0);
 		});
 	});
 });

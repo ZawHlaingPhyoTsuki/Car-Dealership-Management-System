@@ -11,7 +11,7 @@ export async function createCar(values: CreateCarValues) {
 	try {
 		const { shareholderId, ...validatedData } = CreateCarSchema.parse(values);
 
-		const createDate: Prisma.CarCreateInput = {
+		const createData: Prisma.CarCreateInput = {
 			name: validatedData.name,
 			status: validatedData.status,
 
@@ -31,7 +31,7 @@ export async function createCar(values: CreateCarValues) {
 
 		const car = await prisma.car.create({
 			data: {
-				...createDate,
+				...createData,
 				shareholder: shareholderId
 					? { connect: { id: shareholderId } }
 					: undefined,

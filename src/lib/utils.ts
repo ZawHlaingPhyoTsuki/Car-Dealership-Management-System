@@ -18,8 +18,6 @@ export const isLakhs = (amount: number): boolean => {
 	return amount >= 100000;
 };
 
-// V2
-
 /*
  * Formats a number with thousand separators and returns a safe string.
  * If the input is not a number, returns the fallback value.

@@ -111,8 +111,8 @@ export default function EditEmployeeForm({
 								<InputGroup>
 									<InputGroupInput
 										id="salary"
-										type="number"
-										step="1"
+										type="text"
+										inputMode="numeric"
 										{...field}
 										value={
 											field.value === undefined || field.value === null
@@ -144,9 +144,8 @@ export default function EditEmployeeForm({
 								<InputGroup>
 									<InputGroupInput
 										id="percentage"
-										type="number"
-										step="1"
-										min="0"
+										type="text"
+										inputMode="numeric"
 										{...field}
 										value={
 											field.value === undefined || field.value === null

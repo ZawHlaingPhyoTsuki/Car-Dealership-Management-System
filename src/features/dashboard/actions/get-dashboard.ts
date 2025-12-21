@@ -9,35 +9,22 @@ export async function getDashboardStats() {
 	const lastMonthStart = startOfMonth(subMonths(new Date(), 1));
 	const lastMonthEnd = endOfMonth(subMonths(new Date(), 1));
 
-	// Get cars sold in current month for revenue and profit calculations
-	const currentMonthCars = await prisma.car.findMany({
-		where: {
-			status: "SOLD",
-			soldAt: {
-				gte: currentMonthStart,
-				lte: currentMonthEnd,
+	const [currentMonthCars, lastMonthCars] = await Promise.all([
+		prisma.car.findMany({
+			where: {
+				status: "SOLD",
+				soldAt: { gte: currentMonthStart, lte: currentMonthEnd },
 			},
-		},
-		select: {
-			purchasedPrice: true,
-			sellingPrice: true,
-		},
-	});
-
-	// Get cars sold in last month for revenue and profit calculations
-	const lastMonthCars = await prisma.car.findMany({
-		where: {
-			status: "SOLD",
-			soldAt: {
-				gte: lastMonthStart,
-				lte: lastMonthEnd,
+			select: { purchasedPrice: true, sellingPrice: true },
+		}),
+		prisma.car.findMany({
+			where: {
+				status: "SOLD",
+				soldAt: { gte: lastMonthStart, lte: lastMonthEnd },
 			},
-		},
-		select: {
-			purchasedPrice: true,
-			sellingPrice: true,
-		},
-	});
+			select: { purchasedPrice: true, sellingPrice: true },
+		}),
+	]);
 
 	// Calculate selling price and profit for current month
 	const totalSellingPriceCurrent = currentMonthCars.reduce(

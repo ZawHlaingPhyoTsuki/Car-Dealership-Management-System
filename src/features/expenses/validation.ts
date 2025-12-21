@@ -9,7 +9,7 @@ export const CreateExpenseSchema = z.object({
 		.nullable(),
 	amount: z.int().min(0, "Amount must be at least 0"),
 	carId: z.uuidv4("Car Id must be a valid UUID").optional().nullable(),
-	notes: z.string().optional().nullable(),
+	notes: z.string().trim().optional().nullable(),
 });
 
 export const UpdateExpenseSchema = CreateExpenseSchema.partial().extend({

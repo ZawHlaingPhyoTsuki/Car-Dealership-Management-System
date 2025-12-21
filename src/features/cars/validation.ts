@@ -1,4 +1,4 @@
-import z from "zod";
+import * as z from "zod";
 import { CarStatus } from "@/app/generated/prisma/enums";
 
 export const CreateCarSchema = z.object({
@@ -20,7 +20,7 @@ export const CreateCarSchema = z.object({
 	licenseNumber: z.string().optional().nullable(),
 	soldAt: z.date().optional().nullable(),
 
-	notes: z.string().optional().nullable(),
+	notes: z.string().trim().optional().nullable(),
 
 	shareholderId: z.uuidv4().optional().nullable(),
 });

@@ -40,8 +40,8 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 		defaultValues: {
 			name: "",
 			position: null,
-			salary: 0,
-			percentage: 0,
+			salary: undefined,
+			percentage: undefined,
 			startDate: new Date(),
 		},
 	});
@@ -106,10 +106,9 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 								<FieldLabel htmlFor="salary">Salary</FieldLabel>
 								<InputGroup>
 									<InputGroupInput
-										type="number"
-										min={0}
-										step={1}
 										id="salary"
+										type="text"
+										inputMode="numeric"
 										{...field}
 										value={
 											field.value === undefined || field.value === null
@@ -141,9 +140,8 @@ export default function AddEmployeeForm({ onClose }: AddEmployeeFormProps) {
 								<InputGroup>
 									<InputGroupInput
 										id="percentage"
-										type="number"
-										step="1"
-										min="0"
+										type="text"
+										inputMode="numeric"
 										{...field}
 										value={
 											field.value === undefined || field.value === null

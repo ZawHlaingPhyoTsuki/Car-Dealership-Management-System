@@ -61,7 +61,7 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 			date: new Date(),
 			paidToId: null,
 			categoryId: null,
-			amount: 0,
+			amount: undefined,
 			carId: null,
 			notes: "",
 		},
@@ -205,7 +205,7 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 						isError={isErrorCars}
 						allowNone
 						matchTriggerWidth
-						getLabel={(car) => `${car.name} ${car.licenseNumber ?? ""}`}
+						getLabel={(car) => car.name}
 						getValue={(car) => car.id}
 						getSubLabel={(car) => car.licenseNumber ?? "No License Number"}
 					/>

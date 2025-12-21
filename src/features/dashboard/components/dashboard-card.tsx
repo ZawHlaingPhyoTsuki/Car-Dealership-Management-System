@@ -8,6 +8,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 export interface DashboardCardProps {
 	description: string;
@@ -29,7 +30,7 @@ export default function DashboardCard({
 	className = "",
 }: DashboardCardProps) {
 	return (
-		<Card className={`@container/card ${className}`}>
+		<Card className={cn("@container/card", className)}>
 			<CardHeader>
 				<CardDescription className="flex items-center gap-2">
 					<Icon className="w-4 h-4" />

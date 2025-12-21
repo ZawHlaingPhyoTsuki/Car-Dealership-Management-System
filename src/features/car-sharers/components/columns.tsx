@@ -65,7 +65,9 @@ export const columns: ColumnDef<Car>[] = [
 	},
 	{
 		accessorKey: "sellingPrice",
-		header: () => <Label className="text-lg">Selling Price</Label>,
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Selling Price" />
+		),
 		cell: ({ row }) => {
 			const sellingPrice = row.getValue<number>("sellingPrice");
 			return formatNumberSafe(sellingPrice);
@@ -131,7 +133,7 @@ export const columns: ColumnDef<Car>[] = [
 		},
 	},
 	{
-		accessorKey: "actions",
+		id: "actions",
 		header: () => <Label className="text-lg">Actions</Label>,
 		cell: ({ row }) => <CarActions car={row.original} />,
 	},

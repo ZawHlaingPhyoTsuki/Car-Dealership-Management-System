@@ -17,6 +17,13 @@ function formatLakhs(amount: number): string {
 	return (amount / 100000).toFixed(2);
 }
 
+function formatCurrency(amount: number): string {
+	if (isLakhs(amount)) {
+		return `${formatLakhs(amount)} lakhs`;
+	}
+	return `${amount} Ks`;
+}
+
 export default function DashboardCards() {
 	const { data, isLoading } = useDashboardStats();
 
@@ -39,9 +46,10 @@ export default function DashboardCards() {
 		totalPurchasedPriceDiff: 0,
 	};
 
-	const cards: DashboardCardProps[] = [
+	const cards: (DashboardCardProps & { id: string })[] = [
 		// Cars Sold Card
 		{
+			id: "cars-sold",
 			description: "Car Sales",
 			icon: CarFront,
 			value: (
@@ -79,6 +87,7 @@ export default function DashboardCards() {
 		},
 		// Car Selling Price Card
 		{
+			id: "selling-price",
 			description: "Car Selling Price Overview",
 			icon: DollarSign,
 			value: (
@@ -86,12 +95,7 @@ export default function DashboardCards() {
 					<span
 						className={`${safeData.totalSellingPriceDiff >= 0 ? "text-green-500" : "text-red-500"}`}
 					>
-						{isLakhs(safeData.totalSellingPriceCurrent)
-							? formatLakhs(safeData.totalSellingPriceCurrent)
-							: safeData.totalSellingPriceCurrent}
-					</span>{" "}
-					<span className="text-xl text-muted-foreground">
-						{isLakhs(safeData.totalSellingPriceCurrent) ? "lakhs" : "Ks"}
+						{formatCurrency(safeData.totalSellingPriceCurrent)}
 					</span>
 				</>
 			),
@@ -103,24 +107,14 @@ export default function DashboardCards() {
 						<TrendingDown className="text-red-500" />
 					)}
 					{safeData.totalSellingPriceDiff >= 0 ? "+" : "-"}
-					{isLakhs(Math.abs(safeData.totalSellingPriceDiff))
-						? `${formatLakhs(Math.abs(safeData.totalSellingPriceDiff))} lakhs`
-						: `${Math.abs(safeData.totalSellingPriceDiff)} Ks`}
+					{formatCurrency(Math.abs(safeData.totalSellingPriceDiff))}
 				</Badge>
 			),
 			footerTitle: (
 				<>
 					{safeData.totalSellingPriceDiff >= 0
-						? `Up ${
-								isLakhs(Math.abs(safeData.totalSellingPriceDiff))
-									? `${formatLakhs(Math.abs(safeData.totalSellingPriceDiff))} lakhs`
-									: `${Math.abs(safeData.totalSellingPriceDiff)} Ks`
-							} this month`
-						: `Down ${
-								isLakhs(Math.abs(safeData.totalSellingPriceDiff))
-									? `${formatLakhs(Math.abs(safeData.totalSellingPriceDiff))} lakhs`
-									: `${Math.abs(safeData.totalSellingPriceDiff)} Ks`
-							} this month`}{" "}
+						? `Up ${formatCurrency(Math.abs(safeData.totalSellingPriceDiff))} this month`
+						: `Down ${formatCurrency(Math.abs(safeData.totalSellingPriceDiff))} this month`}{" "}
 					{safeData.totalSellingPriceDiff >= 0 ? (
 						<TrendingUp className="size-4 text-green-500" />
 					) : (
@@ -132,44 +126,38 @@ export default function DashboardCards() {
 		},
 		// Total Car Purchased Price Card
 		{
+			id: "purchased-price",
 			description: "Car Purchased Price Overview",
 			icon: BanknoteArrowUp,
 			value: (
 				<>
 					<span
-						className={`${safeData.totalPurchasedPriceDiff >= 0 ? "text-green-500" : "text-red-500"}`}
+						className={`${safeData.totalPurchasedPriceDiff <= 0 ? "text-green-500" : "text-red-500"}`}
 					>
-						{isLakhs(safeData.totalPurchasedPriceCurrent)
-							? formatLakhs(safeData.totalPurchasedPriceCurrent)
-							: safeData.totalPurchasedPriceCurrent}
-					</span>{" "}
-					<span className="text-xl text-muted-foreground">
-						{isLakhs(safeData.totalPurchasedPriceCurrent) ? "lakhs" : "Ks"}
+						{formatCurrency(safeData.totalPurchasedPriceCurrent)}
 					</span>
 				</>
 			),
 			badge: (
 				<Badge variant="outline">
-					{safeData.totalPurchasedPriceDiff >= 0 ? (
-						<TrendingUp className="text-green-500" />
+					{safeData.totalPurchasedPriceDiff <= 0 ? (
+						+(<TrendingDown className="text-green-500" />)
 					) : (
-						<TrendingDown className="text-red-500" />
+						<TrendingUp className="text-red-500" />
 					)}
-					{safeData.totalPurchasedPriceDiff >= 0 ? "+" : "-"}
-					{isLakhs(Math.abs(safeData.totalPurchasedPriceDiff))
-						? `${formatLakhs(Math.abs(safeData.totalPurchasedPriceDiff))} lakhs`
-						: `${Math.abs(safeData.totalPurchasedPriceDiff)} Ks`}
+					{safeData.totalPurchasedPriceDiff <= 0 ? "-" : "+"}
+					{formatCurrency(Math.abs(safeData.totalPurchasedPriceDiff))}
 				</Badge>
 			),
 			footerTitle: (
 				<>
-					{safeData.totalPurchasedPriceDiff >= 0
-						? "Good financial performance"
-						: "Needs cost optimization"}{" "}
-					{safeData.totalPurchasedPriceDiff >= 0 ? (
-						<TrendingUp className="size-4 text-green-500" />
+					{safeData.totalPurchasedPriceDiff <= 0
+						? "Good cost management"
+						: "Costs trending higher"}{" "}
+					{safeData.totalPurchasedPriceDiff <= 0 ? (
+						<TrendingDown className="size-4 text-green-500" />
 					) : (
-						<TrendingDown className="size-4 text-red-500" />
+						<TrendingUp className="size-4 text-red-500" />
 					)}
 				</>
 			),
@@ -181,7 +169,7 @@ export default function DashboardCards() {
 		<div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-3">
 			{cards.map((card) => (
 				<DashboardCard
-					key={card.description}
+					key={card.id}
 					description={card.description}
 					icon={card.icon}
 					value={card.value}

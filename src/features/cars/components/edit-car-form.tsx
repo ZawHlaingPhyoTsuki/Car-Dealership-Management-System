@@ -140,8 +140,8 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 									</FieldLabel>
 									<Input
 										id="purchasedPrice"
-										type="number"
-										min={0}
+										type="text"
+										inputMode="numeric"
 										{...field}
 										value={
 											field.value === undefined || field.value === null
@@ -168,8 +168,8 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 									<FieldLabel htmlFor="sellingPrice">Selling Price</FieldLabel>
 									<Input
 										id="sellingPrice"
-										type="number"
-										min={0}
+										type="text"
+										inputMode="numeric"
 										{...field}
 										value={
 											field.value === undefined || field.value === null
@@ -198,8 +198,8 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 									</FieldLabel>
 									<Input
 										id="companyInvestedAmount"
-										type="number"
-										min={0}
+										type="text"
+										inputMode="numeric"
 										{...field}
 										value={
 											field.value === undefined || field.value === null
@@ -228,8 +228,8 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 									</FieldLabel>
 									<Input
 										id="shareholderInvestedAmount"
-										type="number"
-										min={0}
+										type="text"
+										inputMode="numeric"
 										{...field}
 										value={
 											field.value === undefined || field.value === null
@@ -258,8 +258,8 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 									</FieldLabel>
 									<Input
 										id="companyProfitAmount"
-										type="number"
-										min={0}
+										type="text"
+										inputMode="numeric"
 										{...field}
 										value={
 											field.value === undefined || field.value === null
@@ -288,8 +288,8 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 									</FieldLabel>
 									<Input
 										id="shareholderProfitAmount"
-										type="number"
-										min={0}
+										type="text"
+										inputMode="numeric"
 										{...field}
 										value={
 											field.value === undefined || field.value === null

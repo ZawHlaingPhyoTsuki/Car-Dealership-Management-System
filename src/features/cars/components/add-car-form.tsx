@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { CarStatus } from "@/app/generated/prisma/enums";
 import PopoverSelect from "@/components/shared/popover-select";
@@ -54,13 +55,13 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 		defaultValues: {
 			name: "",
 			status: CarStatus.AVAILABLE,
-			purchasedPrice: 0,
-			sellingPrice: 0,
-			companyInvestedAmount: 0,
-			shareholderInvestedAmount: 0,
-			companyProfitAmount: 0,
-			shareholderProfitAmount: 0,
-			licenseNumber: "",
+			purchasedPrice: undefined,
+			sellingPrice: undefined,
+			companyInvestedAmount: undefined,
+			shareholderInvestedAmount: undefined,
+			companyProfitAmount: undefined,
+			shareholderProfitAmount: undefined,
+			licenseNumber: null,
 			soldAt: null,
 			notes: "",
 			shareholderId: null,
@@ -74,6 +75,12 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 		form.reset();
 		onClose?.();
 	};
+
+	useEffect(() => {
+		if (status !== CarStatus.SOLD) {
+			form.setValue("soldAt", null);
+		}
+	}, [status, form]);
 
 	return (
 		<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -136,8 +143,8 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 										Purchased Price
 									</FieldLabel>
 									<Input
-										type="number"
-										min={0}
+										type="text"
+										inputMode="numeric"
 										id="purchasedPrice"
 										{...field}
 										value={
@@ -164,8 +171,8 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 								<Field data-invalid={fieldState.invalid}>
 									<FieldLabel htmlFor="sellingPrice">Selling Price</FieldLabel>
 									<Input
-										type="number"
-										min={0}
+										type="text"
+										inputMode="numeric"
 										id="sellingPrice"
 										{...field}
 										value={
@@ -194,8 +201,8 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 										7hr Buy Amount
 									</FieldLabel>
 									<Input
-										type="number"
-										min={0}
+										type="text"
+										inputMode="numeric"
 										id="companyInvestedAmount"
 										{...field}
 										value={
@@ -224,8 +231,8 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 										Sharer Buy Amount
 									</FieldLabel>
 									<Input
-										type="number"
-										min={0}
+										type="text"
+										inputMode="numeric"
 										id="shareholderInvestedAmount"
 										{...field}
 										value={
@@ -254,10 +261,9 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 										7hr Profit Amount
 									</FieldLabel>
 									<Input
-										type="number"
-										min="0"
+										type="text"
+										inputMode="numeric"
 										id="companyProfitAmount"
-										step="1"
 										{...field}
 										value={
 											field.value === undefined || field.value === null
@@ -285,8 +291,8 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 										Shareholder Profit Amount
 									</FieldLabel>
 									<Input
-										type="number"
-										min={0}
+										type="text"
+										inputMode="numeric"
 										id="shareholderProfitAmount"
 										{...field}
 										value={

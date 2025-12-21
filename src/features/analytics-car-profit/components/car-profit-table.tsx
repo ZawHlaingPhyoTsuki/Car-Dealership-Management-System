@@ -70,8 +70,6 @@ export default function CarProfitTable() {
 				{
 					carsSold: 0,
 					totalRevenue: 0,
-					totalCost: 0,
-					totalProfit: 0,
 				},
 			),
 		[filteredData],
@@ -98,7 +96,7 @@ export default function CarProfitTable() {
 				acc.totalSellingPrice += row.original.totalSellingPrice;
 				return acc;
 			},
-			{ carsSold: 0, totalSellingPrice: 0, totalCost: 0, totalProfit: 0 },
+			{ carsSold: 0, totalSellingPrice: 0 },
 		);
 
 		// Append TOTAL row

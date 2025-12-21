@@ -20,7 +20,6 @@ export async function getCarProfitSummary() {
 			select: {
 				id: true,
 				name: true,
-				purchasedPrice: true,
 				sellingPrice: true,
 				soldAt: true,
 			},

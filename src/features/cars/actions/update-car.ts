@@ -12,15 +12,6 @@ export const updateCar = async (data: UpdateCarValues) => {
 	try {
 		const { id, ...validatedData } = UpdateCarSchema.parse(data);
 
-		// Check if car exists
-		const existingCar = await prisma.car.findUnique({
-			where: { id },
-		});
-
-		if (!existingCar) {
-			throw new Error("Car not found");
-		}
-
 		const updateData: Prisma.CarUpdateInput = {};
 
 		if (validatedData.name !== undefined) {

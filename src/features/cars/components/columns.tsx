@@ -40,7 +40,7 @@ export const columns: ColumnDef<Car>[] = [
 				<div className="flex items-center gap-2 min-w-0">
 					<Image
 						src={car.imageUrl || "/placeholder.png"}
-						alt="placeholder"
+						alt={car.imageUrl ? `${car.name} image` : "No image available"}
 						width={50}
 						height={50}
 					/>
@@ -130,7 +130,8 @@ export const columns: ColumnDef<Car>[] = [
 						<div className="space-y-1">
 							<h4 className="text-sm font-semibold">{shareholder.name}</h4>
 							<p className="text-muted-foreground text-xs">
-								<span className="font-medium">Phone:</span> {shareholder.phone}
+								<span className="font-medium">Phone:</span>{" "}
+								{shareholder.phone || "N/A"}
 							</p>
 							<div className="text-muted-foreground text-xs">
 								<span className="font-medium">Joined:</span>
