@@ -80,7 +80,7 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 		if (status !== CarStatus.SOLD) {
 			form.setValue("soldAt", null);
 		}
-	}, [status, form]);
+	}, [status, form.setValue]);
 
 	return (
 		<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

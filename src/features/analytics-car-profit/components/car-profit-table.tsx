@@ -64,12 +64,12 @@ export default function CarProfitTable() {
 			filteredData.reduce(
 				(acc, item) => {
 					acc.carsSold += item.carsSold;
-					acc.totalRevenue += item.totalSellingPrice;
+					acc.totalSellingPrice += item.totalSellingPrice;
 					return acc;
 				},
 				{
 					carsSold: 0,
-					totalRevenue: 0,
+					totalSellingPrice: 0,
 				},
 			),
 		[filteredData],
@@ -220,9 +220,9 @@ export default function CarProfitTable() {
 								</TableCell>
 
 								<TableCell
-									className={`font-bold text-right text-lg ${totals.totalRevenue < 0 ? "text-red-600" : "text-green-600"}`}
+									className={`font-bold text-right text-lg ${totals.totalSellingPrice < 0 ? "text-red-600" : "text-green-600"}`}
 								>
-									{formatNumberSafe(totals.totalRevenue)} Ks
+									{formatNumberSafe(totals.totalSellingPrice)} Ks
 								</TableCell>
 							</TableRow>
 						)}

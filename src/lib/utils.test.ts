@@ -29,6 +29,10 @@ describe("lib/utils", () => {
 		it("should use custom fallback when provided", () => {
 			expect(formatNumberSafe(null, "N/A")).toBe("N/A");
 		});
+
+		it("should return fallback for non-number values", () => {
+			expect(formatNumberSafe(NaN)).toBe("-");
+		});
 	});
 
 	describe("normalizeNumberInput", () => {

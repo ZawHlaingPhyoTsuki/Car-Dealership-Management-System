@@ -1,20 +1,10 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { Edit, EllipsisVertical, Trash } from "lucide-react";
-import { useState } from "react";
 import { DataTableColumnHeader } from "@/components/shared/data-table-column-header";
-import { Button } from "@/components/ui/button";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
 import type { Car } from "@/features/cars/actions/get-cars";
-import DeleteCarDialog from "@/features/cars/components/delete-car-dialog";
-import EditCarDialog from "@/features/cars/components/edit-car-dialog";
+import { CarActions } from "@/features/cars/components/car-actions";
 import { formatNumberSafe } from "@/lib/utils";
 
 export const columns: ColumnDef<Car>[] = [
@@ -138,47 +128,3 @@ export const columns: ColumnDef<Car>[] = [
 		cell: ({ row }) => <CarActions car={row.original} />,
 	},
 ];
-
-function CarActions({ car }: { car: Car }) {
-	const [showEditDialog, setShowEditDialog] = useState(false);
-	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-
-	return (
-		<>
-			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
-					<Button variant="ghost" className="h-8 w-8 p-0">
-						<span className="sr-only">Open menu</span>
-						<EllipsisVertical className="h-4 w-4" />
-					</Button>
-				</DropdownMenuTrigger>
-				<DropdownMenuContent align="end">
-					<DropdownMenuItem onClick={() => setShowEditDialog(true)}>
-						<Edit className="mr-2 h-4 w-4" />
-						Edit
-					</DropdownMenuItem>
-					<DropdownMenuItem
-						onClick={() => setShowDeleteDialog(true)}
-						variant="destructive"
-					>
-						<Trash className="mr-2 h-4 w-4" />
-						Delete
-					</DropdownMenuItem>
-				</DropdownMenuContent>
-			</DropdownMenu>
-
-			<EditCarDialog
-				car={car}
-				open={showEditDialog}
-				onOpenChange={setShowEditDialog}
-			/>
-
-			<DeleteCarDialog
-				id={car.id}
-				name={car.name}
-				open={showDeleteDialog}
-				onOpenChange={setShowDeleteDialog}
-			/>
-		</>
-	);
-}

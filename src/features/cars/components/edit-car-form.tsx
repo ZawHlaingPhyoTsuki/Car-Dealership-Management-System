@@ -37,6 +37,7 @@ import {
 import { normalizeNumberInput } from "@/lib/utils";
 import type { Car } from "../actions/get-cars";
 import { useUpdateCar } from "../mutations/use-update-car";
+import { useEffect } from "react";
 
 interface EditCarFormProps {
 	car: Car;
@@ -77,6 +78,12 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 		form.reset();
 		onClose?.();
 	};
+
+	useEffect(() => {
+		if (status !== CarStatus.SOLD) {
+			form.setValue("soldAt", null);
+		}
+	}, [status, form.setValue]);
 
 	return (
 		<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

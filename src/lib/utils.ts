@@ -18,7 +18,7 @@ export const isLakhs = (amount: number): boolean => {
 	return amount >= 100000;
 };
 
-/*
+/**
  * Formats a number with thousand separators and returns a safe string.
  * If the input is not a number, returns the fallback value.
  *
@@ -30,12 +30,13 @@ export const isLakhs = (amount: number): boolean => {
  * - formatNumberSafe(undefined) → "-"
  * - formatNumberSafe(null) → "-"
  * - formatNumberSafe("abc") → "-"
+ * - formatNumberSafe(NaN) → "-"
  */
 export function formatNumberSafe(
 	value?: number | null,
 	fallback = "-",
 ): string {
-	if (typeof value !== "number") return fallback;
+	if (typeof value !== "number" || Number.isNaN(value)) return fallback;
 	return new Intl.NumberFormat("en-US").format(value);
 }
 

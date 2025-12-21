@@ -141,7 +141,7 @@ export default function DashboardCards() {
 			badge: (
 				<Badge variant="outline">
 					{safeData.totalPurchasedPriceDiff <= 0 ? (
-						+(<TrendingDown className="text-green-500" />)
+						<TrendingDown className="text-green-500" />
 					) : (
 						<TrendingUp className="text-red-500" />
 					)}
