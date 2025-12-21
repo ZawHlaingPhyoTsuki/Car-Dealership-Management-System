@@ -25,25 +25,18 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
-import { useGetCars } from "@/features-v2/cars/queries/use-cars";
-import { useEmployees } from "@/features-v2/employees/queries/use-employees";
-import { cn } from "@/lib/utils";
-import type { Expense } from "../actions/get-expenses";
-import { useUpdateExpense } from "../mutations/use-update-expense";
+import { useGetCars } from "@/features/cars/queries/use-cars";
+import { useEmployees } from "@/features/employees/queries/use-employees";
+import { cn, normalizeNumberInput } from "@/lib/utils";
+import { useCreateExpense } from "../mutations/use-create-expense";
 import { useExpenseCategories } from "../queries/get-expense-category";
-import { UpdateExpenseSchema, type UpdateExpenseValues } from "../validation";
+import { CreateExpenseSchema, type CreateExpenseValues } from "../validation";
 
-interface EditExpenseFormProps {
+interface AddExpenseFormProps {
 	onClose: () => void;
-	expense: Expense;
 }
 
-export default function EditExpenseForm({
-	onClose,
-	expense,
-}: EditExpenseFormProps) {
-	const updateExpenseMutation = useUpdateExpense();
-
+export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 	const {
 		data: employees = [],
 		isLoading: isLoadingEmployees,
@@ -60,21 +53,22 @@ export default function EditExpenseForm({
 		isError: isErrorExpenseCategories,
 	} = useExpenseCategories();
 
-	const form = useForm<UpdateExpenseValues>({
-		resolver: zodResolver(UpdateExpenseSchema),
+	const createExpenseMutation = useCreateExpense();
+
+	const form = useForm<CreateExpenseValues>({
+		resolver: zodResolver(CreateExpenseSchema),
 		defaultValues: {
-			id: expense.id,
-			date: expense.date,
-			paidToId: expense.paidTo?.id ?? null,
-			categoryId: expense.category?.id ?? null,
-			amount: expense.amount,
-			carId: expense.car?.id ?? null,
-			notes: expense.notes,
+			date: new Date(),
+			paidToId: null,
+			categoryId: null,
+			amount: 0,
+			carId: null,
+			notes: "",
 		},
 	});
 
-	const onSubmit = async (values: UpdateExpenseValues) => {
-		await updateExpenseMutation.mutateAsync(values);
+	const onSubmit = async (values: CreateExpenseValues) => {
+		await createExpenseMutation.mutateAsync(values);
 		form.reset();
 		onClose();
 	};
@@ -136,7 +130,7 @@ export default function EditExpenseForm({
 							name="amount"
 							render={({ field, fieldState }) => (
 								<Field>
-									<FieldLabel>
+									<FieldLabel htmlFor="amount">
 										Amount <span className="text-red-500">*</span>
 									</FieldLabel>
 									<FieldGroup>
@@ -145,16 +139,17 @@ export default function EditExpenseForm({
 												id="amount"
 												type="number"
 												step="1"
-												min="0"
 												{...field}
+												value={
+													field.value === null || field.value === undefined
+														? ""
+														: field.value.toString()
+												}
 												onChange={(e) => {
-													const value = e.target.value;
-													field.onChange(
-														value === "" ? undefined : Number(value),
-													);
+													field.onChange(normalizeNumberInput(e.target.value));
 												}}
-												value={field.value ?? ""}
 											/>
+
 											<InputGroupAddon>
 												<span className="text-gray-500">Ks</span>
 											</InputGroupAddon>
@@ -173,7 +168,7 @@ export default function EditExpenseForm({
 						control={form.control}
 						selector={"reason"}
 						name={"categoryId"}
-						label={"Reason (Optional)"}
+						label={"Reason"}
 						items={expenseCategories}
 						isLoading={isLoadingExpenseCategories}
 						isError={isErrorExpenseCategories}
@@ -204,15 +199,15 @@ export default function EditExpenseForm({
 						control={form.control}
 						selector={"car"}
 						name={"carId"}
-						label={"Car (Optional)"}
+						label={"Car"}
 						items={cars}
 						isLoading={isLoadingCars}
 						isError={isErrorCars}
 						allowNone
 						matchTriggerWidth
-						getLabel={(car) => `${car.name} (${car.licenseNumber})`}
+						getLabel={(car) => `${car.name} ${car.licenseNumber ?? ""}`}
 						getValue={(car) => car.id}
-						getSubLabel={(car) => car.licenseNumber ?? "No Number"}
+						getSubLabel={(car) => car.licenseNumber ?? "No License Number"}
 					/>
 
 					{/* Note*/}
@@ -254,7 +249,7 @@ export default function EditExpenseForm({
 						onClose();
 					}}
 					disabled={
-						updateExpenseMutation.isPending || form.formState.isSubmitting
+						createExpenseMutation.isPending || form.formState.isSubmitting
 					}
 				>
 					Cancel
@@ -262,10 +257,10 @@ export default function EditExpenseForm({
 				<Button
 					type="submit"
 					disabled={
-						updateExpenseMutation.isPending || form.formState.isSubmitting
+						createExpenseMutation.isPending || form.formState.isSubmitting
 					}
 				>
-					{updateExpenseMutation.isPending ? "Saving..." : "Save Changes"}
+					{createExpenseMutation.isPending ? "Saving..." : "Create"}
 				</Button>
 			</div>
 		</form>

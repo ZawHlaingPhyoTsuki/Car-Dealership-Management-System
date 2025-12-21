@@ -29,51 +29,48 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useGetShareholders } from "@/features-v2/car-sharers/queries/use-car-sharer";
+import { useGetShareholders } from "@/features/car-sharers/queries/use-car-sharer";
 import {
-	UpdateCarSchema,
-	type UpdateCarValues,
-} from "@/features-v2/cars/validation";
+	CreateCarSchema,
+	type CreateCarValues,
+} from "@/features/cars/validation";
 import { normalizeNumberInput } from "@/lib/utils";
-import type { Car } from "../actions/get-cars";
-import { useUpdateCar } from "../mutations/use-update-car";
+import { useCreateCar } from "../mutations/use-create-car";
 
-interface EditCarFormProps {
-	car: Car;
+interface AddCarFormProps {
 	onClose?: () => void;
 }
 
-export default function EditCarForm({ car, onClose }: EditCarFormProps) {
-	const updateCarMutation = useUpdateCar();
+export default function AddCarForm({ onClose }: AddCarFormProps) {
+	const createCarMutation = useCreateCar();
 	const {
 		data: shareholders,
 		isLoading: isLoadingShareholders,
 		isError: isErrorShareholders,
 	} = useGetShareholders();
 
-	const form = useForm<UpdateCarValues>({
-		resolver: zodResolver(UpdateCarSchema),
+	const form = useForm<CreateCarValues>({
+		resolver: zodResolver(CreateCarSchema),
 		defaultValues: {
-			id: car.id,
-			name: car.name,
-			status: car.status,
-			purchasedPrice: car.purchasedPrice,
-			sellingPrice: car.sellingPrice,
-			companyInvestedAmount: car.companyInvestedAmount,
-			shareholderInvestedAmount: car.shareholderInvestedAmount,
-			companyProfitAmount: car.companyProfitAmount,
-			shareholderProfitAmount: car.shareholderProfitAmount,
-			licenseNumber: car.licenseNumber,
-			soldAt: car.soldAt,
-			notes: car.notes,
-			shareholderId: car.shareholderId,
+			name: "",
+			status: CarStatus.AVAILABLE,
+			purchasedPrice: 0,
+			sellingPrice: 0,
+			companyInvestedAmount: 0,
+			shareholderInvestedAmount: 0,
+			companyProfitAmount: 0,
+			shareholderProfitAmount: 0,
+			licenseNumber: "",
+			soldAt: null,
+			notes: "",
+			shareholderId: null,
 		},
 	});
 
 	const status = form.watch("status");
 
-	const onSubmit = async (values: UpdateCarValues) => {
-		await updateCarMutation.mutateAsync(values);
+	const onSubmit = async (values: CreateCarValues) => {
+		await createCarMutation.mutateAsync(values);
 		form.reset();
 		onClose?.();
 	};
@@ -139,9 +136,9 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 										Purchased Price
 									</FieldLabel>
 									<Input
-										id="purchasedPrice"
 										type="number"
 										min={0}
+										id="purchasedPrice"
 										{...field}
 										value={
 											field.value === undefined || field.value === null
@@ -167,9 +164,9 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 								<Field data-invalid={fieldState.invalid}>
 									<FieldLabel htmlFor="sellingPrice">Selling Price</FieldLabel>
 									<Input
-										id="sellingPrice"
 										type="number"
 										min={0}
+										id="sellingPrice"
 										{...field}
 										value={
 											field.value === undefined || field.value === null
@@ -194,12 +191,12 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 							render={({ field, fieldState }) => (
 								<Field data-invalid={fieldState.invalid}>
 									<FieldLabel htmlFor="companyInvestedAmount">
-										Company Invested Amount
+										7hr Buy Amount
 									</FieldLabel>
 									<Input
-										id="companyInvestedAmount"
 										type="number"
 										min={0}
+										id="companyInvestedAmount"
 										{...field}
 										value={
 											field.value === undefined || field.value === null
@@ -227,9 +224,9 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 										Sharer Buy Amount
 									</FieldLabel>
 									<Input
-										id="shareholderInvestedAmount"
 										type="number"
 										min={0}
+										id="shareholderInvestedAmount"
 										{...field}
 										value={
 											field.value === undefined || field.value === null
@@ -254,12 +251,13 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 							render={({ field, fieldState }) => (
 								<Field data-invalid={fieldState.invalid}>
 									<FieldLabel htmlFor="companyProfitAmount">
-										Company Profit Amount
+										7hr Profit Amount
 									</FieldLabel>
 									<Input
-										id="companyProfitAmount"
 										type="number"
-										min={0}
+										min="0"
+										id="companyProfitAmount"
+										step="1"
 										{...field}
 										value={
 											field.value === undefined || field.value === null
@@ -287,9 +285,9 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 										Shareholder Profit Amount
 									</FieldLabel>
 									<Input
-										id="shareholderProfitAmount"
 										type="number"
 										min={0}
+										id="shareholderProfitAmount"
 										{...field}
 										value={
 											field.value === undefined || field.value === null
@@ -427,15 +425,15 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 						form.reset();
 						onClose?.();
 					}}
-					disabled={updateCarMutation.isPending || form.formState.isSubmitting}
+					disabled={createCarMutation.isPending || form.formState.isSubmitting}
 				>
 					Cancel
 				</Button>
 				<Button
 					type="submit"
-					disabled={updateCarMutation.isPending || form.formState.isSubmitting}
+					disabled={createCarMutation.isPending || form.formState.isSubmitting}
 				>
-					{updateCarMutation.isPending ? "Saving..." : "Save Car"}
+					{createCarMutation.isPending ? "Saving..." : "Save Car"}
 				</Button>
 			</div>
 		</form>

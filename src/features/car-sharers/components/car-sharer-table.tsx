@@ -27,7 +27,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { useGetCars } from "@/features-v2/cars/queries/use-cars";
+import { useGetCars } from "@/features/cars/queries/use-cars";
 import { columns } from "./columns";
 
 export default function CarSharerTable() {

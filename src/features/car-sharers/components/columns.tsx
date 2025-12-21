@@ -12,9 +12,9 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
-import type { Car } from "@/features-v2/cars/actions/get-cars";
-import DeleteCarDialog from "@/features-v2/cars/components/delete-car-dialog";
-import EditCarDialog from "@/features-v2/cars/components/edit-car-dialog";
+import type { Car } from "@/features/cars/actions/get-cars";
+import DeleteCarDialog from "@/features/cars/components/delete-car-dialog";
+import EditCarDialog from "@/features/cars/components/edit-car-dialog";
 import { formatNumberSafe } from "@/lib/utils";
 
 export const columns: ColumnDef<Car>[] = [

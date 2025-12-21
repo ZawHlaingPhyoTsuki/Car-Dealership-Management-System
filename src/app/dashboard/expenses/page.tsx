@@ -5,12 +5,12 @@ import {
 } from "@tanstack/react-query";
 import type { Metadata } from "next";
 import ContentWrapper from "@/components/shared/content-wrapper";
-import { getEmployeesQueryOptions } from "@/features-v2/employees/queries/use-employees";
-import AddExpenseCategoryDialog from "@/features-v2/expenses/components/add-expense-category-dialog";
-import AddExpenseDialog from "@/features-v2/expenses/components/add-expense-dialog";
-import ExpensesTable from "@/features-v2/expenses/components/expense-table";
-import { getExpenseCategoriesQueryOptions } from "@/features-v2/expenses/queries/get-expense-category";
-import { getExpensesQueryOptions } from "@/features-v2/expenses/queries/get-expenses";
+import { getEmployeesQueryOptions } from "@/features/employees/queries/use-employees";
+import AddExpenseCategoryDialog from "@/features/expenses/components/add-expense-category-dialog";
+import AddExpenseDialog from "@/features/expenses/components/add-expense-dialog";
+import ExpensesTable from "@/features/expenses/components/expense-table";
+import { getExpenseCategoriesQueryOptions } from "@/features/expenses/queries/get-expense-category";
+import { getExpensesQueryOptions } from "@/features/expenses/queries/get-expenses";
 
 export const metadata: Metadata = {
 	title: "Expenses",

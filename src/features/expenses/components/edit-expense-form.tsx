@@ -25,18 +25,25 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
-import { useGetCars } from "@/features-v2/cars/queries/use-cars";
-import { useEmployees } from "@/features-v2/employees/queries/use-employees";
-import { cn, normalizeNumberInput } from "@/lib/utils";
-import { useCreateExpense } from "../mutations/use-create-expense";
+import { useGetCars } from "@/features/cars/queries/use-cars";
+import { useEmployees } from "@/features/employees/queries/use-employees";
+import { cn } from "@/lib/utils";
+import type { Expense } from "../actions/get-expenses";
+import { useUpdateExpense } from "../mutations/use-update-expense";
 import { useExpenseCategories } from "../queries/get-expense-category";
-import { CreateExpenseSchema, type CreateExpenseValues } from "../validation";
+import { UpdateExpenseSchema, type UpdateExpenseValues } from "../validation";
 
-interface AddExpenseFormProps {
+interface EditExpenseFormProps {
 	onClose: () => void;
+	expense: Expense;
 }
 
-export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
+export default function EditExpenseForm({
+	onClose,
+	expense,
+}: EditExpenseFormProps) {
+	const updateExpenseMutation = useUpdateExpense();
+
 	const {
 		data: employees = [],
 		isLoading: isLoadingEmployees,
@@ -53,22 +60,21 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 		isError: isErrorExpenseCategories,
 	} = useExpenseCategories();
 
-	const createExpenseMutation = useCreateExpense();
-
-	const form = useForm<CreateExpenseValues>({
-		resolver: zodResolver(CreateExpenseSchema),
+	const form = useForm<UpdateExpenseValues>({
+		resolver: zodResolver(UpdateExpenseSchema),
 		defaultValues: {
-			date: new Date(),
-			paidToId: null,
-			categoryId: null,
-			amount: 0,
-			carId: null,
-			notes: "",
+			id: expense.id,
+			date: expense.date,
+			paidToId: expense.paidTo?.id ?? null,
+			categoryId: expense.category?.id ?? null,
+			amount: expense.amount,
+			carId: expense.car?.id ?? null,
+			notes: expense.notes,
 		},
 	});
 
-	const onSubmit = async (values: CreateExpenseValues) => {
-		await createExpenseMutation.mutateAsync(values);
+	const onSubmit = async (values: UpdateExpenseValues) => {
+		await updateExpenseMutation.mutateAsync(values);
 		form.reset();
 		onClose();
 	};
@@ -130,7 +136,7 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 							name="amount"
 							render={({ field, fieldState }) => (
 								<Field>
-									<FieldLabel htmlFor="amount">
+									<FieldLabel>
 										Amount <span className="text-red-500">*</span>
 									</FieldLabel>
 									<FieldGroup>
@@ -139,17 +145,16 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 												id="amount"
 												type="number"
 												step="1"
+												min="0"
 												{...field}
-												value={
-													field.value === null || field.value === undefined
-														? ""
-														: field.value.toString()
-												}
 												onChange={(e) => {
-													field.onChange(normalizeNumberInput(e.target.value));
+													const value = e.target.value;
+													field.onChange(
+														value === "" ? undefined : Number(value),
+													);
 												}}
+												value={field.value ?? ""}
 											/>
-
 											<InputGroupAddon>
 												<span className="text-gray-500">Ks</span>
 											</InputGroupAddon>
@@ -168,7 +173,7 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 						control={form.control}
 						selector={"reason"}
 						name={"categoryId"}
-						label={"Reason"}
+						label={"Reason (Optional)"}
 						items={expenseCategories}
 						isLoading={isLoadingExpenseCategories}
 						isError={isErrorExpenseCategories}
@@ -199,15 +204,15 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 						control={form.control}
 						selector={"car"}
 						name={"carId"}
-						label={"Car"}
+						label={"Car (Optional)"}
 						items={cars}
 						isLoading={isLoadingCars}
 						isError={isErrorCars}
 						allowNone
 						matchTriggerWidth
-						getLabel={(car) => `${car.name} ${car.licenseNumber ?? ""}`}
+						getLabel={(car) => `${car.name} (${car.licenseNumber})`}
 						getValue={(car) => car.id}
-						getSubLabel={(car) => car.licenseNumber ?? "No License Number"}
+						getSubLabel={(car) => car.licenseNumber ?? "No Number"}
 					/>
 
 					{/* Note*/}
@@ -249,7 +254,7 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 						onClose();
 					}}
 					disabled={
-						createExpenseMutation.isPending || form.formState.isSubmitting
+						updateExpenseMutation.isPending || form.formState.isSubmitting
 					}
 				>
 					Cancel
@@ -257,10 +262,10 @@ export default function AddExpenseForm({ onClose }: AddExpenseFormProps) {
 				<Button
 					type="submit"
 					disabled={
-						createExpenseMutation.isPending || form.formState.isSubmitting
+						updateExpenseMutation.isPending || form.formState.isSubmitting
 					}
 				>
-					{createExpenseMutation.isPending ? "Saving..." : "Create"}
+					{updateExpenseMutation.isPending ? "Saving..." : "Save Changes"}
 				</Button>
 			</div>
 		</form>

@@ -4,8 +4,8 @@ import {
 	QueryClient,
 } from "@tanstack/react-query";
 import type { Metadata } from "next";
-import DashboardCards from "@/features-v2/dashboard/components/dashboard-cards";
-import { getDashboardQueryOptions } from "@/features-v2/dashboard/queries/use-dashboard";
+import DashboardCards from "@/features/dashboard/components/dashboard-cards";
+import { getDashboardQueryOptions } from "@/features/dashboard/queries/use-dashboard";
 
 export const metadata: Metadata = {
 	title: "Dashboard",

@@ -30,7 +30,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { useGetCars } from "@/features-v2/cars/queries/use-cars";
+import { useGetCars } from "@/features/cars/queries/use-cars";
 import { useExpenseCategories } from "../queries/get-expense-category";
 import { useExpenses } from "../queries/get-expenses";
 import { columns, NO_CATEGORY_FILTER } from "./columns";
