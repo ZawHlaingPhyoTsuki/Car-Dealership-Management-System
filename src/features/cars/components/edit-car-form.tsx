@@ -90,7 +90,7 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <useEffect>
 	useEffect(() => {
 		if (!shareholderId) {
-			form.setValue("companyInvestedAmount", undefined);
+			// form.setValue("companyInvestedAmount", undefined);
 			form.setValue("shareholderInvestedAmount", undefined);
 		}
 	}, [shareholderId]);
@@ -234,7 +234,7 @@ export default function EditCarForm({ car, onClose }: EditCarFormProps) {
 								render={({ field, fieldState }) => (
 									<Field data-invalid={fieldState.invalid}>
 										<FieldLabel htmlFor="companyInvestedAmount">
-											Company Invested Amount
+											7hr Buy Amount
 										</FieldLabel>
 										<Input
 											id="companyInvestedAmount"
