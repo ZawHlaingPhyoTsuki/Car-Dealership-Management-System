@@ -70,7 +70,7 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 
 	const status = form.watch("status");
 
-	const hasShareholder = form.watch("shareholderId");
+	const shareholderId = form.watch("shareholderId");
 
 	const onSubmit = async (values: CreateCarValues) => {
 		await createCarMutation.mutateAsync(values);
@@ -87,11 +87,11 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <useEffect>
 	useEffect(() => {
-		if (!hasShareholder) {
-			form.setValue("companyInvestedAmount", undefined);
+		if (!shareholderId) {
+			// form.setValue("companyInvestedAmount", undefined);
 			form.setValue("shareholderInvestedAmount", undefined);
 		}
-	}, [hasShareholder]);
+	}, [shareholderId]);
 
 	return (
 		<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -144,6 +144,7 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 								)}
 							/>
 						</div>
+
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 							{/* Purchased Price */}
 							<Controller
@@ -205,6 +206,7 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 								)}
 							/>
 						</div>
+
 						{/* Shareholder Select */}
 						<PopoverSelect
 							control={form.control}
@@ -220,131 +222,70 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 							getLabel={(sh) => sh.name}
 							getSubLabel={(sh) => sh.phone ?? "No phone"}
 						/>
-						{hasShareholder && ( // OR disable the inputs
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-								{/* Company Invested Amount */}
-								<Controller
-									name="companyInvestedAmount"
-									control={form.control}
-									render={({ field, fieldState }) => (
-										<Field data-invalid={fieldState.invalid}>
-											<FieldLabel htmlFor="companyInvestedAmount">
-												7hr Buy Amount
-											</FieldLabel>
-											<Input
-												type="text"
-												inputMode="numeric"
-												id="companyInvestedAmount"
-												{...field}
-												value={
-													field.value === undefined || field.value === null
-														? ""
-														: field.value.toString()
-												}
-												onChange={(e) => {
-													field.onChange(normalizeNumberInput(e.target.value));
-												}}
-											/>
-											{fieldState.error && (
-												<FieldError>{fieldState.error.message}</FieldError>
-											)}
-										</Field>
-									)}
-								/>
-
-								{/* Shareholder Invested Amount */}
-								<Controller
-									name="shareholderInvestedAmount"
-									control={form.control}
-									render={({ field, fieldState }) => (
-										<Field data-invalid={fieldState.invalid}>
-											<FieldLabel htmlFor="shareholderInvestedAmount">
-												Sharer Buy Amount
-											</FieldLabel>
-											<Input
-												type="text"
-												inputMode="numeric"
-												id="shareholderInvestedAmount"
-												{...field}
-												value={
-													field.value === undefined || field.value === null
-														? ""
-														: field.value.toString()
-												}
-												onChange={(e) => {
-													field.onChange(normalizeNumberInput(e.target.value));
-												}}
-											/>
-											{fieldState.error && (
-												<FieldError>{fieldState.error.message}</FieldError>
-											)}
-										</Field>
-									)}
-								/>
-							</div>
-						)}
 
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-							{/* Company Profit Amount */}
-							{/* <Controller
-                            name="companyProfitAmount"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="companyProfitAmount">
-                                        7hr Profit Amount
-                                    </FieldLabel>
-                                    <Input
-                                        type="text"
-                                        inputMode="numeric"
-                                        id="companyProfitAmount"
-                                        {...field}
-                                        value={
-                                            field.value === undefined || field.value === null
-                                                ? ''
-                                                : field.value.toString()
-                                        }
-                                        onChange={(e) => {
-                                            field.onChange(normalizeNumberInput(e.target.value));
-                                        }}
-                                    />
-                                    {fieldState.error && (
-                                        <FieldError>{fieldState.error.message}</FieldError>
-                                    )}
-                                </Field>
-                            )}
-                           /> */}
+							{/* Company Invested Amount */}
+							<Controller
+								name="companyInvestedAmount"
+								control={form.control}
+								render={({ field, fieldState }) => (
+									<Field data-invalid={fieldState.invalid}>
+										<FieldLabel htmlFor="companyInvestedAmount">
+											7hr Buy Amount
+										</FieldLabel>
+										<Input
+											type="text"
+											inputMode="numeric"
+											id="companyInvestedAmount"
+											{...field}
+											value={
+												field.value === undefined || field.value === null
+													? ""
+													: field.value.toString()
+											}
+											onChange={(e) => {
+												field.onChange(normalizeNumberInput(e.target.value));
+											}}
+										/>
+										{fieldState.error && (
+											<FieldError>{fieldState.error.message}</FieldError>
+										)}
+									</Field>
+								)}
+							/>
 
-							{/* Sharer Profit Amount */}
-							{/* <Controller
-                            name="shareholderProfitAmount"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="shareholderProfitAmount">
-                                        Shareholder Profit Amount
-                                    </FieldLabel>
-                                    <Input
-                                        type="text"
-                                        inputMode="numeric"
-                                        id="shareholderProfitAmount"
-                                        {...field}
-                                        value={
-                                            field.value === undefined || field.value === null
-                                                ? ''
-                                                : field.value.toString()
-                                        }
-                                        onChange={(e) => {
-                                            field.onChange(normalizeNumberInput(e.target.value));
-                                        }}
-                                    />
-                                    {fieldState.error && (
-                                        <FieldError>{fieldState.error.message}</FieldError>
-                                    )}
-                                </Field>
-                            )}
-                        /> */}
+							{/* Shareholder Invested Amount */}
+							<Controller
+								name="shareholderInvestedAmount"
+								control={form.control}
+								render={({ field, fieldState }) => (
+									<Field data-invalid={fieldState.invalid}>
+										<FieldLabel htmlFor="shareholderInvestedAmount">
+											Sharer Buy Amount
+										</FieldLabel>
+										<Input
+											type="text"
+											inputMode="numeric"
+											id="shareholderInvestedAmount"
+											{...field}
+											value={
+												field.value === undefined || field.value === null
+													? ""
+													: field.value.toString()
+											}
+											onChange={(e) => {
+												field.onChange(normalizeNumberInput(e.target.value));
+											}}
+											disabled={!shareholderId}
+										/>
+										{fieldState.error && (
+											<FieldError>{fieldState.error.message}</FieldError>
+										)}
+									</Field>
+								)}
+							/>
 						</div>
+
 						<div
 							className={`grid grid-cols-1 ${
 								status === CarStatus.SOLD && "md:grid-cols-2"
