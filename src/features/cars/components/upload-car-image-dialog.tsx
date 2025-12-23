@@ -2,7 +2,7 @@
 
 import { Upload, X } from "lucide-react";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,6 +36,16 @@ export default function UploadCarImageDialog({
 
 	const mutation = useUploadCarImage();
 
+	// Clean up object URLs on unmount and when preview changes
+	useEffect(() => {
+		// This function will be called when the component unmounts or when preview changes
+		return () => {
+			if (preview) {
+				URL.revokeObjectURL(preview);
+			}
+		};
+	}, [preview]); // Only re-run when preview changes
+
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const selected = e.target.files?.[0];
 		if (!selected) return;
@@ -43,6 +53,11 @@ export default function UploadCarImageDialog({
 		if (!selected.type.startsWith("image/")) {
 			toast.error("Please select an image file");
 			return;
+		}
+
+		// Revoke previous object URL before creating a new one
+		if (preview) {
+			URL.revokeObjectURL(preview);
 		}
 
 		setFile(selected);
@@ -78,6 +93,14 @@ export default function UploadCarImageDialog({
 		onOpenChange(false);
 	};
 
+	const handleRemovePreview = () => {
+		if (preview) {
+			URL.revokeObjectURL(preview);
+		}
+		setPreview(null);
+		setFile(null);
+	};
+
 	return (
 		<Dialog open={open} onOpenChange={handleClose}>
 			<DialogContent className="sm:max-w-md">
@@ -90,20 +113,18 @@ export default function UploadCarImageDialog({
 				<div className="space-y-6 py-4">
 					{preview ? (
 						<div className="relative">
-							<Image
-								width={500}
-								height={500}
-								src={preview}
-								alt="Preview"
-								className="w-full h-64 object-cover rounded-lg border"
-							/>
+							<div className="relative w-full h-64 rounded-lg border overflow-hidden">
+								<Image
+									fill
+									src={preview}
+									alt="Preview"
+									className="object-cover"
+								/>
+							</div>
 							<button
 								type="button"
-								onClick={() => {
-									URL.revokeObjectURL(preview);
-									setPreview(null);
-									setFile(null);
-								}}
+								aria-label="Remove preview image"
+								onClick={handleRemovePreview}
 								className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600"
 							>
 								<X className="h-4 w-4" />
@@ -112,19 +133,17 @@ export default function UploadCarImageDialog({
 					) : currentImageUrl ? (
 						<div className="space-y-3">
 							<p className="text-sm text-muted-foreground">Current image:</p>
-							<Image
-								width={500}
-								height={500}
-								src={currentImageUrl}
-								alt="Current car"
-								className="w-full h-64 object-cover rounded-lg border"
-							/>
+							<div className="relative w-full h-64 rounded-lg border overflow-hidden">
+								<Image
+									fill
+									src={currentImageUrl}
+									alt="Current car"
+									className="object-cover"
+								/>
+							</div>
 						</div>
 					) : (
-						<div
-							className="border-2 border-dashed border-gray-300 rounded-lg p-10 text-center"
-							// onClick={() => fileInputRef.current?.click()}
-						>
+						<div className="border-2 border-dashed border-gray-300 rounded-lg p-10 text-center">
 							<Upload className="mx-auto h-12 w-12 text-gray-400" />
 							<p className="mt-2 text-sm text-gray-600">No image selected</p>
 						</div>

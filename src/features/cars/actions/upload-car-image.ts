@@ -27,6 +27,10 @@ export async function uploadCarImage({
 		throw new Error("File size exceeds 10MB limit");
 	}
 
+	// Find car
+	const car = await prisma.car.findUnique({ where: { id: carId } });
+	if (!car) throw new Error("Car not found");
+
 	// Upload to Cloudinary
 	const arrayBuffer = await file.arrayBuffer();
 	const buffer = Buffer.from(arrayBuffer);
@@ -59,10 +63,6 @@ export async function uploadCarImage({
 		},
 	);
 
-	// Find car
-	const car = await prisma.car.findUnique({ where: { id: carId } });
-	if (!car) throw new Error("Car not found");
-
 	// Delete old image if exists
 	if (oldPublicId && oldPublicId !== uploadResult.publicId) {
 		try {
@@ -74,13 +74,21 @@ export async function uploadCarImage({
 	}
 
 	// Update database
-	await prisma.car.update({
-		where: { id: carId },
-		data: {
-			imageUrl: uploadResult.url,
-			imagePublicId: uploadResult.publicId,
-		},
-	});
+	try {
+		await prisma.car.update({
+			where: { id: carId },
+			data: {
+				imageUrl: uploadResult.url,
+				imagePublicId: uploadResult.publicId,
+			},
+		});
+	} catch (error) {
+		// Clean up uploaded image on DB failure
+		try {
+			await cloudinary.uploader.destroy(uploadResult.publicId);
+		} catch {}
+		throw error;
+	}
 
 	return { url: uploadResult.url, publicId: uploadResult.publicId };
 }

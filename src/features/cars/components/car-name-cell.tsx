@@ -21,6 +21,7 @@ export function CarNameCell({ car }: { car: Car }) {
 					type="button"
 					className="relative shrink-0 cursor-pointer"
 					onClick={() => setIsImageOpen(true)}
+					aria-label={`View larger image of ${car.name}`}
 				>
 					<Image
 						src={car.imageUrl || "/placeholder.png"}
@@ -48,11 +49,11 @@ export function CarNameCell({ car }: { car: Car }) {
 			</div>
 
 			<Dialog open={isImageOpen} onOpenChange={setIsImageOpen}>
-				<DialogHeader className="sr-only">
-					<DialogTitle>{car.name} - Image Preview</DialogTitle>
-					<DialogDescription>Zoomed view of the car image</DialogDescription>
-				</DialogHeader>
 				<DialogContent className="max-w-4xl max-h-[90vh] p-0 overflow-hidden">
+					<DialogHeader className="sr-only">
+						<DialogTitle>{car.name} - Image Preview</DialogTitle>
+						<DialogDescription>Zoomed view of the car image</DialogDescription>
+					</DialogHeader>
 					<div className="relative w-full h-[80vh]">
 						<Image
 							src={car.imageUrl || "/placeholder.png"}
@@ -60,7 +61,6 @@ export function CarNameCell({ car }: { car: Car }) {
 							fill
 							className="object-contain p-4"
 							sizes="(max-width: 1024px) 100vw, 1024px"
-							priority
 						/>
 					</div>
 				</DialogContent>
