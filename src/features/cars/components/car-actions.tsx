@@ -1,6 +1,6 @@
 "use client";
 
-import { Edit, EllipsisVertical, Trash } from "lucide-react";
+import { Edit, EllipsisVertical, Trash, Upload } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,10 +12,12 @@ import {
 import type { Car } from "../actions/get-cars";
 import DeleteCarDialog from "./delete-car-dialog";
 import EditCarDialog from "./edit-car-dialog";
+import UploadCarImageDialog from "./upload-car-image-dialog";
 
 export function CarActions({ car }: { car: Car }) {
 	const [showEditDialog, setShowEditDialog] = useState(false);
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+	const [showImageDialog, setShowImageDialog] = useState(false);
 
 	return (
 		<>
@@ -31,9 +33,15 @@ export function CarActions({ car }: { car: Car }) {
 						<Edit className="mr-2 h-4 w-4" />
 						Edit
 					</DropdownMenuItem>
+
+					<DropdownMenuItem onClick={() => setShowImageDialog(true)}>
+						<Upload className="mr-2 h-4 w-4" />
+						{car.imageUrl ? "Change Image" : "Add Image"}
+					</DropdownMenuItem>
+
 					<DropdownMenuItem
 						onClick={() => setShowDeleteDialog(true)}
-						variant="destructive"
+						className="text-destructive"
 					>
 						<Trash className="mr-2 h-4 w-4" />
 						Delete
@@ -52,6 +60,17 @@ export function CarActions({ car }: { car: Car }) {
 				name={car.name}
 				open={showDeleteDialog}
 				onOpenChange={setShowDeleteDialog}
+			/>
+
+			<UploadCarImageDialog
+				carId={car.id}
+				currentImageUrl={car.imageUrl}
+				imagePublicId={car.imagePublicId}
+				open={showImageDialog}
+				onOpenChange={setShowImageDialog}
+				onSuccess={() => {
+					// Optional: refresh cars list or just rely on query invalidation
+				}}
 			/>
 		</>
 	);
