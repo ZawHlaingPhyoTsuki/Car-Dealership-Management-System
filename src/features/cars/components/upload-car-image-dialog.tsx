@@ -11,6 +11,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import { useDeleteCarImage } from "../mutations/use-delete-car-image";
 import { useUploadCarImage } from "../mutations/use-upload-car-image";
 
 interface UploadCarImageDialogProps {
@@ -34,7 +35,8 @@ export default function UploadCarImageDialog({
 	const [file, setFile] = useState<File | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
-	const mutation = useUploadCarImage();
+	const uploadMutation = useUploadCarImage();
+	const deleteMutation = useDeleteCarImage();
 
 	// Clean up object URLs on unmount and when preview changes
 	useEffect(() => {
@@ -68,9 +70,23 @@ export default function UploadCarImageDialog({
 		if (!file) return;
 
 		try {
-			await mutation.mutateAsync({
+			await uploadMutation.mutateAsync({
 				carId,
 				file,
+				oldPublicId: imagePublicId,
+			});
+
+			onSuccess?.();
+			handleClose();
+		} catch {
+			// Error handled by mutation
+		}
+	};
+
+	const handleDeleteCurrentImage = async () => {
+		try {
+			await deleteMutation.mutateAsync({
+				carId,
 				oldPublicId: imagePublicId,
 			});
 
@@ -149,7 +165,7 @@ export default function UploadCarImageDialog({
 						</div>
 					)}
 
-					<div>
+					<div className="space-y-2">
 						<input
 							ref={fileInputRef}
 							type="file"
@@ -161,18 +177,38 @@ export default function UploadCarImageDialog({
 							variant="outline"
 							onClick={() => fileInputRef.current?.click()}
 							className="w-full"
+							disabled={deleteMutation.isPending || uploadMutation.isPending}
 						>
 							{preview ? "Change Image" : "Select Image"}
 						</Button>
+						{currentImageUrl && (
+							<Button
+								variant="destructive"
+								onClick={handleDeleteCurrentImage}
+								className="w-full"
+								disabled={deleteMutation.isPending || uploadMutation.isPending}
+							>
+								{deleteMutation.isPending
+									? "Deleting..."
+									: "Remove Current Image"}
+							</Button>
+						)}
 					</div>
 				</div>
 
 				<div className="flex justify-end gap-3">
-					<Button variant="outline" onClick={handleClose}>
+					<Button
+						variant="outline"
+						onClick={handleClose}
+						disabled={deleteMutation.isPending || uploadMutation.isPending}
+					>
 						Cancel
 					</Button>
-					<Button onClick={handleUpload} disabled={!file || mutation.isPending}>
-						{mutation.isPending ? "Uploading..." : "Save Image"}
+					<Button
+						onClick={handleUpload}
+						disabled={!file || uploadMutation.isPending}
+					>
+						{uploadMutation.isPending ? "Uploading..." : "Save Image"}
 					</Button>
 				</div>
 			</DialogContent>
