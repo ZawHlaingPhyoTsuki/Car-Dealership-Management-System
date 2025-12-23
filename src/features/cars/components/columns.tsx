@@ -1,7 +1,6 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import Image from "next/image";
 import { DataTableColumnHeader } from "@/components/shared/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { formatNumberSafe } from "@/lib/utils";
 import type { Car } from "../actions/get-cars";
 import { CarActions } from "./car-actions";
+import { CarNameCell } from "./car-name-cell";
 
 export const columns: ColumnDef<Car>[] = [
 	{
@@ -31,32 +31,7 @@ export const columns: ColumnDef<Car>[] = [
 	{
 		accessorKey: "name",
 		header: () => <Label className="text-lg">Car Name</Label>,
-		cell: ({ row }) => {
-			const car = row.original;
-
-			return (
-				<div className="flex items-center gap-2 min-w-0">
-					<Image
-						src={car.imageUrl || "/placeholder.png"}
-						alt={car.imageUrl ? `${car.name} image` : "No image available"}
-						width={50}
-						height={50}
-					/>
-					<div className="flex flex-col">
-						<div
-							className={`font-medium truncate ${car.shareholderId ? "text-amber-500" : "text-green-500"}`}
-						>
-							{car.name}
-						</div>
-						{car.licenseNumber && (
-							<div className="text-xs text-muted-foreground">
-								{car.licenseNumber}
-							</div>
-						)}
-					</div>
-				</div>
-			);
-		},
+		cell: ({ row }) => <CarNameCell car={row.original} />,
 	},
 	{
 		accessorKey: "purchasedPrice",

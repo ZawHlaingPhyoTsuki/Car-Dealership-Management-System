@@ -69,7 +69,6 @@ export default function AddCarForm({ onClose }: AddCarFormProps) {
 	});
 
 	const status = form.watch("status");
-
 	const shareholderId = form.watch("shareholderId");
 
 	const onSubmit = async (values: CreateCarValues) => {
