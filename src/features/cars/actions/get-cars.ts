@@ -53,6 +53,7 @@ export async function getCars() {
 				id: car.id,
 				name: car.name,
 				imageUrl: car.imageUrl,
+				imagePublicId: car.imagePublicId,
 				purchasedPrice: car.purchasedPrice,
 				sellingPrice: car.sellingPrice,
 				companyInvestedAmount: car.companyInvestedAmount,
