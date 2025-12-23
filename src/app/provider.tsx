@@ -31,7 +31,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 					disableTransitionOnChange
 				>
 					{children}
-					<Toaster richColors />
+					<Toaster richColors closeButton expand={true} />
 				</ThemeProvider>
 			</QueryClientProvider>
 		</ErrorBoundary>
