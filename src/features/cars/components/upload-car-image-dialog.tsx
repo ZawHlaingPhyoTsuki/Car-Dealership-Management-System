@@ -126,9 +126,7 @@ export default function UploadCarImageDialog({
 							// onClick={() => fileInputRef.current?.click()}
 						>
 							<Upload className="mx-auto h-12 w-12 text-gray-400" />
-							<p className="mt-2 text-sm text-gray-600">
-								Click to upload image
-							</p>
+							<p className="mt-2 text-sm text-gray-600">No image selected</p>
 						</div>
 					)}
 

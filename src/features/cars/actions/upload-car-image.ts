@@ -5,6 +5,8 @@ import { requireAuth } from "@/lib/auth-guard";
 import { cloudinary } from "@/lib/cloudinary";
 import prisma from "@/lib/prisma";
 
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
 export async function uploadCarImage({
 	carId,
 	file,
@@ -19,6 +21,10 @@ export async function uploadCarImage({
 	// Validate file
 	if (!file || !file.type.startsWith("image/")) {
 		throw new Error("Invalid image file");
+	}
+
+	if (file.size > MAX_FILE_SIZE) {
+		throw new Error("File size exceeds 10MB limit");
 	}
 
 	// Upload to Cloudinary
